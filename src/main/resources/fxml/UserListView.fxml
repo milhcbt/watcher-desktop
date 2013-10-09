@@ -6,14 +6,14 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<AnchorPane id="AnchorPane" prefHeight="505.0" prefWidth="745.0" xmlns:fx="http://javafx.com/fxml" fx:controller="az.mb.ViewController">
+<AnchorPane id="AnchorPane" prefHeight="505.0" prefWidth="745.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/2.2" fx:controller="com.codencare.watcher.desktop.UserViewController">
   <children>
     <TableView fx:id="table" onMouseClicked="#selectRow" prefHeight="414.0" prefWidth="745.0" tableMenuButtonVisible="true" AnchorPane.bottomAnchor="91.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
       <columns>
         <TableColumn prefWidth="100.0" text="ID" fx:id="id" />
-        <TableColumn prefWidth="100.0" text="NAME" fx:id="name" />
-        <TableColumn prefWidth="100.0" text="SURNAME" fx:id="surname" />
-        <TableColumn prefWidth="100.0" text="AGE" fx:id="age" />
+        <TableColumn prefWidth="100.0" text="NAMA" fx:id="nama" />
+        <TableColumn prefWidth="100.0" text="ALAMAT" fx:id="alamat" />
+        <TableColumn prefWidth="100.0" text="PHONE" fx:id="phone" />
         <TableColumn prefWidth="100.0" text="EMAIL" fx:id="email" />
       </columns>
     </TableView>

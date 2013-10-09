@@ -21,6 +21,7 @@ import javafx.geometry.Point2D;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.MenuItem;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TableColumnBuilder;
 import javafx.scene.control.TableView;
@@ -56,6 +57,9 @@ public class FXMLControlerNew implements Initializable {
     
     @FXML
     ScrollPane scrollPane;
+    
+    @FXML
+    MenuItem userManagement;
 
     @FXML
     private ImageView mapView;
@@ -114,7 +118,7 @@ public class FXMLControlerNew implements Initializable {
         assert mapView != null : "fx:id=\"mapView\" was not injected: check your FXML file 'Scene.fxml'.";
         assert root != null : "fx:id=\"root\" was not injected: check your FXML file 'Scene.fxml'.";
         assert scrollPane != null : "fx:id=\"scrollPane\" was not injected: check your FXML file 'Scene.fxml'.";
-
+        assert userManagement != null : "fx:id=\"userManagement\" was not injected: check your FXML file 'Scene.fxml'.";
         try {
             if (server == null || server.isClosed()) {
                 server = new ServerSocket(port);
@@ -176,15 +180,6 @@ public class FXMLControlerNew implements Initializable {
     //button User
     @FXML
   public void buttonUser(ActionEvent event){
-    System.out.print("keluarlah");
-        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/fxml/Login.fxml"));
-        try {
-            fxmlLoader.load();
-        } 
-        catch (IOException exception) {
-            throw new RuntimeException(exception);
-        }
+        //myController.setScreen(ScreensFramework.MAIN_SCREEN);
     }
-    
-    
-}
+    }

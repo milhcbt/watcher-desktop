@@ -82,7 +82,7 @@
             </Menu>
             <Menu mnemonicParsing="false" text="User" fx:id="menuUser">
               <items>
-                <MenuItem mnemonicParsing="false" onAction="#buttonUser" text="Test" fx:id="test" />
+                <MenuItem mnemonicParsing="false" onAction="#buttonUser" text="User Management" fx:id="userManagement" />
               </items>
             </Menu>
           </menus>
