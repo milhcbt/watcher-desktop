@@ -1,0 +1,12 @@
+.button {
+    -fx-font-weight: bold;
+}
+.autocompletetextfield { 
+	-fx-skin: "com.mytdev.javafx.internal.scene.control.skin.AutoCompleteTextFieldSkin";
+}
+#exit{
+     -fx-graphic: url('mine/block.png');
+     -fx-content-display:graphic-only;
+     -fx-background-color:transparent;
+     
+}

@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane id="AnchorPane" prefHeight="505.0" prefWidth="745.0" xmlns:fx="http://javafx.com/fxml" fx:controller="az.mb.ViewController">
+  <children>
+    <TableView fx:id="table" onMouseClicked="#selectRow" prefHeight="414.0" prefWidth="745.0" tableMenuButtonVisible="true" AnchorPane.bottomAnchor="91.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+      <columns>
+        <TableColumn prefWidth="100.0" text="ID" fx:id="id" />
+        <TableColumn prefWidth="100.0" text="NAME" fx:id="name" />
+        <TableColumn prefWidth="100.0" text="SURNAME" fx:id="surname" />
+        <TableColumn prefWidth="100.0" text="AGE" fx:id="age" />
+        <TableColumn prefWidth="100.0" text="EMAIL" fx:id="email" />
+      </columns>
+    </TableView>
+    <HBox id="HBox" alignment="CENTER" layoutX="27.0" layoutY="428.0" spacing="5.0">
+      <children>
+        <Button id="insert" fx:id="btnInsert" defaultButton="true" mnemonicParsing="false" onAction="#insert" prefHeight="38.0" prefWidth="66.0" text="Add" />
+        <Button id="delete" fx:id="btnDelete" mnemonicParsing="false" onAction="#delete" prefHeight="38.0" prefWidth="66.0" text="Delete" />
+        <Button id="delete" fx:id="btnRefresh" mnemonicParsing="false" onAction="#refresh" prefHeight="38.0" prefWidth="66.0" text="Refresh" />
+      </children>
+    </HBox>
+  </children>
+</AnchorPane>

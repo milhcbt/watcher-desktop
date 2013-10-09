@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane id="AnchorPane" fx:id="root" prefHeight="-1.0" prefWidth="-1.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/2.2" fx:controller="com.codencare.watcher.desktop.FXMLController">
+  <children>
+    <ScrollPane fx:id="scrollPane" cache="true" hbarPolicy="NEVER" layoutX="0.0" layoutY="0.0" pannable="true" prefHeight="-1.0" prefWidth="-1.0" vbarPolicy="NEVER">
+      <content>
+        <ImageView fx:id="mapView" blendMode="SRC_OVER" disable="false" onMousePressed="#onClick" pickOnBounds="true" preserveRatio="true">
+          <image>
+            <Image url="file:/D:/Kerjaan/JMK/watcher/purimension.jpg" fx:id="map" />
+          </image>
+        </ImageView>
+      </content>
+      <contextMenu>
+        <ContextMenu>
+          <items>
+            <MenuItem mnemonicParsing="false" onAction="#onNewNode" text="New Node" fx:id="newNode" />
+            <MenuItem mnemonicParsing="false" text="Unspecified Action" />
+            <SeparatorMenuItem mnemonicParsing="false" />
+            <RadioMenuItem mnemonicParsing="false" text="Unspecified Action" />
+          </items>
+        </ContextMenu>
+      </contextMenu>
+    </ScrollPane>
+    <Button id="normalZoom" layoutX="74.0" layoutY="203.0" mnemonicParsing="false" onAction="#zoom" text="normalZoom" />
+    <Button fx:id="exit" layoutX="102.0" layoutY="213.0" mnemonicParsing="false" onAction="#exit" text="Exit" />
+    <TitledPane animated="false" layoutX="0.0" layoutY="0.0" prefHeight="-1.0" prefWidth="-1.0" text="Details">
+      <content>
+        <AnchorPane id="Content" minHeight="-1.0" minWidth="-1.0" prefHeight="-1.0" prefWidth="-1.0">
+          <children>
+            <TableView fx:id="infoTable" disable="false" editable="true" focusTraversable="false" layoutX="0.0" layoutY="0.0" opacity="0.32" prefHeight="400.0" prefWidth="200.0" tableMenuButtonVisible="true" visible="true" />
+          </children>
+        </AnchorPane>
+      </content>
+    </TitledPane>
+  </children>
+</AnchorPane>

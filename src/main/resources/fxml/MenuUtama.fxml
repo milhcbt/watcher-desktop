@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.effect.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.paint.*?>
+<?import javafx.scene.shape.*?>
+<?import javafx.scene.text.*?>
+<?scenebuilder-background-color 0xe9ffccff?>
+
+<AnchorPane id="AnchorPane" fx:id="root" maxHeight="-1.0" maxWidth="-1.0" minHeight="-1.0" minWidth="-1.0" prefHeight="-1.0" prefWidth="-1.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/2.2" fx:controller="com.codencare.watcher.desktop.FXMLControlerNew">
+  <children>
+    <BorderPane prefHeight="261.0" prefWidth="390.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+      <center>
+        <ScrollPane prefHeight="227.0" prefWidth="106.0" BorderPane.alignment="CENTER">
+          <content>
+            <ImageView fx:id="mapView" blendMode="SRC_OVER" disable="false" onMousePressed="#onClick" pickOnBounds="true" preserveRatio="true" x="0.0">
+              <image>
+                <Image url="@../styles/img/purimension.jpg" />
+              </image>
+            </ImageView>
+          </content>
+          <contextMenu>
+            <ContextMenu>
+              <items>
+                <MenuItem mnemonicParsing="false" onAction="#onNewNode" text="New Node" fx:id="newNode" />
+                <MenuItem mnemonicParsing="false" text="Unspecified Action" />
+                <SeparatorMenuItem mnemonicParsing="false" />
+                <RadioMenuItem mnemonicParsing="false" text="Unspecified Action" />
+              </items>
+            </ContextMenu>
+          </contextMenu>
+          <BorderPane.margin>
+            <Insets top="10.0" />
+          </BorderPane.margin>
+        </ScrollPane>
+      </center>
+      <right>
+        <Pane prefHeight="-1.0" prefWidth="-1.0">
+          <children>
+            <TitledPane animated="false" layoutX="10.0" layoutY="10.0" prefHeight="-1.0" prefWidth="-1.0" text="Details">
+              <content>
+                <AnchorPane id="Content" minHeight="-1.0" minWidth="-1.0" prefHeight="-1.0" prefWidth="-1.0">
+                  <children>
+                    <TableView fx:id="infoTable" disable="false" editable="true" focusTraversable="false" opacity="0.32" prefHeight="400.0" prefWidth="200.0" tableMenuButtonVisible="true" visible="true" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                  </children>
+                </AnchorPane>
+              </content>
+            </TitledPane>
+          </children>
+          <padding>
+            <Insets left="10.0" right="10.0" top="10.0" />
+          </padding>
+        </Pane>
+      </right>
+      <top>
+        <MenuBar fx:id="menuBar">
+          <effect>
+            <Lighting specularConstant="1.0936507936507935" specularExponent="9.523809523809524" surfaceScale="3.0873015873015874">
+              <bumpInput>
+                <Shadow />
+              </bumpInput>
+              <light>
+                <javafx.scene.effect.Light.Distant color="#00ffe0" />
+              </light>
+            </Lighting>
+          </effect>
+          <menus>
+            <Menu id="menuHome" mnemonicParsing="false" onAction="#buttonHome" text="Home" fx:id="menuHome">
+              <items>
+                <MenuItem id="menuClose" mnemonicParsing="false" onAction="#buttonExit" text="Close" fx:id="menuClose" />
+              </items>
+            </Menu>
+            <Menu mnemonicParsing="false" text="Device">
+              <items>
+                <MenuItem mnemonicParsing="false" text="Delete" />
+              </items>
+            </Menu>
+            <Menu mnemonicParsing="false" text="User" fx:id="menuUser">
+              <items>
+                <MenuItem mnemonicParsing="false" onAction="#buttonUser" text="Test" fx:id="test" />
+              </items>
+            </Menu>
+          </menus>
+        </MenuBar>
+      </top>
+    </BorderPane>
+  </children>
+</AnchorPane>
