@@ -6,7 +6,7 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<AnchorPane id="AnchorPane" prefHeight="227.00009999999747" prefWidth="316.9999000000025" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/2.2" fx:controller="com.codencare.watcher.desktop.DialogInsertUserController">
+<AnchorPane id="AnchorPane" prefHeight="227.00009999999747" prefWidth="316.9999000000025" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/2.2" fx:controller="com.codencare.watcher.desktop.DialogInsertCustomerController">
   <children>
     <Label layoutX="20.0" layoutY="55.0" text="Nama:" />
     <Label layoutX="19.0" layoutY="89.0" text="Alamat:" />

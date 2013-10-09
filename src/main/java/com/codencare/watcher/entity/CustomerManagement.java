@@ -2,7 +2,7 @@ package com.codencare.watcher.entity;
 
 import java.io.Serializable;
 
-public class UserManagement implements Serializable {
+public class CustomerManagement implements Serializable {
 
     private int id;
     private String nama;
@@ -10,10 +10,10 @@ public class UserManagement implements Serializable {
     private String phone;
     private String email;
 
-    public UserManagement() {
+    public CustomerManagement() {
     }
 
-    public UserManagement(int id, String nama, String alamat, String phone, String email) {
+    public CustomerManagement(int id, String nama, String alamat, String phone, String email) {
         this.id = id;
         this.nama = nama;
         this.alamat = alamat;

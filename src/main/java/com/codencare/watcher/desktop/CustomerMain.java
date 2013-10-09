@@ -7,11 +7,11 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
-public class UserMain extends Application {
+public class CustomerMain extends Application {
     
     @Override
     public void start(Stage stage) throws Exception {
-        Parent root = FXMLLoader.load(getClass().getResource("/fxml/UserListView.fxml"));        
+        Parent root = FXMLLoader.load(getClass().getResource("/fxml/CustomerListView.fxml"));        
         Scene scene = new Scene(root);        
         stage.setScene(scene);
         stage.show();

@@ -1,7 +1,7 @@
 
 package com.codencare.watcher.entity;
 
-import com.codencare.watcher.entity.UserManagement;
+import com.codencare.watcher.entity.CustomerManagement;
 import com.mysql.jdbc.Driver;
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -11,7 +11,7 @@ import java.util.List;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
-public class UserSqlManagement {
+public class CustomerSqlManagement {
     
     private Connection connection = null;
     private Statement statement = null;
@@ -34,7 +34,7 @@ public class UserSqlManagement {
         }
     }
     
-    public void insertUser(UserManagement pojo){
+    public void insertUser(CustomerManagement pojo){
         try {
             connected();
             String sql = "Insert into customer values("+pojo.getid()+",'"+pojo.getnama()+"','"+pojo.getalamat()+"',"+pojo.getphone()+",'"+pojo.getEmail()+"')";
@@ -46,14 +46,14 @@ public class UserSqlManagement {
         }
     }
     
-    public ObservableList<UserManagement> listUser(){
+    public ObservableList<CustomerManagement> listUser(){
         try {
             connected();
-            ObservableList<UserManagement>list = FXCollections.observableArrayList();
+            ObservableList<CustomerManagement>list = FXCollections.observableArrayList();
             ResultSet rs = statement.executeQuery("Select * from customer");
             System.out.printf("refresh dipencet");
             while(rs.next()){
-                UserManagement pojo = new UserManagement();
+                CustomerManagement pojo = new CustomerManagement();
                 pojo.setid(rs.getInt(1));
                 pojo.setnama(rs.getString(2));
                 pojo.setalamat(rs.getString(3));
@@ -71,7 +71,7 @@ public class UserSqlManagement {
     }
     
     
-    public void updateUser(UserManagement pojo){
+    public void updateUser(CustomerManagement pojo){
         try {
             connected();
             String sql = "Update customer set nama='"+pojo.getnama()+"',alamat = '"+pojo.getalamat()+"',phone = "+pojo.getphone()+",email = '"+pojo.getEmail()+"' Where id = "+pojo.getid();
@@ -109,11 +109,11 @@ public class UserSqlManagement {
         }
     }
      
-     public UserManagement findByID(int id){
+     public CustomerManagement findByID(int id){
          try {
              connected();
              ResultSet rs = statement.executeQuery("Select * from customer where id="+id);
-             UserManagement pojo = new UserManagement();
+             CustomerManagement pojo = new CustomerManagement();
              while(rs.next()){
                  pojo.setid(rs.getInt(1));
                  pojo.setnama(rs.getString(2));

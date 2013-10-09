@@ -9,18 +9,18 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
-public class UserUpdateModel extends Application {
+public class CustomerUpdateModel extends Application {
 
     @Override
     public void start(Stage primaryStage) {
 
         Parent root;
         try {
-            root = FXMLLoader.load(getClass().getResource("/fxml/UserUpdateView.fxml"));
+            root = FXMLLoader.load(getClass().getResource("/fxml/CustomerUpdateView.fxml"));
             Scene scene = new Scene(root);
             primaryStage.setScene(scene);
         } catch (IOException ex) {
-            Logger.getLogger(UserUpdateModel.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(CustomerUpdateModel.class.getName()).log(Level.SEVERE, null, ex);
         }
         primaryStage.show();
     }

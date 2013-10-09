@@ -8,11 +8,11 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
-public class DialogInsertUser extends Application {
+public class DialogInsertCustomer extends Application {
     
     @Override
     public void start(Stage primaryStage) throws IOException {
-        Parent root = FXMLLoader.load(getClass().getResource("/fxml/UserInputView.fxml"));        
+        Parent root = FXMLLoader.load(getClass().getResource("/fxml/CustomerInputView.fxml"));        
         Scene scene = new Scene(root);        
         primaryStage.setScene(scene);
         primaryStage.show();
