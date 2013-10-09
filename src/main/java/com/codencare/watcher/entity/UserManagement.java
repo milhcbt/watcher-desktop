@@ -7,13 +7,13 @@ public class UserManagement implements Serializable {
     private int id;
     private String nama;
     private String alamat;
-    private int phone;
+    private String phone;
     private String email;
 
     public UserManagement() {
     }
 
-    public UserManagement(int id, String nama, String alamat, int phone, String email) {
+    public UserManagement(int id, String nama, String alamat, String phone, String email) {
         this.id = id;
         this.nama = nama;
         this.alamat = alamat;
@@ -41,15 +41,15 @@ public class UserManagement implements Serializable {
         return alamat;
     }
 
-    public void setalamat(String surname) {
+    public void setalamat(String alamat) {
         this.alamat = alamat;
     }
 
-    public int getphone() {
+    public String getphone() {
         return phone;
     }
 
-    public void setphone(int phone) {
+    public void setphone(String phone) {
         this.phone = phone;
     }
 

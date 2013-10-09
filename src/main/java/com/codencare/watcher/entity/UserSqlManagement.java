@@ -1,5 +1,5 @@
 
-package com.codencare.watcher.controller;
+package com.codencare.watcher.entity;
 
 import com.codencare.watcher.entity.UserManagement;
 import com.mysql.jdbc.Driver;
@@ -37,7 +37,7 @@ public class UserSqlManagement {
     public void insertUser(UserManagement pojo){
         try {
             connected();
-            String sql = "Insert into user values("+pojo.getid()+",'"+pojo.getnama()+"','"+pojo.getalamat()+"',"+pojo.getphone()+",'"+pojo.getEmail()+"')";
+            String sql = "Insert into customer values("+pojo.getid()+",'"+pojo.getnama()+"','"+pojo.getalamat()+"',"+pojo.getphone()+",'"+pojo.getEmail()+"')";
             statement.executeUpdate(sql);
             System.out.println(sql);
             closed();
@@ -50,13 +50,14 @@ public class UserSqlManagement {
         try {
             connected();
             ObservableList<UserManagement>list = FXCollections.observableArrayList();
-            ResultSet rs = statement.executeQuery("Select * from user");
+            ResultSet rs = statement.executeQuery("Select * from customer");
+            System.out.printf("refresh dipencet");
             while(rs.next()){
                 UserManagement pojo = new UserManagement();
                 pojo.setid(rs.getInt(1));
                 pojo.setnama(rs.getString(2));
                 pojo.setalamat(rs.getString(3));
-                pojo.setphone(rs.getInt(4));
+                pojo.setphone(rs.getString(4));
                 pojo.setEmail(rs.getString(5));
                 list.add(pojo);
             }
@@ -73,7 +74,7 @@ public class UserSqlManagement {
     public void updateUser(UserManagement pojo){
         try {
             connected();
-            String sql = "Update user set nama='"+pojo.getnama()+"',alamat = '"+pojo.getalamat()+"',phone = "+pojo.getphone()+",email = '"+pojo.getEmail()+"' Where id = "+pojo.getid();
+            String sql = "Update customer set nama='"+pojo.getnama()+"',alamat = '"+pojo.getalamat()+"',phone = "+pojo.getphone()+",email = '"+pojo.getEmail()+"' Where id = "+pojo.getid();
             statement.executeUpdate(sql);
             System.out.println(sql);
         } catch (Exception e) {
@@ -86,7 +87,7 @@ public class UserSqlManagement {
     public void deleteUser(int id){
         try {
             connected();
-            statement.executeUpdate("Delete from user where id = "+id);
+            statement.executeUpdate("Delete from customer where id = "+id);
         } catch (Exception e) {
         }finally{
            closed();
@@ -97,7 +98,7 @@ public class UserSqlManagement {
         try {
             connected();
             int max = 1;
-            ResultSet rs = statement.executeQuery("Select max(id) From user");
+            ResultSet rs = statement.executeQuery("Select max(id) From customer");
             rs.next();
             max = rs.getInt(1);
             rs.close();
@@ -111,13 +112,13 @@ public class UserSqlManagement {
      public UserManagement findByID(int id){
          try {
              connected();
-             ResultSet rs = statement.executeQuery("Select * from user where id="+id);
+             ResultSet rs = statement.executeQuery("Select * from customer where id="+id);
              UserManagement pojo = new UserManagement();
              while(rs.next()){
                  pojo.setid(rs.getInt(1));
                  pojo.setnama(rs.getString(2));
                  pojo.setalamat(rs.getString(3));
-                 pojo.setphone(rs.getInt(4));
+                 pojo.setphone(rs.getString(4));
                  pojo.setEmail(rs.getString(5));                
              }
              return pojo;

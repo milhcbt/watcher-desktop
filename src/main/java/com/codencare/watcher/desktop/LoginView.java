@@ -55,7 +55,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class LoginView extends Application {
-
+    Button btn;
     public static void main(String[] args) {
         launch(args);
     }
@@ -85,7 +85,7 @@ public class LoginView extends Application {
         PasswordField pwBox = new PasswordField();
         grid.add(pwBox, 1, 2);
 
-        Button btn = new Button("Sign in");
+        btn = new Button("Sign in");
         HBox hbBtn = new HBox(10);
         hbBtn.setAlignment(Pos.BOTTOM_RIGHT);
         hbBtn.getChildren().add(btn);
@@ -95,15 +95,12 @@ public class LoginView extends Application {
         grid.add(actiontarget, 1, 6);
 
         btn.setOnAction(new EventHandler<ActionEvent>() {
-
+            
             @Override
             public void handle(ActionEvent e) {
                 //actiontarget.setFill(Color.FIREBRICK);
-                try {
-                    new MainApp().start(new Stage());
-                } catch (Exception ex) {
-                    Logger.getLogger(LoginView.class.getName()).log(Level.SEVERE, null, ex);
-                }     
+                Stage stage = (Stage)btn.getScene().getWindow();
+                stage.close();    
             }
         });
 

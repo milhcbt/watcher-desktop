@@ -16,7 +16,7 @@ public class UserUpdateModel extends Application {
 
         Parent root;
         try {
-            root = FXMLLoader.load(getClass().getResource("UserUpdateView.fxml"));
+            root = FXMLLoader.load(getClass().getResource("/fxml/UserUpdateView.fxml"));
             Scene scene = new Scene(root);
             primaryStage.setScene(scene);
         } catch (IOException ex) {

@@ -2,7 +2,7 @@ package com.codencare.watcher.desktop;
 
 import com.codencare.watcher.desktop.DialogInsertUser;
 import com.codencare.watcher.entity.UserManagement;
-import com.codencare.watcher.controller.UserSqlManagement;
+import com.codencare.watcher.entity.UserSqlManagement;
 import com.codencare.watcher.desktop.UserUpdateViewController;
 import com.codencare.watcher.desktop.UserUpdateModel;
 import java.io.IOException;
@@ -25,9 +25,9 @@ public class UserViewController implements Initializable {
     @FXML
     private TableView<UserManagement> table;
     @FXML
-    private TableColumn<UserManagement,String>nama,alamat,email;
+    private TableColumn<UserManagement,String>nama,alamat,email,phone;
     @FXML
-    private TableColumn<UserManagement,Integer>id,phone;
+    private TableColumn<UserManagement,Integer>id;
     @FXML
     private ObservableList<UserManagement> list = FXCollections.observableArrayList();
     UserSqlManagement ssql = new UserSqlManagement();
@@ -73,7 +73,7 @@ public class UserViewController implements Initializable {
         id.setCellValueFactory(new PropertyValueFactory<UserManagement,Integer>("id"));
         nama.setCellValueFactory(new PropertyValueFactory<UserManagement,String>("nama"));
         alamat.setCellValueFactory(new PropertyValueFactory<UserManagement,String>("alamat"));
-        phone.setCellValueFactory(new PropertyValueFactory<UserManagement,Integer>("phone"));
+        phone.setCellValueFactory(new PropertyValueFactory<UserManagement,String>("phone"));
         email.setCellValueFactory(new PropertyValueFactory<UserManagement,String>("email"));        
         table.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
         list = ssql.listUser();

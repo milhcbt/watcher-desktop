@@ -1,7 +1,7 @@
 package com.codencare.watcher.desktop;
 
 import com.codencare.watcher.entity.UserManagement;
-import com.codencare.watcher.controller.UserSqlManagement;
+import com.codencare.watcher.entity.UserSqlManagement;
 import java.net.URL;
 import java.util.ResourceBundle;
 import javafx.event.ActionEvent;
@@ -25,7 +25,7 @@ public class UserUpdateViewController implements Initializable {
         pojo.setid(id);
         pojo.setnama(nama.getText());
         pojo.setalamat(alamat.getText());
-        pojo.setphone(Integer.parseInt(phone.getText()));
+        pojo.setphone(phone.getText());
         pojo.setEmail(email.getText());
         ssql.updateUser(pojo);
         Stage stage = (Stage) btnInsert.getScene().getWindow();
