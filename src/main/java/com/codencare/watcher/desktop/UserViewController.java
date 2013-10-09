@@ -4,7 +4,7 @@ import com.codencare.watcher.desktop.DialogInsertUser;
 import com.codencare.watcher.entity.UserManagement;
 import com.codencare.watcher.controller.UserSqlManagement;
 import com.codencare.watcher.desktop.UserUpdateViewController;
-import com.codencare.watcher.desktop.UserUppdateModel;
+import com.codencare.watcher.desktop.UserUpdateModel;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -42,7 +42,7 @@ public class UserViewController implements Initializable {
     }
     @FXML
     private void update(ActionEvent event){
-        //new StudentUppdateModel().start(new Stage());
+        new UserUpdateModel().start(new Stage());
     }                                       
     @FXML
     private void refresh(ActionEvent event){
@@ -61,9 +61,9 @@ public class UserViewController implements Initializable {
     private void selectRow(MouseEvent event){
         if(event.getClickCount()==2){           
            UserManagement pojo = table.getSelectionModel().getSelectedItem();
-            //StudenUpdateViewController.id = pojo.getId();
-           // System.out.println(StudenUpdateViewController.id);
-            new UserUppdateModel().start(new Stage());
+            UserUpdateViewController.id = pojo.getid();
+            System.out.println(UserUpdateViewController.id);
+            new UserUpdateModel().start(new Stage());
         }                                               
     }                                           
                                                 

@@ -9,7 +9,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
-public class UserUppdateModel extends Application {
+public class UserUpdateModel extends Application {
 
     @Override
     public void start(Stage primaryStage) {
@@ -20,7 +20,7 @@ public class UserUppdateModel extends Application {
             Scene scene = new Scene(root);
             primaryStage.setScene(scene);
         } catch (IOException ex) {
-            Logger.getLogger(UserUppdateModel.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(UserUpdateModel.class.getName()).log(Level.SEVERE, null, ex);
         }
         primaryStage.show();
     }
