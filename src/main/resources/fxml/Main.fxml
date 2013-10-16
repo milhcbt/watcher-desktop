@@ -13,7 +13,7 @@
       <content>
         <ImageView fx:id="mapView" blendMode="SRC_OVER" disable="false" onMousePressed="#onClick">
           <image>
-            <Image url="@../styles/img/purimension.jpg" fx:id="map" />
+            <Image url="@../styles/img/purimansion-org.jpg" />
           </image>
         </ImageView>
       </content>
