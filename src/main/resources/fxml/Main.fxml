@@ -11,9 +11,9 @@
   <children>
     <ScrollPane fx:id="scrollPane" cache="true" hbarPolicy="NEVER" layoutX="0.0" layoutY="0.0" pannable="true" prefHeight="-1.0" prefWidth="-1.0" vbarPolicy="NEVER">
       <content>
-        <ImageView fx:id="mapView" blendMode="SRC_OVER" disable="false" onMousePressed="#onClick" pickOnBounds="true" preserveRatio="true">
+        <ImageView fx:id="mapView" blendMode="SRC_OVER" disable="false" onMousePressed="#onClick">
           <image>
-            <Image url="file:/D:/Kerjaan/JMK/watcher/purimension.jpg" fx:id="map" />
+            <Image url="@../styles/img/purimension.jpg" fx:id="map" />
           </image>
         </ImageView>
       </content>

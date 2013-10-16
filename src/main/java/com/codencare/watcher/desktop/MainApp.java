@@ -27,7 +27,6 @@ public class MainApp extends Application {
 
     static {
         try {
-            System.out.print("masuk node");
             InputStream is = MainApp.class.getResourceAsStream("/watcher.properties");
             defaultProps.load(is);
         } catch (IOException ex) {
@@ -51,7 +50,7 @@ public class MainApp extends Application {
     public void start(Stage stage) throws Exception {
 
         Rectangle2D primScreenBounds = Screen.getPrimary().getVisualBounds();
-        Region contentRootRegion = FXMLLoader.load(getClass().getResource("/fxml/MenuUtama.fxml"));
+        Region contentRootRegion = FXMLLoader.load(getClass().getResource("/fxml/main.fxml"));
 
         //Set a default "standard" or "100%" resolution
         double origW = primScreenBounds.getWidth() - W_GAP;
