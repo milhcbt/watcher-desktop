@@ -5,9 +5,11 @@
  */
 package com.codencare.watcher.controller;
 
+import com.codencare.message.MessageLabel;
 import com.codencare.watcher.controller.exceptions.IllegalOrphanException;
 import com.codencare.watcher.controller.exceptions.NonexistentEntityException;
 import com.codencare.watcher.controller.exceptions.PreexistingEntityException;
+import com.codencare.watcher.desktop.MainApp;
 import com.codencare.watcher.entity.Customer;
 import com.codencare.watcher.entity.Device;
 import com.codencare.watcher.entity.Message;
@@ -141,7 +143,7 @@ public class DeviceJpaController implements Serializable {
         } catch (Exception ex) {
             String msg = ex.getLocalizedMessage();
             if (msg == null || msg.length() == 0) {
-                BigInteger id = device.getId();
+                Long id = device.getId();
                 if (findDevice(id) == null) {
                     throw new NonexistentEntityException("The device with id " + id + " no longer exists.");
                 }
@@ -215,7 +217,7 @@ public class DeviceJpaController implements Serializable {
         }
     }
 
-    public Device findDevice(BigInteger id) {
+    public Device findDevice(long id) {
         EntityManager em = getEntityManager();
         try {
             return em.find(Device.class, id);
@@ -237,4 +239,15 @@ public class DeviceJpaController implements Serializable {
         }
     }
     
+    public List<Device> findAlarmedDevice(){
+        EntityManager em = getEntityManager();
+        String template = "SELECT d FROM Device d WHERE d.%s=%d";
+        String strQuery = String.format(template,MainApp.defaultProps.getProperty("alarm-input"),MessageLabel.VALUE_HIGH);
+        try {
+            Query query = em.createQuery(strQuery);
+            return query.getResultList();
+        } finally {
+            em.close();
+        }
+    }
 }

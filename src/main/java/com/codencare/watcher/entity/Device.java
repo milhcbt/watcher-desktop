@@ -6,7 +6,6 @@
 package com.codencare.watcher.entity;
 
 import java.io.Serializable;
-import java.math.BigInteger;
 import java.util.Collection;
 import java.util.Date;
 import javax.persistence.Basic;
@@ -50,7 +49,7 @@ public class Device implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id
     @Basic(optional = false)
-    private BigInteger id;
+    private long id;
     @Basic(optional = false)
     private int locX;
     @Basic(optional = false)
@@ -60,15 +59,15 @@ public class Device implements Serializable {
     @Temporal(TemporalType.TIMESTAMP)
     private Date lastTime;
     @Basic(optional = false)
-    private boolean resolve;
+    private byte resolve;
     @Basic(optional = false)
-    private boolean digit1;
+    private byte digit1;
     @Basic(optional = false)
-    private boolean digit2;
+    private byte digit2;
     @Basic(optional = false)
-    private boolean digit3;
+    private byte digit3;
     @Basic(optional = false)
-    private boolean digit4;
+    private byte digit4;
     @Basic(optional = false)
     private short analog1;
     @Basic(optional = false)
@@ -86,11 +85,11 @@ public class Device implements Serializable {
     public Device() {
     }
 
-    public Device(BigInteger id) {
+    public Device(long id) {
         this.id = id;
     }
 
-    public Device(BigInteger id, int locX, int locY, Date lastTime, boolean resolve, boolean digit1, boolean digit2, boolean digit3, boolean digit4, short analog1, short analog2, short analog3, short analog4) {
+    public Device(long id, int locX, int locY, Date lastTime, byte resolve, byte digit1, byte digit2, byte digit3, byte digit4, short analog1, short analog2, short analog3, short analog4) {
         this.id = id;
         this.locX = locX;
         this.locY = locY;
@@ -106,11 +105,11 @@ public class Device implements Serializable {
         this.analog4 = analog4;
     }
 
-    public BigInteger getId() {
+    public long getId() {
         return id;
     }
 
-    public void setId(BigInteger id) {
+    public void setId(long id) {
         this.id = id;
     }
 
@@ -138,43 +137,43 @@ public class Device implements Serializable {
         this.lastTime = lastTime;
     }
 
-    public boolean getResolve() {
+    public byte getResolve() {
         return resolve;
     }
 
-    public void setResolve(boolean resolve) {
+    public void setResolve(byte resolve) {
         this.resolve = resolve;
     }
 
-    public boolean getDigit1() {
+    public byte getDigit1() {
         return digit1;
     }
 
-    public void setDigit1(boolean digit1) {
+    public void setDigit1(byte digit1) {
         this.digit1 = digit1;
     }
 
-    public boolean getDigit2() {
+    public byte getDigit2() {
         return digit2;
     }
 
-    public void setDigit2(boolean digit2) {
+    public void setDigit2(byte digit2) {
         this.digit2 = digit2;
     }
 
-    public boolean getDigit3() {
+    public byte getDigit3() {
         return digit3;
     }
 
-    public void setDigit3(boolean digit3) {
+    public void setDigit3(byte digit3) {
         this.digit3 = digit3;
     }
 
-    public boolean getDigit4() {
+    public byte getDigit4() {
         return digit4;
     }
 
-    public void setDigit4(boolean digit4) {
+    public void setDigit4(byte digit4) {
         this.digit4 = digit4;
     }
 
@@ -229,19 +228,23 @@ public class Device implements Serializable {
 
     @Override
     public int hashCode() {
-        int hash = 0;
-        hash += (id != null ? id.hashCode() : 0);
+        int hash = 5;
+        hash = 97 * hash + (int) (this.id ^ (this.id >>> 32));
         return hash;
     }
 
+   
+
     @Override
-    public boolean equals(Object object) {
-        // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof Device)) {
+    public boolean equals(Object obj) {
+        if (obj == null) {
             return false;
         }
-        Device other = (Device) object;
-        if ((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id))) {
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final Device other = (Device) obj;
+        if (this.id != other.id) {
             return false;
         }
         return true;
@@ -249,7 +252,14 @@ public class Device implements Serializable {
 
     @Override
     public String toString() {
-        return "com.codencare.watcher.entity.Device[ id=" + id + " ]";
+        return "Device{" + "id=" + id + ", locX=" + locX + ", locY=" + locY + 
+                ", lastTime=" + lastTime + ", resolve=" + resolve + 
+                ", digit1=" + digit1 + ", digit2=" + digit2 + ", digit3=" +
+                digit3 + ", digit4=" + digit4 + ", analog1=" + analog1 + 
+                ", analog2=" + analog2 + ", analog3=" + analog3 + ", analog4=" +
+                analog4 + ", messageCollection=" + messageCollection +
+                ", customerId=" + customerId + '}';
     }
     
+  
 }
