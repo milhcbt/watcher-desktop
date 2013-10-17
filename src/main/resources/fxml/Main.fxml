@@ -9,11 +9,11 @@
 
 <AnchorPane id="AnchorPane" fx:id="root" prefHeight="-1.0" prefWidth="-1.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/2.2" fx:controller="com.codencare.watcher.desktop.FXMLController">
   <children>
-    <ScrollPane fx:id="scrollPane" cache="true" hbarPolicy="NEVER" layoutX="0.0" layoutY="0.0" pannable="true" prefHeight="-1.0" prefWidth="-1.0" vbarPolicy="NEVER">
+    <ScrollPane fx:id="scrollPane" cache="true" hbarPolicy="AS_NEEDED" layoutX="0.0" layoutY="0.0" pannable="true" prefHeight="-1.0" prefWidth="-1.0" vbarPolicy="AS_NEEDED">
       <content>
-        <ImageView fx:id="mapView" blendMode="SRC_OVER" disable="false" onMousePressed="#onClick" pickOnBounds="true" preserveRatio="true">
+        <ImageView fx:id="mapView" blendMode="SRC_OVER" disable="false" onMousePressed="#onClick">
           <image>
-            <Image url="file:/D:/Kerjaan/JMK/watcher/purimension.jpg" fx:id="map" />
+            <Image url="@../styles/img/purimansion-org.jpg" />
           </image>
         </ImageView>
       </content>
@@ -28,9 +28,9 @@
         </ContextMenu>
       </contextMenu>
     </ScrollPane>
-    <Button id="normalZoom" layoutX="74.0" layoutY="203.0" mnemonicParsing="false" onAction="#zoom" text="normalZoom" />
-    <Button fx:id="exit" layoutX="102.0" layoutY="213.0" mnemonicParsing="false" onAction="#exit" text="Exit" />
-    <TitledPane animated="false" layoutX="0.0" layoutY="0.0" prefHeight="-1.0" prefWidth="-1.0" text="Details">
+    <Button fx:id="normalZoom" layoutX="58.0" layoutY="203.0" onAction="#zoom" text="normalZoom" />
+    <Button fx:id="exit" layoutX="83.0" layoutY="203.0" onAction="#exit" text="Exit" />
+    <TitledPane fx:id="detailPane" animated="false" layoutX="0.0" layoutY="0.0" prefHeight="-1.0" prefWidth="-1.0" text="Details">
       <content>
         <AnchorPane id="Content" minHeight="-1.0" minWidth="-1.0" prefHeight="-1.0" prefWidth="-1.0">
           <children>

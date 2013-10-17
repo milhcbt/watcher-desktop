@@ -9,6 +9,9 @@ import javafx.fxml.FXMLLoader;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.Group;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
+import javafx.scene.control.ScrollPane;
+import javafx.scene.control.TitledPane;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.StackPane;
@@ -27,7 +30,6 @@ public class MainApp extends Application {
 
     static {
         try {
-            System.out.print("masuk node");
             InputStream is = MainApp.class.getResourceAsStream("/watcher.properties");
             defaultProps.load(is);
         } catch (IOException ex) {
@@ -51,7 +53,7 @@ public class MainApp extends Application {
     public void start(Stage stage) throws Exception {
 
         Rectangle2D primScreenBounds = Screen.getPrimary().getVisualBounds();
-        Region contentRootRegion = FXMLLoader.load(getClass().getResource("/fxml/MenuUtama.fxml"));
+        Region contentRootRegion = FXMLLoader.load(getClass().getResource("/fxml/main.fxml"));
 
         //Set a default "standard" or "100%" resolution
         double origW = primScreenBounds.getWidth() - W_GAP;
@@ -86,10 +88,13 @@ public class MainApp extends Application {
         AnchorPane ap = (AnchorPane) rootPane.lookup("#AnchorPane");
         ap.prefWidthProperty().bind(rootPane.prefWidthProperty());
         ap.prefHeightProperty().bind(rootPane.prefHeightProperty());
-        //Button exitBtn = (Button)rootPane.lookup("#exit");
-        //exitBtn.setLayoutX(origW-72);
-        //exitBtn.setLayoutY(0-4);
-
+        ScrollPane scrollPane = (ScrollPane) rootPane.lookup("#scrollPane");
+        scrollPane.prefWidthProperty().bind(rootPane.prefWidthProperty());
+        scrollPane.prefHeightProperty().bind(rootPane.prefHeightProperty());
+        TitledPane detailPane = (TitledPane)rootPane.lookup("#detailPane");
+        detailPane.prefWidthProperty().bind(rootPane.prefWidthProperty());
+        //detailPane.prefHeightProperty().bind(rootPane.prefHeightProperty().divide(3));
+        detailPane.setExpanded(false);
         //Set the scene to the window (stage) and show it
         stage.setScene(scene);
         stage.setX(W_GAP / 2);

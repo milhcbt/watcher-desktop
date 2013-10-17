@@ -194,7 +194,7 @@ public class NewNodeDialog extends Stage {
                     java.util.logging.Logger.getLogger(NewNodeDialog.class.getName()).log(Level.SEVERE, null, ex);
                 }
                 if (newIp != 0) {
-                    Device newDev = new Device(BigInteger.valueOf(newIp));
+                    Device newDev = new Device(newIp);
                     newDev.setLocX((int) currentLoc.getX());
                     newDev.setLocY((int) currentLoc.getY());
                     newDev.setCustomerId(currentCustomer);

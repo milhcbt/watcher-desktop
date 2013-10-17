@@ -131,9 +131,6 @@ public class FXMLController implements Initializable {
 
     @FXML
     void onClick(MouseEvent event) {
-//        CustomerJpaController cjc = new CustomerJpaController(emf);
-//        List<Customer> custList = cjc.findCustomerEntities();
-//        LOGGER.info(custList.toString());
         loc = new Point2D(event.getX(), event.getY());
         CoordinatBean cb = new CoordinatBean(event.getX(), event.getY());
 
@@ -156,8 +153,17 @@ public class FXMLController implements Initializable {
 
     @FXML
     void zoom(ActionEvent event) {
-       mapView.setScaleY(.7);
-       mapView.setScaleX(.2);
+        double y = scrollPane.getPrefHeight() / mapView.getImage().getHeight();
+        double x = scrollPane.getPrefWidth() / mapView.getImage().getWidth();
+        if (mapView.getFitHeight() > 0) {
+            mapView.setFitHeight(0);
+            mapView.setFitWidth(0);
+        } else {
+            mapView.setFitHeight(scrollPane.getPrefHeight());
+            mapView.setFitWidth(scrollPane.getPrefWidth());
+        }
+//       mapView.autosize();
+//       scrollPane.autosize();
     }
 
     @FXML
