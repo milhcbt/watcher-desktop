@@ -37,7 +37,7 @@ public class CustomerSqlManagement {
     public void insertUser(CustomerManagement pojo){
         try {
             connected();
-            String sql = "Insert into customer values("+pojo.getid()+",'"+pojo.getnama()+"','"+pojo.getalamat()+"',"+pojo.getphone()+",'"+pojo.getEmail()+"')";
+            String sql = "Insert into customer values("+pojo.getId()+",'"+pojo.getNama()+"','"+pojo.getAlamat()+"','"+pojo.getPhone()+"','"+pojo.getEmail()+"')";
             statement.executeUpdate(sql);
             System.out.println(sql);
             closed();
@@ -54,10 +54,10 @@ public class CustomerSqlManagement {
             System.out.printf("refresh dipencet");
             while(rs.next()){
                 CustomerManagement pojo = new CustomerManagement();
-                pojo.setid(rs.getInt(1));
-                pojo.setnama(rs.getString(2));
-                pojo.setalamat(rs.getString(3));
-                pojo.setphone(rs.getString(4));
+                pojo.setId(rs.getInt(1));
+                pojo.setNama(rs.getString(2));
+                pojo.setAlamat(rs.getString(3));
+                pojo.setPhone(rs.getString(4));
                 pojo.setEmail(rs.getString(5));
                 list.add(pojo);
             }
@@ -74,7 +74,7 @@ public class CustomerSqlManagement {
     public void updateUser(CustomerManagement pojo){
         try {
             connected();
-            String sql = "Update customer set nama='"+pojo.getnama()+"',alamat = '"+pojo.getalamat()+"',phone = "+pojo.getphone()+",email = '"+pojo.getEmail()+"' Where id = "+pojo.getid();
+            String sql = "Update customer set nama='"+pojo.getNama()+"',alamat = '"+pojo.getAlamat()+"',phone = '"+pojo.getPhone()+"',email = '"+pojo.getEmail()+"' Where id = '"+pojo.getId();
             statement.executeUpdate(sql);
             System.out.println(sql);
         } catch (Exception e) {
@@ -115,10 +115,10 @@ public class CustomerSqlManagement {
              ResultSet rs = statement.executeQuery("Select * from customer where id="+id);
              CustomerManagement pojo = new CustomerManagement();
              while(rs.next()){
-                 pojo.setid(rs.getInt(1));
-                 pojo.setnama(rs.getString(2));
-                 pojo.setalamat(rs.getString(3));
-                 pojo.setphone(rs.getString(4));
+                 pojo.setId(rs.getInt(1));
+                 pojo.setNama(rs.getString(2));
+                 pojo.setAlamat(rs.getString(3));
+                 pojo.setPhone(rs.getString(4));
                  pojo.setEmail(rs.getString(5));                
              }
              return pojo;

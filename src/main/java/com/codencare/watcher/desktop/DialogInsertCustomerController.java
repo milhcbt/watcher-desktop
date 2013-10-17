@@ -23,10 +23,10 @@ public class DialogInsertCustomerController implements Initializable {
     private void insert(ActionEvent event){
         CustomerManagement pojo = new CustomerManagement(); 
         System.out.println(ssql.userMaxID());
-        pojo.setid(ssql.userMaxID());
-        pojo.setnama(nama.getText());
-        pojo.setalamat(alamat.getText());
-        pojo.setphone(phone.getText());
+        pojo.setId(ssql.userMaxID());
+        pojo.setNama(nama.getText());
+        pojo.setAlamat(alamat.getText());
+        pojo.setPhone(phone.getText());
         pojo.setEmail(email.getText());
         ssql.insertUser(pojo);
         Stage stage = (Stage)btnInsert.getScene().getWindow();

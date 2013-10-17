@@ -22,10 +22,10 @@ public class CustomerUpdateViewController implements Initializable {
     private CustomerManagement pojo = new CustomerManagement();
     @FXML
     private void insert(ActionEvent event) {        
-        pojo.setid(id);
-        pojo.setnama(nama.getText());
-        pojo.setalamat(alamat.getText());
-        pojo.setphone(phone.getText());
+        pojo.setId(id);
+        pojo.setNama(nama.getText());
+        pojo.setAlamat(alamat.getText());
+        pojo.setPhone(phone.getText());
         pojo.setEmail(email.getText());
         ssql.updateUser(pojo);
         Stage stage = (Stage) btnInsert.getScene().getWindow();
@@ -42,9 +42,9 @@ public class CustomerUpdateViewController implements Initializable {
     public void initialize(URL url, ResourceBundle rb) {
          CustomerManagement pojo = ssql.findByID(id);
          System.out.println(id);
-         nama.setText(pojo.getnama());
-         alamat.setText(pojo.getalamat());
-         phone.setText(String.valueOf(pojo.getphone()));
+         nama.setText(pojo.getNama());
+         alamat.setText(pojo.getAlamat());
+         phone.setText(String.valueOf(pojo.getPhone()));
          email.setText(pojo.getEmail());
        
     }

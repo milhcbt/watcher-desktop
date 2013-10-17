@@ -10,7 +10,7 @@
   <children>
     <TableView fx:id="table" onMouseClicked="#selectRow" prefHeight="414.0" prefWidth="745.0" tableMenuButtonVisible="true" AnchorPane.bottomAnchor="91.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
       <columns>
-        <TableColumn prefWidth="100.0" text="ID" fx:id="id" />
+        <TableColumn prefWidth="100.0" text="ID" visible="false" fx:id="id" />
         <TableColumn prefWidth="100.0" text="NAMA" fx:id="nama" />
         <TableColumn prefWidth="100.0" text="ALAMAT" fx:id="alamat" />
         <TableColumn prefWidth="100.0" text="PHONE" fx:id="phone" />

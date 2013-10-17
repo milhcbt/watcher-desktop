@@ -27,8 +27,6 @@ public class CustomerViewController implements Initializable {
     @FXML
     private TableColumn<CustomerManagement,String>nama,alamat,email,phone;
     @FXML
-    private TableColumn<CustomerManagement,Integer>id;
-    @FXML
     private ObservableList<CustomerManagement> list = FXCollections.observableArrayList();
     CustomerSqlManagement ssql = new CustomerSqlManagement();
     @FXML
@@ -52,8 +50,8 @@ public class CustomerViewController implements Initializable {
     @FXML
     private void delete(){
         CustomerManagement pojo = table.getSelectionModel().getSelectedItem();
-        ssql.deleteUser(pojo.getid());
-        System.out.println(pojo.getid());
+        ssql.deleteUser(pojo.getId());
+        System.out.println(pojo.getId());
         list = ssql.listUser();
         table.setItems(list);
     }
@@ -61,7 +59,7 @@ public class CustomerViewController implements Initializable {
     private void selectRow(MouseEvent event){
         if(event.getClickCount()==2){           
            CustomerManagement pojo = table.getSelectionModel().getSelectedItem();
-            CustomerUpdateViewController.id = pojo.getid();
+            CustomerUpdateViewController.id = pojo.getId();
             System.out.println(CustomerUpdateViewController.id);
             new CustomerUpdateModel().start(new Stage());
         }                                               
@@ -70,7 +68,6 @@ public class CustomerViewController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle rb) { 
         
-        id.setCellValueFactory(new PropertyValueFactory<CustomerManagement,Integer>("id"));
         nama.setCellValueFactory(new PropertyValueFactory<CustomerManagement,String>("nama"));
         alamat.setCellValueFactory(new PropertyValueFactory<CustomerManagement,String>("alamat"));
         phone.setCellValueFactory(new PropertyValueFactory<CustomerManagement,String>("phone"));

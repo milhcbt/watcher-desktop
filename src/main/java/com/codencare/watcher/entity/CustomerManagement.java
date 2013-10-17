@@ -21,35 +21,35 @@ public class CustomerManagement implements Serializable {
         this.email = email;
     }
 
-    public int getid() {
+    public int getId() {
         return id;
     }
 
-    public void setid(int id) {
+    public void setId(int id) {
         this.id = id;
     }
 
-    public String getnama() {
+    public String getNama() {
         return nama;
     }
 
-    public void setnama(String nama) {
+    public void setNama(String nama) {
         this.nama = nama;
     }
 
-    public String getalamat() {
+    public String getAlamat() {
         return alamat;
     }
 
-    public void setalamat(String alamat) {
+    public void setAlamat(String alamat) {
         this.alamat = alamat;
     }
 
-    public String getphone() {
+    public String getPhone() {
         return phone;
     }
 
-    public void setphone(String phone) {
+    public void setPhone(String phone) {
         this.phone = phone;
     }
 
