@@ -179,7 +179,7 @@ public class FXMLControlerNew implements Initializable {
    
     //button User
     @FXML
-  public void buttonUser(ActionEvent event){
-        //myController.setScreen(ScreensFramework.MAIN_SCREEN);
+    public void buttonUser(ActionEvent event){
+        
     }
     }

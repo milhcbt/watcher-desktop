@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane id="AnchorPane" prefHeight="190.00009999999747" prefWidth="316.9999000000025" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/2.2" fx:controller="com.codencare.watcher.desktop.DeviceUpdateViewController">
+  <children>
+    <Label layoutX="23.0" layoutY="55.0" text="Device IP :" />
+    <Label layoutX="23.0" layoutY="90.0" text="Remarks :" />
+    <Label layoutX="23.0" layoutY="20.0" text="Device ID :" />
+    <TextField fx:id="ip" layoutX="103.0" layoutY="49.0" prefWidth="189.0" promptText="" />
+    <TextField fx:id="remarks" layoutX="103.0" layoutY="84.0" prefWidth="189.0" promptText="" />
+    <Button id="insert" fx:id="btnInsert" layoutX="101.0" layoutY="132.0" mnemonicParsing="false" onAction="#insert" prefHeight="25.0001220703125" prefWidth="65.0" text="Insert" />
+    <Button id="cancel" fx:id="btnCancel" layoutX="183.0" layoutY="132.0" mnemonicParsing="false" onAction="#cancel" prefHeight="26.0" prefWidth="65.0" text="Cancel" />
+    <TextField id="ip" fx:id="id" layoutX="103.0" layoutY="14.0" prefWidth="189.0" promptText="" />
+  </children>
+</AnchorPane>

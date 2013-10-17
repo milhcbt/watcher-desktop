@@ -53,6 +53,7 @@ import org.eclipse.persistence.internal.oxm.mappings.Login;
 import com.codencare.watcher.desktop.MainApp;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javafx.application.Platform;
 
 public class LoginView extends Application {
     Button btn;
@@ -98,9 +99,8 @@ public class LoginView extends Application {
             
             @Override
             public void handle(ActionEvent e) {
-                //actiontarget.setFill(Color.FIREBRICK);
-                Stage stage = (Stage)btn.getScene().getWindow();
-                stage.close();    
+                MainApp newMain = new MainApp();
+                Platform.exit();
             }
         });
 

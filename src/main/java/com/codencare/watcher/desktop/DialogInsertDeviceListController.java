@@ -12,7 +12,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 
-public class DialogInsertUserCustomer implements Initializable {
+public class DialogInsertDeviceListController implements Initializable {
 
     @FXML
     Button btnCancel,btnInsert;        
