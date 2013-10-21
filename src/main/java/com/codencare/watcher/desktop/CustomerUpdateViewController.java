@@ -22,7 +22,7 @@ public class CustomerUpdateViewController implements Initializable {
     private CustomerManagement pojo = new CustomerManagement();
     @FXML
     private void insert(ActionEvent event) {        
-        pojo.setId(id);
+        pojo.setId(ssql.userMaxID());
         pojo.setNama(nama.getText());
         pojo.setAlamat(alamat.getText());
         pojo.setPhone(phone.getText());

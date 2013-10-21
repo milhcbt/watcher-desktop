@@ -74,7 +74,7 @@ public class CustomerSqlManagement {
     public void updateUser(CustomerManagement pojo){
         try {
             connected();
-            String sql = "Update customer set nama='"+pojo.getNama()+"',alamat = '"+pojo.getAlamat()+"',phone = '"+pojo.getPhone()+"',email = '"+pojo.getEmail()+"' Where id = '"+pojo.getId();
+            String sql = "Update customer set nama='"+pojo.getNama()+"',alamat = '"+pojo.getAlamat()+"',phone = '"+pojo.getPhone()+"',email = '"+pojo.getEmail()+"' Where id ="+pojo.getId();
             statement.executeUpdate(sql);
             System.out.println(sql);
         } catch (Exception e) {
