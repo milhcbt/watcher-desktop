@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane id="AnchorPane" prefHeight="505.0" prefWidth="745.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/2.2" fx:controller="com.codencare.watcher.desktop.MappingController">
+  <children>
+    <TableView fx:id="table" onMouseClicked="#selectRow" prefHeight="414.0" prefWidth="745.0" tableMenuButtonVisible="true" AnchorPane.bottomAnchor="91.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+      <columns>
+        <TableColumn prefWidth="100.0" text="ID" visible="false" fx:id="customer_id" />
+        <TableColumn maxWidth="5000.0" minWidth="10.0" prefWidth="149.0" text="CUSTOMER NAME" fx:id="customer" />
+        <TableColumn prefWidth="100.0" text="LOC X" fx:id="locX" />
+        <TableColumn prefWidth="100.0" text="LOC Y" fx:id="locY" />
+      </columns>
+    </TableView>
+    <HBox id="HBox" alignment="CENTER" layoutX="27.0" layoutY="428.0" spacing="5.0" />
+    <Label layoutX="27.0" layoutY="446.0" text="Select Device Info IP :" />
+    <TextField editable="false" layoutX="141.0" layoutY="443.0" prefWidth="200.0" />
+    <Button layoutX="373.0" layoutY="444.0" mnemonicParsing="false" text="Close" />
+  </children>
+</AnchorPane>

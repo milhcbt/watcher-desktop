@@ -21,7 +21,7 @@
           <content>
             <ImageView fx:id="mapView" blendMode="SRC_OVER" disable="false" onMousePressed="#onClick" pickOnBounds="true" preserveRatio="true" x="0.0">
               <image>
-                <Image url="@../styles/img/purimension.jpg" />
+                <Image url="@../styles/img/purimansion-org.jpg" />
               </image>
             </ImageView>
           </content>
@@ -57,11 +57,6 @@
                     <Insets fx:id="x1" />
                   </VBox.margin>
                 </TitledPane>
-                <TitledPane id="TitledPane" animated="false" text="Alarm Info" VBox.margin="$x1">
-                  <content>
-                    <AnchorPane id="Content" minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
-                  </content>
-                </TitledPane>
               </children>
               <stylesheets>
                 <URL value="@../../../../../paneCSS.css" />
@@ -74,7 +69,7 @@
         </Pane>
       </right>
       <top>
-        <MenuBar fx:id="menuBar">
+        <MenuBar fx:id="menuBar" prefHeight="35.0" prefWidth="390.0">
           <effect>
             <Lighting specularConstant="1.0936507936507935" specularExponent="9.523809523809524" surfaceScale="3.0873015873015874">
               <bumpInput>
@@ -89,7 +84,7 @@
             <Menu id="menuHome" mnemonicParsing="false" onAction="#buttonHome" text="Home" fx:id="menuHome">
               <items>
                 <MenuItem id="menuClose" mnemonicParsing="false" onAction="#buttonExit" text="Close" fx:id="menuClose" />
-                <MenuItem mnemonicParsing="false" text="Change Password" />
+                <MenuItem mnemonicParsing="false" onAction="#btnCpass" text="Change Password" fx:id="changePass" />
               </items>
             </Menu>
             <Menu mnemonicParsing="false" text="Device">
