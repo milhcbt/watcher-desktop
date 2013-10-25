@@ -15,11 +15,13 @@ import javafx.collections.ObservableList;
 import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.geometry.Point2D;
+<<<<<<< HEAD
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+=======
+>>>>>>> simple
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TableColumnBuilder;

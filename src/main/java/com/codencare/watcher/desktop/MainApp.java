@@ -10,6 +10,7 @@ import javafx.geometry.Rectangle2D;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TitledPane;
 import javafx.scene.layout.AnchorPane;
@@ -92,8 +93,12 @@ public class MainApp extends Application {
         scrollPane.prefWidthProperty().bind(rootPane.prefWidthProperty());
         scrollPane.prefHeightProperty().bind(rootPane.prefHeightProperty());
         TitledPane detailPane = (TitledPane)rootPane.lookup("#detailPane");
-        detailPane.prefWidthProperty().bind(rootPane.prefWidthProperty());
-        //detailPane.prefHeightProperty().bind(rootPane.prefHeightProperty().divide(3));
+        detailPane.prefWidthProperty().bind(rootPane.prefWidthProperty().subtract(108 + 44));
+        Button exitBtn = (Button) rootPane.lookup("#exit");
+        exitBtn.setLayoutX(rootPane.getWidth()- 52 );
+        ChoiceBox zoomCb = (ChoiceBox)rootPane.lookup("#zoom");
+        zoomCb.setLayoutX(rootPane.getWidth()- (106+43));
+//        detailPane.prefHeightProperty().bind(rootPane.prefHeightProperty().divide(3));
         detailPane.setExpanded(false);
         //Set the scene to the window (stage) and show it
         stage.setScene(scene);
