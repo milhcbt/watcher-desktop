@@ -17,11 +17,6 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Point2D;
-<<<<<<< HEAD
-import javafx.scene.Parent;
-import javafx.scene.Scene;
-=======
->>>>>>> simple
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TableColumnBuilder;
@@ -63,8 +58,8 @@ public class FXMLControlerNew implements Initializable {
 
     @FXML
     private ImageView mapView;
-    
-    
+
+   
     Task<Void> task = new Task<Void>() {
         @Override
         protected Void call() {
@@ -131,7 +126,7 @@ public class FXMLControlerNew implements Initializable {
         }
     }
 
-    @FXML
+     @FXML
     void onClick(MouseEvent event) {
 //        CustomerJpaController cjc = new CustomerJpaController(emf);
 //        List<Customer> custList = cjc.findCustomerEntities();
@@ -167,11 +162,7 @@ public class FXMLControlerNew implements Initializable {
     //button home
     @FXML
     void buttonHome(ActionEvent event) throws Exception{
-        Stage stage=new Stage();
-        Parent root = FXMLLoader.load(getClass().getResource("/fxml/MenuUtama.fxml"));        
-        Scene scene = new Scene(root);        
-        stage.setScene(scene);
-        stage.show();  
+        new MainApp().start(new Stage());  
     }
     
     //buttonExit
@@ -183,11 +174,7 @@ public class FXMLControlerNew implements Initializable {
    
     //button User
     @FXML
-    void buttonUser(ActionEvent event){
-        Platform.exit();
+  public void buttonUser(ActionEvent event){
+        //myController.setScreen(ScreensFramework.MAIN_SCREEN);
     }
-    @FXML
-    public void btnCpass(ActionEvent event) throws IOException{
-        
     }
-}
