@@ -186,6 +186,19 @@ public class FXMLControlerNew implements Initializable {
     }
     @FXML
     public void btnCpass(ActionEvent event) throws IOException{
-        
+         
+    }
+    
+    @FXML
+    public void zoomIn(ActionEvent event) throws IOException{
+         double y = scrollPane.getPrefHeight() / mapView.getImage().getHeight();
+        double x = scrollPane.getPrefWidth() / mapView.getImage().getWidth();
+        if (mapView.getFitHeight() > 0) {
+            mapView.setFitHeight(0);
+            mapView.setFitWidth(0);
+        } else {
+            mapView.setFitHeight(scrollPane.getPrefHeight());
+            mapView.setFitWidth(scrollPane.getPrefWidth());
+    }
     }
 }

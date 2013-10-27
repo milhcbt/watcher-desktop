@@ -19,7 +19,7 @@ public class MappingSql {
     private void connected(){
         try {
             DriverManager.registerDriver(new Driver());
-            connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/watcher?zeroDateTimeBehavior=convertToNull","root","12345");
+            connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/watcher?zeroDateTimeBehavior=convertToNull","root","");
             statement = connection.createStatement();
         } catch (Exception e) {
             e.printStackTrace();

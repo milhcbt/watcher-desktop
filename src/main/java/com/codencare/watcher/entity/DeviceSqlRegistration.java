@@ -1,17 +1,15 @@
 
 package com.codencare.watcher.entity;
 
-import com.codencare.watcher.entity.CustomerManagement;
 import com.mysql.jdbc.Driver;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.Statement;
-import java.util.List;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
-public class CustomerSqlManagement {
+public class DeviceSqlRegistration {
     
     private Connection connection = null;
     private Statement statement = null;
@@ -34,10 +32,10 @@ public class CustomerSqlManagement {
         }
     }
     
-    public void insertUser(CustomerManagement pojo){
+    public void insertDevice(DeviceRegistration pojo){
         try {
             connected();
-            String sql = "Insert into customer values("+pojo.getId()+",'"+pojo.getNama()+"','"+pojo.getAlamat()+"','"+pojo.getPhone()+"','"+pojo.getEmail()+"')";
+            String sql = "Insert into device_list values("+pojo.getId()+",'"+pojo.getDeviceId()+"','"+pojo.getDeviceIp()+"','"+pojo.getRemarks()+"')";
             statement.executeUpdate(sql);
             System.out.println(sql);
             closed();
@@ -46,19 +44,18 @@ public class CustomerSqlManagement {
         }
     }
     
-    public ObservableList<CustomerManagement> listUser(){
+    public ObservableList<DeviceRegistration> listDevice(){
         try {
             connected();
-            ObservableList<CustomerManagement>list = FXCollections.observableArrayList();
-            ResultSet rs = statement.executeQuery("Select * from customer");
+            ObservableList<DeviceRegistration>list = FXCollections.observableArrayList();
+            ResultSet rs = statement.executeQuery("Select * from device_list");
             System.out.printf("refresh dipencet");
             while(rs.next()){
-                CustomerManagement pojo = new CustomerManagement();
+                DeviceRegistration pojo = new DeviceRegistration();
                 pojo.setId(rs.getInt(1));
-                pojo.setNama(rs.getString(2));
-                pojo.setAlamat(rs.getString(3));
-                pojo.setPhone(rs.getString(4));
-                pojo.setEmail(rs.getString(5));
+                pojo.setDeviceId(rs.getString(2));
+                pojo.setDeviceIp(rs.getString(3));
+                pojo.setRemarks(rs.getString(4));
                 list.add(pojo);
             }
             return list;
@@ -71,10 +68,10 @@ public class CustomerSqlManagement {
     }
     
     
-    public void updateUser(CustomerManagement pojo){
+    public void updateDevice(DeviceRegistration pojo){
         try {
             connected();
-            String sql = "Update customer set nama='"+pojo.getNama()+"',alamat = '"+pojo.getAlamat()+"',phone = '"+pojo.getPhone()+"',email = '"+pojo.getEmail()+"' Where id ="+pojo.getId();
+            String sql = "Update device_list set device_id='"+pojo.getDeviceId()+"',device_ip = '"+pojo.getDeviceIp()+"',remarks = '"+pojo.getRemarks()+"' Where id ="+pojo.getId();
             statement.executeUpdate(sql);
             System.out.println(sql);
         } catch (Exception e) {
@@ -84,10 +81,10 @@ public class CustomerSqlManagement {
         }
     }
     
-    public void deleteUser(int id){
+    public void deleteDevice(int id){
         try {
             connected();
-            statement.executeUpdate("Delete from customer where id = "+id);
+            statement.executeUpdate("Delete from device_list where id = "+id);
         } catch (Exception e) {
         }finally{
            closed();
@@ -98,7 +95,7 @@ public class CustomerSqlManagement {
         try {
             connected();
             int max = 1;
-            ResultSet rs = statement.executeQuery("Select max(id) From customer");
+            ResultSet rs = statement.executeQuery("Select max(id) From device_list");
             rs.next();
             max = rs.getInt(1);
             rs.close();
@@ -109,17 +106,16 @@ public class CustomerSqlManagement {
         }
     }
      
-     public CustomerManagement findByID(int id){
+     public DeviceRegistration findByID(int id){
          try {
              connected();
-             ResultSet rs = statement.executeQuery("Select * from customer where id="+id);
-             CustomerManagement pojo = new CustomerManagement();
+             ResultSet rs = statement.executeQuery("Select * from device_list where id="+id);
+             DeviceRegistration pojo = new DeviceRegistration();
              while(rs.next()){
                  pojo.setId(rs.getInt(1));
-                 pojo.setNama(rs.getString(2));
-                 pojo.setAlamat(rs.getString(3));
-                 pojo.setPhone(rs.getString(4));
-                 pojo.setEmail(rs.getString(5));                
+                 pojo.setDeviceId(rs.getString(2));
+                 pojo.setDeviceIp(rs.getString(3));
+                 pojo.setRemarks(rs.getString(4));
              }
              return pojo;
          } catch (Exception e) {
