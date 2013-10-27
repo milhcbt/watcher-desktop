@@ -34,7 +34,7 @@ public class DeviceRegistrationController implements Initializable {
     
     @FXML
     private void insert(ActionEvent event) throws IOException{
-        new DialogInsertCustomer().start(new Stage());
+        new DeviceInputMain().start(new Stage());
         list = ssql.listDevice();
         table.setItems(list);
     }

@@ -1,6 +1,5 @@
 package com.codencare.watcher.desktop;
 
-import com.codencare.watcher.entity.CustomerManagement;
 import com.codencare.watcher.entity.DeviceRegistration;
 import com.codencare.watcher.entity.DeviceSqlRegistration;
 import java.net.URL;
@@ -40,7 +39,7 @@ public class DeviceUpdateController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-         DeviceRegistration pojo = ssql.findByID(id);
+         //DeviceRegistration pojo = ssql.findByID(id);
          System.out.println(id);
          deviceid.setText(pojo.getDeviceId());
          deviceip.setText(pojo.getDeviceIp());
