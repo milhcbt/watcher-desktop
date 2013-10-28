@@ -33,7 +33,7 @@ public class DeviceControllerTest {
         DeviceJpaController djc = new DeviceJpaController(emf);
         List<Device> list = djc.findAlarmedDevice();
         for (Device d : list) {
-            assertEquals(d.getDigit1(), MessageLabel.VALUE_HIGH);
+            assertEquals(d.getResolve(),Device.RESOLVE_UNRESOLVED);
         }
     }
 

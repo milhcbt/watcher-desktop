@@ -105,7 +105,7 @@
           <menus>
             <Menu id="menuHome" mnemonicParsing="false" onAction="#buttonHome" text="Home" fx:id="menuHome">
               <items>
-                <MenuItem mnemonicParsing="false" onAction="#btnCpass" text="Change Password" fx:id="changePass" />
+                <MenuItem mnemonicParsing="false" text="Change Password" fx:id="changePass" />
                 <MenuItem id="menuClose" mnemonicParsing="false" onAction="#buttonExit" text="Close" fx:id="menuClose" />
               </items>
             </Menu>

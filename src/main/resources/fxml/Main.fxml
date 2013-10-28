@@ -2,25 +2,20 @@
 
 <?import java.lang.*?>
 <?import java.util.*?>
+<?import javafx.collections.*?>
 <?import javafx.scene.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.image.*?>
 <?import javafx.scene.layout.*?>
+<?import javafx.scene.shape.*?>
 
-<AnchorPane id="AnchorPane" fx:id="root" prefHeight="-1.0" prefWidth="-1.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/2.2" fx:controller="com.codencare.watcher.desktop.FXMLController">
+<AnchorPane id="AnchorPane" fx:id="root" prefHeight="-1.0" prefWidth="-1.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/2.2" fx:controller="com.codencare.watcher.desktop.MainFXMLController">
   <children>
     <ScrollPane fx:id="scrollPane" cache="true" hbarPolicy="AS_NEEDED" layoutX="0.0" layoutY="0.0" pannable="true" prefHeight="-1.0" prefWidth="-1.0" vbarPolicy="AS_NEEDED">
-      <content>
-        <ImageView fx:id="mapView" blendMode="SRC_OVER" disable="false" onMousePressed="#onClick">
-          <image>
-            <Image url="@../styles/img/purimansion-org.jpg" />
-          </image>
-        </ImageView>
-      </content>
       <contextMenu>
         <ContextMenu>
           <items>
-            <MenuItem mnemonicParsing="false" onAction="#onNewNode" text="New Node" fx:id="newNode" />
+            <MenuItem mnemonicParsing="false" onAction="#onNewNode" text="New Node" />
             <MenuItem mnemonicParsing="false" text="Unspecified Action" />
             <SeparatorMenuItem mnemonicParsing="false" />
             <RadioMenuItem mnemonicParsing="false" text="Unspecified Action" />
@@ -28,15 +23,55 @@
         </ContextMenu>
       </contextMenu>
     </ScrollPane>
-    <Button fx:id="normalZoom" layoutX="58.0" layoutY="203.0" onAction="#zoom" text="normalZoom" />
-    <Button fx:id="exit" layoutX="83.0" layoutY="203.0" onAction="#exit" text="Exit" />
-    <TitledPane fx:id="detailPane" animated="false" layoutX="0.0" layoutY="0.0" prefHeight="-1.0" prefWidth="-1.0" text="Details">
+    <Button id="exit" fx:id="exitButton" onAction="#exit" text="Exit" />
+    <ChoiceBox id="zoom" fx:id="zoomChoices" minWidth="95.0" value="1:1">
+      <items>
+        <FXCollections fx:factory="observableArrayList">
+          <String fx:value="1:1" />
+          <String fx:value="Fit All" />
+          <String fx:value="Fit Width" />
+          <String fx:value="Fit Height" />
+        </FXCollections>
+      </items>
+    </ChoiceBox>
+    <TitledPane id="detailPane" fx:id="details" animated="false" expanded="false" layoutX="0.0" layoutY="0.0" opacity="1.0" prefHeight="-1.0" prefWidth="-1.0" text="Details">
       <content>
-        <AnchorPane id="Content" minHeight="-1.0" minWidth="-1.0" prefHeight="-1.0" prefWidth="-1.0">
-          <children>
-            <TableView fx:id="infoTable" disable="false" editable="true" focusTraversable="false" layoutX="0.0" layoutY="0.0" opacity="0.32" prefHeight="400.0" prefWidth="200.0" tableMenuButtonVisible="true" visible="true" />
-          </children>
-        </AnchorPane>
+        <SplitPane fx:id="splitPane" dividerPositions="0.5" focusTraversable="true" opacity="1.0" prefHeight="-1.0" prefWidth="-1.0">
+          <items>
+            <TabPane fx:id="detailTabs" prefHeight="-1.0" prefWidth="-1.0" tabClosingPolicy="UNAVAILABLE" tabMaxHeight="1.7976931348623157E308" tabMinHeight="0.0">
+              <tabs>
+                <Tab text="Customer">
+                  <content>
+                    <AnchorPane id="Content" minHeight="0.0" minWidth="0.0" opacity="1.0" prefHeight="-1.0" prefWidth="-1.0">
+                      <children>
+                        <TableView id="infoTable" fx:id="customerTable" disable="false" editable="true" focusTraversable="false" layoutX="0.0" layoutY="0.0" opacity="1.0" prefHeight="-1.0" prefWidth="-1.0" tableMenuButtonVisible="true" visible="true" />
+                      </children>
+                    </AnchorPane>
+                  </content>
+                </Tab>
+                <Tab text="User">
+                  <content>
+                    <AnchorPane id="Content" minHeight="0.0" minWidth="0.0" prefHeight="-1.0" prefWidth="-1.0" snapToPixel="true">
+                      <children>
+                        <TableView fx:id="userTable" layoutX="0.0" layoutY="0.0" prefHeight="-1.0" prefWidth="-1.0" />
+                      </children>
+                    </AnchorPane>
+                  </content>
+                </Tab>
+                <Tab text="More">
+                  <content>
+                    <AnchorPane id="Content" minHeight="0.0" minWidth="0.0" prefHeight="-1.0" prefWidth="-1.0" snapToPixel="true">
+                      <children>
+                        <TableView id="userTable" layoutX="0.0" layoutY="0.0" prefHeight="-1.0" prefWidth="-1.0" />
+                      </children>
+                    </AnchorPane>
+                  </content>
+                </Tab>
+              </tabs>
+            </TabPane>
+            <AnchorPane fx:id="rightDetail" minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0" />
+          </items>
+        </SplitPane>
       </content>
     </TitledPane>
   </children>

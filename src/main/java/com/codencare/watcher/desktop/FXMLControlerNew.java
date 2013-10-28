@@ -15,11 +15,8 @@ import javafx.collections.ObservableList;
 import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.geometry.Point2D;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TableColumnBuilder;
@@ -61,8 +58,8 @@ public class FXMLControlerNew implements Initializable {
 
     @FXML
     private ImageView mapView;
-    
-    
+
+   
     Task<Void> task = new Task<Void>() {
         @Override
         protected Void call() {
@@ -129,7 +126,7 @@ public class FXMLControlerNew implements Initializable {
         }
     }
 
-    @FXML
+     @FXML
     void onClick(MouseEvent event) {
 //        CustomerJpaController cjc = new CustomerJpaController(emf);
 //        List<Customer> custList = cjc.findCustomerEntities();
@@ -165,11 +162,7 @@ public class FXMLControlerNew implements Initializable {
     //button home
     @FXML
     void buttonHome(ActionEvent event) throws Exception{
-        Stage stage=new Stage();
-        Parent root = FXMLLoader.load(getClass().getResource("/fxml/MenuUtama.fxml"));        
-        Scene scene = new Scene(root);        
-        stage.setScene(scene);
-        stage.show();  
+        new MainApp().start(new Stage());  
     }
     
     //buttonExit
@@ -177,32 +170,14 @@ public class FXMLControlerNew implements Initializable {
     void buttonExit(ActionEvent event){
         Platform.exit();
     }
-    
+    @FXML
+    void btnCpass(ActionEvent event){
+        Platform.exit();
+    }
    
     //button User
     @FXML
-    void buttonUser(ActionEvent event){
-        Platform.exit();
-    }
-    @FXML
-    public void btnCpass(ActionEvent event) throws IOException{
-        Stage stage=new Stage();
-        Parent p = FXMLLoader.load(getClass().getResource("/fxml/ChangePasswordView.fxml"));        
-        Scene scene = new Scene(p);        
-        stage.setScene(scene);
-        stage.show();
-    }
-    
-    @FXML
-    public void zoomIn(ActionEvent event) throws IOException{
-         double y = scrollPane.getPrefHeight() / mapView.getImage().getHeight();
-        double x = scrollPane.getPrefWidth() / mapView.getImage().getWidth();
-        if (mapView.getFitHeight() > 0) {
-            mapView.setFitHeight(0);
-            mapView.setFitWidth(0);
-        } else {
-            mapView.setFitHeight(scrollPane.getPrefHeight());
-            mapView.setFitWidth(scrollPane.getPrefWidth());
+  public void buttonUser(ActionEvent event){
+        //myController.setScreen(ScreensFramework.MAIN_SCREEN);
     }
     }
-}

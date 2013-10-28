@@ -9,6 +9,7 @@ import java.io.Serializable;
 import java.util.Collection;
 import java.util.Date;
 import javax.persistence.Basic;
+import javax.persistence.Cacheable;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -46,7 +47,15 @@ import javax.xml.bind.annotation.XmlTransient;
     @NamedQuery(name = "Device.findByAnalog3", query = "SELECT d FROM Device d WHERE d.analog3 = :analog3"),
     @NamedQuery(name = "Device.findByAnalog4", query = "SELECT d FROM Device d WHERE d.analog4 = :analog4")})
 public class Device implements Serializable {
+    
     private static final long serialVersionUID = 1L;
+    public static final byte RESOLVE_RESOLVED = 1;
+    public static final byte RESOLVE_NORMAL = 1;
+    public static final byte RESOLVE_UNRESOLVED= -1;
+    public static final byte DIGIT_HIGH = 1;
+    public static final byte DIGIT_ONKNOW = 0;
+    public static final byte DIGIT_LOW = -1;
+    
     @Id
     @Basic(optional = false)
     private long id;

@@ -5,7 +5,6 @@
  */
 package com.codencare.watcher.controller;
 
-import com.codencare.message.MessageLabel;
 import com.codencare.watcher.controller.exceptions.IllegalOrphanException;
 import com.codencare.watcher.controller.exceptions.NonexistentEntityException;
 import com.codencare.watcher.controller.exceptions.PreexistingEntityException;
@@ -14,16 +13,21 @@ import com.codencare.watcher.entity.Customer;
 import com.codencare.watcher.entity.Device;
 import com.codencare.watcher.entity.Message;
 import java.io.Serializable;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.EntityNotFoundException;
 import javax.persistence.Query;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
+import org.apache.commons.beanutils.PropertyUtils;
 
 /**
  *
@@ -238,16 +242,44 @@ public class DeviceJpaController implements Serializable {
             em.close();
         }
     }
-    
-    public List<Device> findAlarmedDevice(){
+
+    public List<Device> findAlarmedDevice() {
         EntityManager em = getEntityManager();
-        String template = "SELECT d FROM Device d WHERE d.%s=%d";
-        String strQuery = String.format(template,MainApp.defaultProps.getProperty("alarm-input"),MessageLabel.VALUE_HIGH);
+        String template = "SELECT d FROM Device d WHERE d.resolve=-1";
+        String strQuery = String.format(template);
         try {
+            em.clear();
             Query query = em.createQuery(strQuery);
             return query.getResultList();
         } finally {
-            em.close();
+           if (em != null) {
+                em.close();
+            }
         }
+    }
+
+    public void turnOfAlarm(Device d) {
+        EntityManager em = getEntityManager();
+
+        try {
+            Device ud = em.find(Device.class, d.getId());
+            String alarmField = MainApp.defaultProps.getProperty("alarm-input");
+            Method m = PropertyUtils.getWriteMethod(PropertyUtils.getPropertyDescriptor(d, alarmField));
+            em.getTransaction().begin();
+            m.invoke(ud, Device.DIGIT_ONKNOW);
+            ud.setResolve(Device.RESOLVE_RESOLVED);
+            em.getTransaction().commit();
+        } catch (IllegalAccessException ex) {
+            Logger.getLogger(DeviceJpaController.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (InvocationTargetException ex) {
+            Logger.getLogger(DeviceJpaController.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (NoSuchMethodException ex) {
+            Logger.getLogger(DeviceJpaController.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
+             if (em != null) {
+                em.close();
+            }
+        }
+
     }
 }

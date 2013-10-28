@@ -6,10 +6,6 @@
     <class>com.codencare.watcher.entity.Device</class>
     <class>com.codencare.watcher.entity.Message</class>
     <class>com.codencare.watcher.entity.Customer</class>
-    <class>com.codencare.watcher.entity.Device_1</class>
-    <class>com.codencare.watcher.entity.Customer_1</class>
-    <class>com.codencare.watcher.entity.User_1</class>
-    <class>com.codencare.watcher.entity.Message_1</class>
     <properties>
       <property name="javax.persistence.jdbc.url" value="jdbc:mysql://localhost:3306/watcher?zeroDateTimeBehavior=convertToNull"/>
       <property name="javax.persistence.jdbc.password" value=""/>

@@ -17,7 +17,7 @@ package com.mytdev.javafx.internal.scene.control.skin;
 
 import com.mytdev.javafx.internal.scene.control.behavior.AutoCompleteTextFieldBehavior;
 import com.mytdev.javafx.scene.control.AutoCompleteTextField;
-//import com.sun.javafx.scene.control.skin.SkinBase;
+//import javafx.scene.control.SkinBase;
 import com.sun.javafx.scene.control.skin.BehaviorSkinBase;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
