@@ -13,7 +13,7 @@
 <?import javafx.scene.text.*?>
 <?scenebuilder-background-color 0xe9ffccff?>
 
-<AnchorPane id="AnchorPane" fx:id="root" maxHeight="-1.0" maxWidth="-1.0" minHeight="-1.0" minWidth="-1.0" prefHeight="600.0" prefWidth="600.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/2.2" fx:controller="com.codencare.watcher.desktop.FXMLControlerNew">
+<AnchorPane id="AnchorPane" fx:id="root" maxHeight="-1.0" maxWidth="-1.0" minHeight="-1.0" minWidth="-1.0" prefHeight="900.0" prefWidth="900.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/2.2" fx:controller="com.codencare.watcher.desktop.FXMLControlerNew">
   <children>
     <BorderPane prefHeight="261.0" prefWidth="390.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
       <bottom>
@@ -32,9 +32,8 @@
             <ContextMenu>
               <items>
                 <MenuItem mnemonicParsing="false" onAction="#onNewNode" text="New Node" fx:id="newNode" />
-                <MenuItem mnemonicParsing="false" text="Unspecified Action" />
+                <MenuItem mnemonicParsing="false" text="Alarm Management" />
                 <SeparatorMenuItem mnemonicParsing="false" />
-                <RadioMenuItem mnemonicParsing="false" text="Unspecified Action" />
               </items>
             </ContextMenu>
           </contextMenu>
@@ -48,7 +47,7 @@
           <children>
             <VBox id="VBox" alignment="CENTER" layoutX="10.0" layoutY="10.0" spacing="0.0" style="" styleClass="v-box">
               <children>
-                <TitledPane id="TitledPane" animated="false" prefHeight="227.0" prefWidth="-1.0" text="Device Info">
+                <TitledPane id="TitledPane" animated="false" prefHeight="199.0" prefWidth="-1.0" text="Device Info">
                   <content>
                     <AnchorPane id="Content" minHeight="-1.0" minWidth="-1.0" prefHeight="-1.0" prefWidth="-1.0">
                       <children>
@@ -65,7 +64,7 @@
                 <URL value="@../../../../../paneCSS.css" />
               </stylesheets>
             </VBox>
-            <TitledPane id="TitledPane" animated="false" layoutX="12.0" layoutY="254.0" prefHeight="227.0" prefWidth="-1.0" text="Alarm Info">
+            <TitledPane id="TitledPane" animated="false" layoutX="10.0" layoutY="208.0" prefHeight="189.0" prefWidth="-1.0" text="Alarm Info">
               <content>
                 <AnchorPane id="Content" minHeight="-1.0" minWidth="-1.0" prefHeight="-1.0" prefWidth="-1.0">
                   <children>
@@ -74,7 +73,7 @@
                 </AnchorPane>
               </content>
             </TitledPane>
-            <TitledPane id="TitledPane" animated="false" layoutX="10.0" layoutY="274.0" prefHeight="227.0" prefWidth="-1.0" text="Select Device">
+            <TitledPane id="TitledPane" animated="false" layoutX="10.0" layoutY="396.0" prefHeight="199.0" prefWidth="-1.0" text="Select Device">
               <content>
                 <AnchorPane id="Content" minHeight="-1.0" minWidth="-1.0" prefHeight="-1.0" prefWidth="-1.0">
                   <children>
@@ -83,11 +82,8 @@
                 </AnchorPane>
               </content>
             </TitledPane>
-            <Circle fill="DODGERBLUE" layoutX="208.0" layoutY="600.0" radius="43.0" stroke="BLACK" strokeType="INSIDE" />
-            <Label layoutX="197.0" layoutY="592.0" text="JAM" />
-            <Label layoutX="52.0" layoutY="577.0" text="MAP ZOOM" />
-            <RadioButton layoutX="10.0" layoutY="600.0" mnemonicParsing="false" onAction="#zoomIn" text="Zoom In" />
-            <RadioButton layoutX="85.0" layoutY="600.0" mnemonicParsing="false" text="Zoom Out" />
+            <Circle fill="DODGERBLUE" layoutX="178.0" layoutY="653.0" radius="43.0" stroke="BLACK" strokeType="INSIDE" />
+            <Label layoutX="166.0" layoutY="643.0" text="JAM" />
           </children>
           <padding>
             <Insets left="10.0" right="10.0" top="10.0" />
@@ -109,18 +105,19 @@
           <menus>
             <Menu id="menuHome" mnemonicParsing="false" onAction="#buttonHome" text="Home" fx:id="menuHome">
               <items>
-                <MenuItem id="menuClose" mnemonicParsing="false" onAction="#buttonExit" text="Close" fx:id="menuClose" />
                 <MenuItem mnemonicParsing="false" onAction="#btnCpass" text="Change Password" fx:id="changePass" />
+                <MenuItem id="menuClose" mnemonicParsing="false" onAction="#buttonExit" text="Close" fx:id="menuClose" />
               </items>
             </Menu>
             <Menu mnemonicParsing="false" text="Device">
               <items>
-                <MenuItem mnemonicParsing="false" text="Delete" />
+                <MenuItem mnemonicParsing="false" text="Device Registration" />
+                <MenuItem mnemonicParsing="false" text="Device Alocation" />
               </items>
             </Menu>
             <Menu mnemonicParsing="false" text="Customer" fx:id="menuUser">
               <items>
-                <MenuItem mnemonicParsing="false" onAction="#buttonUser" text="User Management" fx:id="userManagement" />
+                <MenuItem mnemonicParsing="false" onAction="#buttonUser" text="Customer Registration" fx:id="userManagement" />
               </items>
             </Menu>
           </menus>

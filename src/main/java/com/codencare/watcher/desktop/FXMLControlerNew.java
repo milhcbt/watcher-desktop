@@ -186,7 +186,11 @@ public class FXMLControlerNew implements Initializable {
     }
     @FXML
     public void btnCpass(ActionEvent event) throws IOException{
-         
+        Stage stage=new Stage();
+        Parent p = FXMLLoader.load(getClass().getResource("/fxml/ChangePasswordView.fxml"));        
+        Scene scene = new Scene(p);        
+        stage.setScene(scene);
+        stage.show();
     }
     
     @FXML
