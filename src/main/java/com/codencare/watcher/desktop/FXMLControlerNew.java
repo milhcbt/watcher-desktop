@@ -170,14 +170,4 @@ public class FXMLControlerNew implements Initializable {
     void buttonExit(ActionEvent event){
         Platform.exit();
     }
-    @FXML
-    void btnCpass(ActionEvent event){
-        Platform.exit();
-    }
-   
-    //button User
-    @FXML
-  public void buttonUser(ActionEvent event){
-        //myController.setScreen(ScreensFramework.MAIN_SCREEN);
-    }
-    }
+}
