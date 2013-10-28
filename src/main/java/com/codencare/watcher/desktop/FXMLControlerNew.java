@@ -15,8 +15,11 @@ import javafx.collections.ObservableList;
 import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.geometry.Point2D;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TableColumnBuilder;
@@ -54,7 +57,7 @@ public class FXMLControlerNew implements Initializable {
     ScrollPane scrollPane;
     
     @FXML
-    MenuItem userManagement;
+    MenuItem userManagement,deviceReg,deviceAlocation,alarmManagement;
 
     @FXML
     private ImageView mapView;
@@ -165,6 +168,38 @@ public class FXMLControlerNew implements Initializable {
         new MainApp().start(new Stage());  
     }
     
+    //button add device
+    @FXML
+    void btnDeviceReg(ActionEvent event) throws Exception{ 
+        Stage primaryStage = new Stage();
+        Parent root = FXMLLoader.load(getClass().getResource("/fxml/DeviceList.fxml"));        
+        Scene scene = new Scene(root);        
+        primaryStage.setScene(scene);
+        primaryStage.show();
+    }
+    //button add device
+    @FXML
+    void btnManagement(ActionEvent event) throws Exception{ 
+        new AlarmManagement().start(new Stage());
+    }
+    //button device allocation
+    @FXML
+    void btnDeviceAloc(ActionEvent event) throws Exception{ 
+        Stage primaryStage = new Stage();
+        Parent root = FXMLLoader.load(getClass().getResource("/fxml/DeviceMapping.fxml"));        
+        Scene scene = new Scene(root);        
+        primaryStage.setScene(scene);
+        primaryStage.show();
+    }
+    //button device alocation
+    @FXML
+    void buttonCustomer(ActionEvent event) throws Exception{ 
+        Stage primaryStage = new Stage();
+        Parent root = FXMLLoader.load(getClass().getResource("/fxml/CustomerListView.fxml"));        
+        Scene scene = new Scene(root);        
+        primaryStage.setScene(scene);
+        primaryStage.show();
+    }
     //buttonExit
     @FXML
     void buttonExit(ActionEvent event){
