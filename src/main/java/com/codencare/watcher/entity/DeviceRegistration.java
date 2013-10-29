@@ -39,7 +39,7 @@ public class DeviceRegistration implements Serializable {
         return deviceip;
     }
 
-    public void setDeviceIp(String dip) {
+    public void setDeviceIp(String deviceip) {
         this.deviceip = deviceip;
     }
 

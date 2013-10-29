@@ -80,9 +80,7 @@ public class DeviceViewController implements Initializable {
     }                                           
                                                 
     @Override
-    public void initialize(URL url, ResourceBundle rb) { 
-        
-        id.setCellValueFactory(new PropertyValueFactory<DeviceRegistration,Integer>("id"));
+    public void initialize(URL url, ResourceBundle rb) {   
         deviceid.setCellValueFactory(new PropertyValueFactory<DeviceRegistration,String>("deviceid"));
         deviceip.setCellValueFactory(new PropertyValueFactory<DeviceRegistration,String>("deviceip"));
         remarks.setCellValueFactory(new PropertyValueFactory<DeviceRegistration,String>("remarks"));

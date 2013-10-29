@@ -26,7 +26,7 @@ public class DeviceUpdateController implements Initializable {
         pojo.setDeviceId(deviceid.getText());
         pojo.setDeviceIp(deviceip.getText());
         pojo.setRemarks(remarks.getText());
-        ssql.insertDevice(pojo);
+        ssql.updateDevice(pojo);
         Stage stage = (Stage) btnInsert.getScene().getWindow();
         stage.close();
     }
