@@ -20,4 +20,8 @@ public class NewMain extends Application {
     public static void main(String[] args) {
         launch(args);
     }
+
+    void show() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
 }

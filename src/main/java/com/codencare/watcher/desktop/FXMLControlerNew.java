@@ -165,7 +165,7 @@ public class FXMLControlerNew implements Initializable {
     //button home
     @FXML
     void buttonHome(ActionEvent event) throws Exception{
-        new MainApp().start(new Stage());  
+        new NewMain().start(new Stage());  
     }
     
     //button add device
@@ -177,7 +177,7 @@ public class FXMLControlerNew implements Initializable {
         primaryStage.setScene(scene);
         primaryStage.show();
     }
-    //button add device
+    //button alarm management
     @FXML
     void btnManagement(ActionEvent event) throws Exception{ 
        new AlarmManagement().start(new Stage());

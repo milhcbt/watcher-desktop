@@ -32,6 +32,11 @@
 
 package com.codencare.watcher.desktop;
 
+import com.mysql.jdbc.Driver;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.Statement;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.application.Application;
@@ -50,15 +55,34 @@ import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
+import javax.swing.JOptionPane;
 import org.eclipse.persistence.internal.oxm.mappings.Login;
-import javafx.application.Platform;
 
 public class LoginView extends Application {
     Button btn;
     public static void main(String[] args) {
         launch(args);
     }
-
+private Connection connection = null;
+    private Statement statement = null;
+    
+    private void connected(){
+        try {
+            DriverManager.registerDriver(new Driver());
+            connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/watcher?zeroDateTimeBehavior=convertToNull","root","");
+            statement = connection.createStatement();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+    private void closed(){
+        try {
+            connection.close();
+            statement.close();
+        } catch (Exception e) {
+            e.printStackTrace();            
+        }
+    }
     @Override
     public void start(Stage primaryStage) {
         primaryStage.setTitle("JavaFX Welcome");
@@ -75,13 +99,13 @@ public class LoginView extends Application {
         Label userName = new Label("User Name:");
         grid.add(userName, 0, 1);
 
-        TextField userTextField = new TextField();
+        final TextField userTextField = new TextField();
         grid.add(userTextField, 1, 1);
 
         Label pw = new Label("Password:");
         grid.add(pw, 0, 2);
 
-        PasswordField pwBox = new PasswordField();
+        final PasswordField pwBox = new PasswordField();
         grid.add(pwBox, 1, 2);
 
         btn = new Button("Sign in");
@@ -98,9 +122,17 @@ public class LoginView extends Application {
             @Override
             public void handle(ActionEvent e) {
                 try {
-                    new NewMain().start(new Stage());
-                } catch (Exception ex) {
-                    Logger.getLogger(LoginView.class.getName()).log(Level.SEVERE, null, ex);
+                connected();
+                ResultSet rs = statement.executeQuery("SELECT * FROM user WHERE name = '"+userTextField.getText()+"' and Password = '"+String.valueOf(pwBox.getText())+"'");
+                if(rs.next()){    
+                String name = rs.getString(1);
+                String password = rs.getString(2);
+                new NewMain().start(new Stage());
+            }else{
+            JOptionPane.showMessageDialog(null, "Gagal Login","Pesan",JOptionPane.ERROR_MESSAGE);
+            }
+            } catch (Exception ex) {
+                    System.err.println("gagal");
                 }
             }
         });
