@@ -66,7 +66,7 @@ public class CustomerViewController implements Initializable {
     @FXML
     private void selectRow(MouseEvent event) throws IOException{
         if(event.getClickCount()==2){           
-           CustomerManagement pojo = table.getSelectionModel().getSelectedItem();
+            CustomerManagement pojo = table.getSelectionModel().getSelectedItem();
             CustomerUpdateViewController.id = pojo.getId();
             System.out.println(CustomerUpdateViewController.id);
             Stage primaryStage = new Stage();

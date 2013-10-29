@@ -3,6 +3,7 @@ package com.codencare.watcher.entity;
 
 import com.codencare.watcher.entity.CustomerManagement;
 import com.mysql.jdbc.Driver;
+import java.math.BigInteger;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
@@ -39,14 +40,13 @@ public class MappingSql {
         try {
             connected();
             ObservableList<MappingManagement>list = FXCollections.observableArrayList();
-            ResultSet rs = statement.executeQuery("SELECT device.customer_id,customer.nama,device.locX,device.locY FROM device join customer on device.customer_id=customer.id");
-            System.out.printf("refresh dipencet");
+            ResultSet rs = statement.executeQuery("SELECT customer.nama,device.locX,device.locY FROM device join customer on device.customer_id=customer.id");
+            
             while(rs.next()){
                 MappingManagement pojo = new MappingManagement();
-                pojo.setId_cus(rs.getInt(1));
-                pojo.setName(rs.getString(2));
-                pojo.setLocX(rs.getInt(3));
-                pojo.setLocY(rs.getInt(4));
+                pojo.setName(rs.getString(1));
+                pojo.setLocX(rs.getInt(2));
+                pojo.setLocY(rs.getInt(3));
                 list.add(pojo);
             }
             return list;
@@ -74,7 +74,7 @@ public class MappingSql {
         }
     }
      
-     public MappingManagement findByID(int id){
+   /*  public MappingManagement findByID(int id){
          try {
              connected();
              ResultSet rs = statement.executeQuery("Select customer_id,locX,locY from device where id="+id);
@@ -91,6 +91,6 @@ public class MappingSql {
          }finally{
          closed();
          }
-     }
+     }*/
 
 }

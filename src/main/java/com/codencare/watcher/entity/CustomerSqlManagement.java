@@ -50,8 +50,7 @@ public class CustomerSqlManagement {
         try {
             connected();
             ObservableList<CustomerManagement>list = FXCollections.observableArrayList();
-            ResultSet rs = statement.executeQuery("Select * from customer");
-            System.out.printf("refresh dipencet");
+            ResultSet rs = statement.executeQuery("Select * from customer"); 
             while(rs.next()){
                 CustomerManagement pojo = new CustomerManagement();
                 pojo.setId(rs.getInt(1));

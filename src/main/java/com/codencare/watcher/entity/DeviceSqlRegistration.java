@@ -49,7 +49,6 @@ public class DeviceSqlRegistration {
             connected();
             ObservableList<DeviceRegistration>list = FXCollections.observableArrayList();
             ResultSet rs = statement.executeQuery("Select * from device_list");
-            System.out.printf("refresh dipencet");
             while(rs.next()){
                 DeviceRegistration pojo = new DeviceRegistration();
                 pojo.setId(rs.getInt(1));
@@ -71,7 +70,7 @@ public class DeviceSqlRegistration {
     public void updateDevice(DeviceRegistration pojo){
         try {
             connected();
-            String sql = "Update device_list set device_id='"+pojo.getDeviceId()+"',device_ip = '"+pojo.getDeviceIp()+"',remarks = '"+pojo.getRemarks()+"' Where id ="+pojo.getId();
+            String sql = "Update device_list set deviceid='"+pojo.getDeviceId()+"',deviceip = '"+pojo.getDeviceIp()+"',remarks = '"+pojo.getRemarks()+"' Where id ="+pojo.getId();
             statement.executeUpdate(sql);
             System.out.println(sql);
         } catch (Exception e) {

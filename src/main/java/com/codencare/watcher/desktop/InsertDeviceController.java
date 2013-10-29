@@ -12,7 +12,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 
-public class DeviceInputController implements Initializable {
+public class InsertDeviceController implements Initializable {
 
     @FXML
     Button btnCancel,btnInsert;        
@@ -25,7 +25,7 @@ public class DeviceInputController implements Initializable {
         System.out.println(ssql.userMaxID());
         pojo.setId(ssql.userMaxID());
         pojo.setDeviceId(deviceid.getText());
-        pojo.setDeviceIp(deviceip.getText());
+        pojo.setDeviceIp(deviceip.getText()); 
         pojo.setRemarks(remarks.getText());
         ssql.insertDevice(pojo);
         Stage stage = (Stage)btnInsert.getScene().getWindow();

@@ -15,18 +15,18 @@ public class DeviceUpdateController implements Initializable {
 
     @FXML
     Button btnCancel, btnInsert;
-   @FXML
-    private TextField deviceid,deviceip,remarks;        
+    @FXML
+    private TextField deviceid, deviceip, remarks;
     DeviceSqlRegistration ssql = new DeviceSqlRegistration();
     public static Integer id;
     private DeviceRegistration pojo = new DeviceRegistration();
     @FXML
     private void insert(ActionEvent event) {        
-        pojo.setId(ssql.userMaxID());
+        pojo.setId(id);
         pojo.setDeviceId(deviceid.getText());
         pojo.setDeviceIp(deviceip.getText());
         pojo.setRemarks(remarks.getText());
-        ssql.updateDevice(pojo);
+        ssql.insertDevice(pojo);
         Stage stage = (Stage) btnInsert.getScene().getWindow();
         stage.close();
     }
@@ -39,10 +39,10 @@ public class DeviceUpdateController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-         //DeviceRegistration pojo = ssql.findByID(id);
+         DeviceRegistration pojo = ssql.findByID(id);
          System.out.println(id);
          deviceid.setText(pojo.getDeviceId());
-         deviceip.setText(pojo.getDeviceIp());
+         deviceip.setText(pojo.getDeviceIp()); 
          remarks.setText(pojo.getRemarks());
        
     }

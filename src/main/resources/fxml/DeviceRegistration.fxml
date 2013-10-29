@@ -7,7 +7,7 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
-<AnchorPane id="AnchorPane" prefHeight="227.00009999999747" prefWidth="316.9999000000025" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/2.2" fx:controller="com.codencare.watcher.desktop.DeviceInputController">
+<AnchorPane id="AnchorPane" prefHeight="227.00009999999747" prefWidth="316.9999000000025" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/2.2" fx:controller="com.codencare.watcher.desktop.InsertDeviceController">
   <children>
     <Label layoutX="20.0" layoutY="55.0" text="Device ID" />
     <Label layoutX="19.0" layoutY="89.0" text="Device IP" />

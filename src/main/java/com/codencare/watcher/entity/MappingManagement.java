@@ -1,39 +1,29 @@
 package com.codencare.watcher.entity;
 
 import java.io.Serializable;
+import java.math.BigInteger;
 
 public class MappingManagement implements Serializable {
-
-    private int id_cus;
-    private String name;
+ 
+    private String nama;
     private int locX;
     private int locY;
 
     public MappingManagement() {
     }
 
-    public MappingManagement(int id_cus, String name, int locX,int locY) {
-        this.id_cus=id_cus;
-        this.name = name;
+    public MappingManagement(String nama, int locX,int locY) {
+        this.nama = nama;
         this.locX = locX;
         this.locX = locY;
     }
 
-    
-    public int getId_cus() {
-        return id_cus;
-    }
-
-    public void setId_cus(int id_cus) {
-        this.id_cus = id_cus;
-    }
-
     public String getName() {
-        return name;
+        return nama;
     }
 
     public void setName(String name) {
-        this.name = name;
+        this.nama = nama;
     }
 
     public int getLocX() {

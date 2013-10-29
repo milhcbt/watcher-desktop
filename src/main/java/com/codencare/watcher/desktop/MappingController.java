@@ -6,6 +6,7 @@ import com.codencare.watcher.entity.MappingSql;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -24,14 +25,14 @@ public class MappingController implements Initializable {
     @FXML
     private TableView<MappingManagement> table;
     @FXML
-    private TableColumn<MappingManagement,Integer>customer_id,locX,locY;
+    private TableColumn<MappingManagement,Integer>locX,locY;
     @FXML
-    private TableColumn<MappingManagement,String>customer;
+    private TableColumn<MappingManagement,String>nama;
     @FXML
     private ObservableList<MappingManagement> list = FXCollections.observableArrayList();
     MappingSql ssql = new MappingSql();
     @FXML
-    private Button deleteButton;
+    private Button close;
     
     
    
@@ -46,15 +47,18 @@ public class MappingController implements Initializable {
     }                                           
                                                 
     @Override
-    public void initialize(URL url, ResourceBundle rb) { 
-        
-        customer_id.setCellValueFactory(new PropertyValueFactory<MappingManagement,Integer>("customer_id"));
-        customer.setCellValueFactory(new PropertyValueFactory<MappingManagement,String>("customer"));
+    public void initialize(URL url, ResourceBundle rb) {  
+        nama.setCellValueFactory(new PropertyValueFactory<MappingManagement,String>("customer"));
         locX.setCellValueFactory(new PropertyValueFactory<MappingManagement,Integer>("locX"));
         locY.setCellValueFactory(new PropertyValueFactory<MappingManagement,Integer>("locY"));
         table.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
         list = ssql.listDevice();
         table.setItems(list);
         
+    }
+    //buttonExit
+    @FXML
+    void btnClose(ActionEvent event){
+        Platform.exit();
     }
 }

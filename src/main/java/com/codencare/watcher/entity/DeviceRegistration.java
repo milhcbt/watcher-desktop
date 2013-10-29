@@ -5,17 +5,17 @@ import java.io.Serializable;
 public class DeviceRegistration implements Serializable {
 
     private int id;
-    private String device_id;
-    private String device_ip;
+    private String deviceid;
+    private String deviceip;
     private String remarks;
 
     public DeviceRegistration() {
     }
 
-    public DeviceRegistration(int id, String device_id, String device_ip, String remarks) {
+    public DeviceRegistration(int id, String deviceid, String deviceip, String remarks) {
         this.id = id;
-        this.device_id = device_id;
-        this.device_ip = device_ip;
+        this.deviceid = deviceid;
+        this.deviceip = deviceip;
         this.remarks = remarks;
     }
 
@@ -28,19 +28,19 @@ public class DeviceRegistration implements Serializable {
     }
 
     public String getDeviceId() {
-        return device_id;
+        return deviceid;
     }
 
-    public void setDeviceId(String device_id) {
-        this.device_id = device_id;
+    public void setDeviceId(String deviceid) {
+        this.deviceid = deviceid;
     }
 
     public String getDeviceIp() {
-        return device_ip;
+        return deviceip;
     }
 
-    public void setDeviceIp(String device_ip) {
-        this.device_ip = device_ip;
+    public void setDeviceIp(String dip) {
+        this.deviceip = deviceip;
     }
 
     public String getRemarks() {

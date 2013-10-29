@@ -1,6 +1,5 @@
 package com.codencare.watcher.desktop;
 
-import com.codencare.watcher.entity.CustomerManagement;
 import com.codencare.watcher.entity.DeviceRegistration;
 import com.codencare.watcher.entity.DeviceSqlRegistration;
 import java.io.IOException;
@@ -10,7 +9,10 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
@@ -18,7 +20,7 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
 
-public class DeviceRegistrationController implements Initializable {
+public class DeviceViewController implements Initializable {
     
     @FXML
     private TableView<DeviceRegistration> table;
@@ -34,13 +36,21 @@ public class DeviceRegistrationController implements Initializable {
     
     @FXML
     private void insert(ActionEvent event) throws IOException{
-        new DeviceInputMain().start(new Stage());
+        Stage primaryStage = new Stage();
+        Parent root = FXMLLoader.load(getClass().getResource("/fxml/DeviceRegistration.fxml"));        
+        Scene scene = new Scene(root);        
+        primaryStage.setScene(scene);
+        primaryStage.show();
         list = ssql.listDevice();
         table.setItems(list);
     }
     @FXML
-    private void update(ActionEvent event){
-        new DeviceUpdateMain().start(new Stage());
+    private void update(ActionEvent event) throws IOException{
+        Stage primaryStage = new Stage();
+        Parent root = FXMLLoader.load(getClass().getResource("/fxml/DeviceUpdate.fxml"));        
+        Scene scene = new Scene(root);        
+        primaryStage.setScene(scene);
+        primaryStage.show();
     }                                       
     @FXML
     private void refresh(ActionEvent event){
@@ -56,20 +66,25 @@ public class DeviceRegistrationController implements Initializable {
         table.setItems(list);
     }
     @FXML
-    private void selectRow(MouseEvent event){
+    private void selectRow(MouseEvent event) throws IOException{
         if(event.getClickCount()==2){           
            DeviceRegistration pojo = table.getSelectionModel().getSelectedItem();
             DeviceUpdateController.id = pojo.getId();
-//            System.out.println(DeviceUpdateControllerkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkiiiiiii jn .id);
-            new DeviceUpdateMain().start(new Stage());
+            System.out.println(DeviceUpdateController.id);
+            Stage primaryStage = new Stage();
+            Parent root = FXMLLoader.load(getClass().getResource("/fxml/DeviceUpdate.fxml"));        
+            Scene scene = new Scene(root);        
+            primaryStage.setScene(scene);
+            primaryStage.show();
         }                                               
     }                                           
                                                 
     @Override
     public void initialize(URL url, ResourceBundle rb) { 
+        
         id.setCellValueFactory(new PropertyValueFactory<DeviceRegistration,Integer>("id"));
-        deviceid.setCellValueFactory(new PropertyValueFactory<DeviceRegistration,String>("device_id"));
-        deviceip.setCellValueFactory(new PropertyValueFactory<DeviceRegistration,String>("device_ip"));
+        deviceid.setCellValueFactory(new PropertyValueFactory<DeviceRegistration,String>("deviceid"));
+        deviceip.setCellValueFactory(new PropertyValueFactory<DeviceRegistration,String>("deviceip"));
         remarks.setCellValueFactory(new PropertyValueFactory<DeviceRegistration,String>("remarks"));
         table.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
         list = ssql.listDevice();
