@@ -217,46 +217,6 @@ public class AlarmManagement extends Application {
 
     }
 
-    /*private void updateObservableListProperties(TableColumn emailCol, TableColumn firstNameCol,
-            TableColumn lastNameCol) {
-
-        //Modifying the email property in the ObservableList
-
-        emailCol.setOnEditCommit(new EventHandler<CellEditEvent<Person, String>>() {
-            @Override
-            public void handle(CellEditEvent<Person, String> t) {
-
-                ((Person) t.getTableView().getItems().get(
-                        t.getTablePosition().getRow())).setEmail(t.getNewValue());
-
-            }
-        });
-
-        //Modifying the firstName property in the ObservableList
-
-        firstNameCol.setOnEditCommit(new EventHandler<CellEditEvent<Person, String>>() {
-            @Override
-            public void handle(CellEditEvent<Person, String> t) {
-
-                ((Person) t.getTableView().getItems().get(
-                        t.getTablePosition().getRow())).setFirstName(t.getNewValue());
-
-            }
-        });
-
-        //Modifying the lastName property in the ObservableList
-
-        lastNameCol.setOnEditCommit(new EventHandler<CellEditEvent<Person, String>>() {
-            @Override
-            public void handle(CellEditEvent<Person, String> t) {
-
-                ((Person) t.getTableView().getItems().get(
-                        t.getTablePosition().getRow())).setLastName(t.getNewValue());
-
-            }
-        });
-
-    }*/
 
     //Person object
     public static class Person {

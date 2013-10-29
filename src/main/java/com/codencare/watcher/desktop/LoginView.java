@@ -32,6 +32,8 @@
 
 package com.codencare.watcher.desktop;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.application.Application;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -95,8 +97,11 @@ public class LoginView extends Application {
             
             @Override
             public void handle(ActionEvent e) {
-                MainApp newMain = new MainApp();
-                Platform.exit();
+                try {
+                    new NewMain().start(new Stage());
+                } catch (Exception ex) {
+                    Logger.getLogger(LoginView.class.getName()).log(Level.SEVERE, null, ex);
+                }
             }
         });
 

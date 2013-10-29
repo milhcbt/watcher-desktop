@@ -32,7 +32,7 @@
             <ContextMenu>
               <items>
                 <MenuItem mnemonicParsing="false" onAction="#onNewNode" text="New Node" fx:id="newNode" />
-                <MenuItem mnemonicParsing="false" text="Alarm Management" fx:id="alarmManagement" />
+                <MenuItem mnemonicParsing="false" onAction="#btnManagement" text="Alarm Management" fx:id="alarmManagement" />
                 <SeparatorMenuItem mnemonicParsing="false" />
               </items>
             </ContextMenu>

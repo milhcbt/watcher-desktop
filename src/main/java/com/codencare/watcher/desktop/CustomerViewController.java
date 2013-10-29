@@ -1,10 +1,7 @@
 package com.codencare.watcher.desktop;
 
-import com.codencare.watcher.desktop.DialogInsertCustomer;
 import com.codencare.watcher.entity.CustomerManagement;
 import com.codencare.watcher.entity.CustomerSqlManagement;
-import com.codencare.watcher.desktop.CustomerUpdateViewController;
-import com.codencare.watcher.desktop.CustomerUpdateModel;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -12,7 +9,10 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
@@ -34,13 +34,21 @@ public class CustomerViewController implements Initializable {
     
     @FXML
     private void insert(ActionEvent event) throws IOException{
-        new DialogInsertCustomer().start(new Stage());
+        Stage primaryStage = new Stage();
+        Parent root = FXMLLoader.load(getClass().getResource("/fxml/CustomerInputView.fxml"));        
+        Scene scene = new Scene(root);        
+        primaryStage.setScene(scene);
+        primaryStage.show();
         list = ssql.listUser();
         table.setItems(list);
     }
     @FXML
-    private void update(ActionEvent event){
-        new CustomerUpdateModel().start(new Stage());
+    private void update(ActionEvent event) throws IOException{
+        Stage primaryStage = new Stage();
+        Parent root = FXMLLoader.load(getClass().getResource("/fxml/CustomerUpdateView.fxml"));        
+        Scene scene = new Scene(root);        
+        primaryStage.setScene(scene);
+        primaryStage.show();
     }                                       
     @FXML
     private void refresh(ActionEvent event){
@@ -56,12 +64,16 @@ public class CustomerViewController implements Initializable {
         table.setItems(list);
     }
     @FXML
-    private void selectRow(MouseEvent event){
+    private void selectRow(MouseEvent event) throws IOException{
         if(event.getClickCount()==2){           
            CustomerManagement pojo = table.getSelectionModel().getSelectedItem();
             CustomerUpdateViewController.id = pojo.getId();
             System.out.println(CustomerUpdateViewController.id);
-            new CustomerUpdateModel().start(new Stage());
+            Stage primaryStage = new Stage();
+            Parent root = FXMLLoader.load(getClass().getResource("/fxml/CustomerUpdateView.fxml"));        
+            Scene scene = new Scene(root);        
+            primaryStage.setScene(scene);
+            primaryStage.show();
         }                                               
     }                                           
                                                 

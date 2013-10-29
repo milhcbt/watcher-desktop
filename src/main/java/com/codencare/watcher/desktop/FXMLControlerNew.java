@@ -180,7 +180,7 @@ public class FXMLControlerNew implements Initializable {
     //button add device
     @FXML
     void btnManagement(ActionEvent event) throws Exception{ 
-        new AlarmManagement().start(new Stage());
+       new AlarmManagement().start(new Stage());
     }
     //button device allocation
     @FXML
