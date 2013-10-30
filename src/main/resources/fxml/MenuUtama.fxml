@@ -17,7 +17,15 @@
   <children>
     <BorderPane prefHeight="261.0" prefWidth="390.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
       <bottom>
-        <Pane prefHeight="50.0" prefWidth="50.0" />
+        <Pane prefHeight="55.0" prefWidth="900.0">
+          <children>
+            <ImageView fitHeight="52.41381786338931" fitWidth="200.00009999999747" layoutX="2.0" layoutY="1.0" pickOnBounds="true" preserveRatio="true" style="">
+              <image>
+                <Image url="@../styles/img/image001.jpg" />
+              </image>
+            </ImageView>
+          </children>
+        </Pane>
       </bottom>
       <center>
         <ScrollPane prefHeight="227.0" prefWidth="106.0" BorderPane.alignment="CENTER">

@@ -42,8 +42,10 @@ import java.util.logging.Logger;
 import javafx.application.Application;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
+import javafx.fxml.FXMLLoader;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -127,7 +129,11 @@ private Connection connection = null;
                 if(rs.next()){    
                 String name = rs.getString(1);
                 String password = rs.getString(2);
-                new NewMain().start(new Stage());
+                Stage primaryStage = new Stage();
+                Parent root = FXMLLoader.load(getClass().getResource("/fxml/MenuUtama.fxml"));        
+                Scene scene = new Scene(root);        
+                primaryStage.setScene(scene);
+                primaryStage.show();
             }else{
             JOptionPane.showMessageDialog(null, "Gagal Login","Pesan",JOptionPane.ERROR_MESSAGE);
             }
