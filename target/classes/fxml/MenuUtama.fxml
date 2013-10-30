@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.net.*?>
+<?import java.util.*?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.effect.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.paint.*?>
+<?import javafx.scene.shape.*?>
+<?import javafx.scene.text.*?>
+<?scenebuilder-background-color 0xe9ffccff?>
+
+<AnchorPane id="AnchorPane" fx:id="root" maxHeight="-1.0" maxWidth="-1.0" minHeight="-1.0" minWidth="-1.0" prefHeight="900.0" prefWidth="900.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/2.2" fx:controller="com.codencare.watcher.desktop.FXMLControlerNew">
+  <children>
+    <BorderPane prefHeight="261.0" prefWidth="390.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+      <bottom>
+        <Pane prefHeight="55.0" prefWidth="900.0">
+          <children>
+            <ImageView fitHeight="52.41381786338931" fitWidth="200.00009999999747" layoutX="2.0" layoutY="1.0" pickOnBounds="true" preserveRatio="true" style="">
+              <image>
+                <Image url="@../styles/img/image001.jpg" />
+              </image>
+            </ImageView>
+          </children>
+        </Pane>
+      </bottom>
+      <center>
+        <ScrollPane prefHeight="227.0" prefWidth="106.0" BorderPane.alignment="CENTER">
+          <content>
+            <ImageView fx:id="mapView" blendMode="SRC_OVER" disable="false" onMousePressed="#onClick" pickOnBounds="true" preserveRatio="true" x="0.0">
+              <image>
+                <Image url="@../styles/img/purimansion-org.jpg" />
+              </image>
+            </ImageView>
+          </content>
+          <contextMenu>
+            <ContextMenu>
+              <items>
+                <MenuItem mnemonicParsing="false" onAction="#onNewNode" text="Device Allocation" fx:id="newNode" />
+                <MenuItem mnemonicParsing="false" onAction="#btnManagement" text="Alarm Management" fx:id="alarmManagement" />
+                <SeparatorMenuItem mnemonicParsing="false" />
+              </items>
+            </ContextMenu>
+          </contextMenu>
+          <BorderPane.margin>
+            <Insets top="10.0" />
+          </BorderPane.margin>
+        </ScrollPane>
+      </center>
+      <right>
+        <Pane id="Pane" prefHeight="-1.0" prefWidth="-1.0">
+          <children>
+            <VBox id="VBox" alignment="CENTER" layoutX="10.0" layoutY="10.0" spacing="0.0" style="" styleClass="v-box">
+              <children>
+                <TitledPane id="TitledPane" animated="false" prefHeight="199.0" prefWidth="-1.0" text="Device Info">
+                  <content>
+                    <AnchorPane id="Content" minHeight="-1.0" minWidth="-1.0" prefHeight="-1.0" prefWidth="-1.0">
+                      <children>
+                        <TableView fx:id="infoTable" disable="false" editable="true" focusTraversable="false" opacity="0.32" prefHeight="201.0" prefWidth="200.0" tableMenuButtonVisible="true" visible="true" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                      </children>
+                    </AnchorPane>
+                  </content>
+                  <VBox.margin>
+                    <Insets fx:id="x1" />
+                  </VBox.margin>
+                </TitledPane>
+              </children>
+              <stylesheets>
+                <URL value="@../../../../../paneCSS.css" />
+              </stylesheets>
+            </VBox>
+            <TitledPane id="TitledPane" animated="false" layoutX="10.0" layoutY="208.0" prefHeight="189.0" prefWidth="-1.0" text="Alarm Info">
+              <content>
+                <AnchorPane id="Content" minHeight="-1.0" minWidth="-1.0" prefHeight="-1.0" prefWidth="-1.0">
+                  <children>
+                    <TableView id="infoTable" disable="false" editable="true" focusTraversable="false" opacity="0.32" prefHeight="201.0" prefWidth="200.0" tableMenuButtonVisible="true" visible="true" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                  </children>
+                </AnchorPane>
+              </content>
+            </TitledPane>
+            <TitledPane id="TitledPane" animated="false" layoutX="10.0" layoutY="396.0" prefHeight="199.0" prefWidth="-1.0" text="Select Device">
+              <content>
+                <AnchorPane id="Content" minHeight="-1.0" minWidth="-1.0" prefHeight="-1.0" prefWidth="-1.0">
+                  <children>
+                    <TableView id="infoTable" disable="false" editable="true" focusTraversable="false" opacity="0.32" prefHeight="201.0" prefWidth="200.0" tableMenuButtonVisible="true" visible="true" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                  </children>
+                </AnchorPane>
+              </content>
+            </TitledPane>
+            <Circle fill="DODGERBLUE" layoutX="178.0" layoutY="653.0" radius="43.0" stroke="BLACK" strokeType="INSIDE" />
+            <Label layoutX="166.0" layoutY="643.0" text="JAM" />
+          </children>
+          <padding>
+            <Insets left="10.0" right="10.0" top="10.0" />
+          </padding>
+        </Pane>
+      </right>
+      <top>
+        <MenuBar fx:id="menuBar" prefHeight="35.0" prefWidth="390.0">
+          <effect>
+            <Lighting specularConstant="1.0936507936507935" specularExponent="9.523809523809524" surfaceScale="3.0873015873015874">
+              <bumpInput>
+                <Shadow />
+              </bumpInput>
+              <light>
+                <javafx.scene.effect.Light.Distant color="#00ffe0" />
+              </light>
+            </Lighting>
+          </effect>
+          <menus>
+            <Menu id="menuHome" mnemonicParsing="false" onAction="#buttonHome" text="Home" fx:id="menuHome">
+              <items>
+                <MenuItem mnemonicParsing="false" text="Change Password" fx:id="changePass" />
+                <MenuItem id="menuClose" mnemonicParsing="false" onAction="#buttonExit" text="Close" fx:id="menuClose" />
+              </items>
+            </Menu>
+            <Menu mnemonicParsing="false" text="Device">
+              <items>
+                <MenuItem mnemonicParsing="false" onAction="#btnDeviceReg" text="Device Registration" fx:id="deviceReg" />
+                <MenuItem mnemonicParsing="false" onAction="#btnDeviceAloc" text="Device Alocation" fx:id="deviceAlocation" />
+              </items>
+            </Menu>
+            <Menu mnemonicParsing="false" text="Customer" fx:id="menuUser">
+              <items>
+                <MenuItem mnemonicParsing="false" onAction="#buttonCustomer" text="Customer Registration" fx:id="userManagement" />
+              </items>
+            </Menu>
+          </menus>
+        </MenuBar>
+      </top>
+    </BorderPane>
+  </children>
+</AnchorPane>
