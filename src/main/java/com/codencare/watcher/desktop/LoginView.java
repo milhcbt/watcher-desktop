@@ -139,10 +139,10 @@ private Connection connection = null;
             }
             } catch (Exception ex) {
                     System.err.println("gagal");
-                }
+                } 
             }
         });
-
+        
         Scene scene = new Scene(grid, 300, 275);
         primaryStage.setScene(scene);
         scene.getStylesheets().add
