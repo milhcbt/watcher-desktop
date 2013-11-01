@@ -165,7 +165,7 @@ public class FXMLControlerNew implements Initializable {
     //button home
     @FXML
     void buttonHome(ActionEvent event) throws Exception{
-        new NewMain().start(new Stage());  
+ 
     }
     
     //button add device
@@ -182,7 +182,7 @@ public class FXMLControlerNew implements Initializable {
     void btnManagement(ActionEvent event) throws Exception{ 
        new AlarmManagement().start(new Stage());
     }
-    //button device allocation
+    //button device allocation/mapping
     @FXML
     void btnDeviceAloc(ActionEvent event) throws Exception{ 
         Stage primaryStage = new Stage();
@@ -191,7 +191,7 @@ public class FXMLControlerNew implements Initializable {
         primaryStage.setScene(scene);
         primaryStage.show();
     }
-    //button device alocation
+    //button add customer
     @FXML
     void buttonCustomer(ActionEvent event) throws Exception{ 
         Stage primaryStage = new Stage();
