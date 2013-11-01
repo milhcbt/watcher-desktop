@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.net.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane id="AnchorPane" prefHeight="-1.0" prefWidth="-1.0" styleClass="mainFxmlClass" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/2.2" fx:controller="com.codencare.watcher.desktop.TraditionalMainController">
+  <children>
+    <BorderPane layoutX="0.0" layoutY="0.0" prefHeight="-1.0" prefWidth="-1.0">
+      <bottom>
+        <FlowPane fx:id="statusPane" prefHeight="20.0" prefWidth="-1.0" />
+      </bottom>
+      <center>
+            <ScrollPane  fx:id="mainPane" content="$null" prefHeight="-1.0" prefWidth="-1.0" />
+      </center>
+      <top>
+        <MenuBar fx:id="menuBar">
+          <menus>
+            <Menu mnemonicParsing="false" text="File">
+              <items>
+                <MenuItem mnemonicParsing="false" onAction="#onMyAccount" text="My Account" fx:id="myAccount" />
+                <MenuItem mnemonicParsing="false" onAction="#onClose" text="Close" fx:id="close" />
+              </items>
+            </Menu>
+            <Menu mnemonicParsing="false" text="Administration">
+              <items>
+                <MenuItem mnemonicParsing="false" onAction="#onAdminCustomer" text="Customer" fx:id="adminCustomer" />
+                <MenuItem mnemonicParsing="false" onAction="#onAdminUser" text="User" fx:id="adminUser" />
+                <MenuItem mnemonicParsing="false" onAction="#onAdminAlarm" text="Alarm" fx:id="alarm" />
+                <MenuItem mnemonicParsing="false" onAction="#onAdminComm" text="Communication" fx:id="adminComm" />
+              </items>
+            </Menu>
+            <Menu mnemonicParsing="false" text="Help">
+              <items>
+                <MenuItem mnemonicParsing="false" onAction="#onAbout" text="About" fx:id="about" />
+              </items>
+            </Menu>
+          </menus>
+        </MenuBar>
+      </top>
+    </BorderPane>
+  </children>
+</AnchorPane>

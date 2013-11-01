@@ -54,7 +54,7 @@ public class MainApp extends Application {
     public void start(Stage stage) throws Exception {
 
         Rectangle2D primScreenBounds = Screen.getPrimary().getVisualBounds();
-        Region contentRootRegion = FXMLLoader.load(getClass().getResource("/fxml/main.fxml"));
+        Region contentRootRegion = FXMLLoader.load(getClass().getResource("/fxml/TraditionalMain.fxml"));
 
         //Set a default "standard" or "100%" resolution
         double origW = primScreenBounds.getWidth() - W_GAP;
@@ -86,20 +86,10 @@ public class MainApp extends Application {
         //Bind the scene's width and height to the scaling parameters on the group
         rootPane.prefWidthProperty().bind(scene.widthProperty());
         rootPane.prefHeightProperty().bind(scene.heightProperty());
-        AnchorPane ap = (AnchorPane) rootPane.lookup("#AnchorPane");
-        ap.prefWidthProperty().bind(rootPane.prefWidthProperty());
-        ap.prefHeightProperty().bind(rootPane.prefHeightProperty());
-        ScrollPane scrollPane = (ScrollPane) rootPane.lookup("#scrollPane");
-        scrollPane.prefWidthProperty().bind(rootPane.prefWidthProperty());
-        scrollPane.prefHeightProperty().bind(rootPane.prefHeightProperty());
-        TitledPane detailPane = (TitledPane)rootPane.lookup("#detailPane");
-        detailPane.prefWidthProperty().bind(rootPane.prefWidthProperty().subtract(108 + 44));
-        Button exitBtn = (Button) rootPane.lookup("#exit");
-        exitBtn.setLayoutX(rootPane.getWidth()- 52 );
-        ChoiceBox zoomCb = (ChoiceBox)rootPane.lookup("#zoom");
-        zoomCb.setLayoutX(rootPane.getWidth()- (106+43));
-//        detailPane.prefHeightProperty().bind(rootPane.prefHeightProperty().divide(3));
-        detailPane.setExpanded(false);
+        ScrollPane mainPane = (ScrollPane)rootPane.lookup("#mainPane");
+        mainPane.prefWidthProperty().bind(rootPane.widthProperty());
+        mainPane.prefHeightProperty().bind(rootPane.heightProperty().subtract(48));
+        
         //Set the scene to the window (stage) and show it
         stage.setScene(scene);
         stage.setX(W_GAP / 2);
