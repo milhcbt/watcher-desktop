@@ -5,21 +5,32 @@ import java.io.InputStream;
 import java.util.Properties;
 import javafx.application.Application;
 import static javafx.application.Application.launch;
+import javafx.application.Platform;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.Group;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.ChoiceBox;
+import javafx.scene.control.Label;
+import javafx.scene.control.PasswordField;
 import javafx.scene.control.ScrollPane;
-import javafx.scene.control.TitledPane;
-import javafx.scene.layout.AnchorPane;
+import javafx.scene.control.TextField;
+import javafx.scene.image.ImageView;
+import javafx.scene.layout.GridPane;
+import javafx.scene.layout.Priority;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import org.apache.log4j.Logger;
+import org.controlsfx.control.ButtonBar;
+import org.controlsfx.control.ButtonBar.ButtonType;
+import org.controlsfx.control.action.AbstractAction;
+import org.controlsfx.control.action.Action;
+import org.controlsfx.dialog.Dialog;
 
 public class MainApp extends Application {
 
@@ -28,6 +39,23 @@ public class MainApp extends Application {
 
     private static final double W_GAP = 10;
     private static final double H_GAP = 20;
+
+     // This dialog will consist of two input fields (username and password),
+        // and have two buttons: Login and Cancel.
+    final TextField txUserName = new TextField();
+    final PasswordField txPassword = new PasswordField();
+    final Action actionLogin = new AbstractAction("Login") {
+        {
+            ButtonBar.setType(this, ButtonType.OK_DONE);
+        }
+
+        // This method is called when the login button is clicked...
+        public void execute(ActionEvent ae) {
+            Dialog dlg = (Dialog) ae.getSource();
+            // real login code here
+            dlg.hide();
+        }
+    };
 
     static {
         try {
@@ -53,6 +81,8 @@ public class MainApp extends Application {
     @Override
     public void start(Stage stage) throws Exception {
 
+       
+        showLoginDialog();
         Rectangle2D primScreenBounds = Screen.getPrimary().getVisualBounds();
         Region contentRootRegion = FXMLLoader.load(getClass().getResource("/fxml/TraditionalMain.fxml"));
 
@@ -86,10 +116,10 @@ public class MainApp extends Application {
         //Bind the scene's width and height to the scaling parameters on the group
         rootPane.prefWidthProperty().bind(scene.widthProperty());
         rootPane.prefHeightProperty().bind(scene.heightProperty());
-        ScrollPane mainPane = (ScrollPane)rootPane.lookup("#mainPane");
+        ScrollPane mainPane = (ScrollPane) rootPane.lookup("#mainPane");
         mainPane.prefWidthProperty().bind(rootPane.widthProperty());
         mainPane.prefHeightProperty().bind(rootPane.heightProperty().subtract(48));
-        
+
         //Set the scene to the window (stage) and show it
         stage.setScene(scene);
         stage.setX(W_GAP / 2);
@@ -99,4 +129,54 @@ public class MainApp extends Application {
         stage.show();
     }
 
+    // This method is called when the user types into the username / password fields  
+    private void validate() {
+        actionLogin.disabledProperty().set(
+                txUserName.getText().trim().isEmpty() || txPassword.getText().trim().isEmpty());
+    }
+
+    // Imagine that this method is called somewhere in your codebase
+    private void showLoginDialog() {
+        Dialog dlg = new Dialog(null, "Login Dialog");
+
+        // listen to user input on dialog (to enable / disable the login button)
+        ChangeListener<String> changeListener = new ChangeListener<String>() {
+            public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
+                validate();
+            }
+        };
+        txUserName.textProperty().addListener(changeListener);
+        txPassword.textProperty().addListener(changeListener);
+
+        // layout a custom GridPane containing the input fields and labels
+        final GridPane content = new GridPane();
+        content.setHgap(10);
+        content.setVgap(10);
+
+        content.add(new Label("User name"), 0, 0);
+        content.add(txUserName, 1, 0);
+        GridPane.setHgrow(txUserName, Priority.ALWAYS);
+        content.add(new Label("Password"), 0, 1);
+        content.add(txPassword, 1, 1);
+        GridPane.setHgrow(txPassword, Priority.ALWAYS);
+
+        // create the dialog with a custom graphic and the gridpane above as the
+        // main content region
+        dlg.setResizable(false);
+        dlg.setIconifiable(false);
+        dlg.setGraphic(new ImageView(getClass().getResource("/styles/img/logo.jpg").toString()));
+        dlg.setContent(content);
+        dlg.getActions().addAll(actionLogin, Dialog.Actions.CANCEL);
+        validate();
+
+        // request focus on the username field by default (so the user can
+        // type immediately without having to click first)
+        Platform.runLater(new Runnable() {
+            public void run() {
+                txUserName.requestFocus();
+            }
+        });
+
+        dlg.show();
+    }
 }

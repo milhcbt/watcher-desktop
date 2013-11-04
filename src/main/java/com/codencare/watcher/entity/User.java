@@ -108,7 +108,9 @@ public class User implements Serializable {
 
     @Override
     public String toString() {
-        return "com.codencare.watcher.entity.User[ id=" + id + " ]";
+        return "User{" + "id=" + id + ", name=" + name + ", email=" + email + ", password="  + '}';
     }
+
+   
     
 }

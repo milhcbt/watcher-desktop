@@ -6,12 +6,24 @@
 package com.codencare.watcher.desktop;
 
 import com.codencare.watcher.component.MapView;
+import com.codencare.watcher.controller.CustomerJpaController;
 import com.codencare.watcher.controller.DeviceJpaController;
+import com.codencare.watcher.controller.UserJpaController;
+import com.codencare.watcher.entity.Customer;
 import com.codencare.watcher.entity.Device;
+import com.codencare.watcher.entity.User;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.net.ServerSocket;
 import java.net.URL;
+import java.util.Iterator;
 import java.util.List;
 import java.util.ResourceBundle;
+import java.util.function.Consumer;
+import java.util.logging.Level;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -20,13 +32,20 @@ import javafx.geometry.Rectangle2D;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.ScrollPane;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TablePosition;
+import javafx.scene.control.TableView;
 import javafx.scene.input.ContextMenuEvent;
 import javafx.scene.layout.FlowPane;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
+import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.log4j.Logger;
+import org.controlsfx.dialog.Dialog;
+import org.controlsfx.dialog.Dialogs;
+import org.datafx.control.TableViewFactory;
 
 public class TraditionalMainController {
 
@@ -81,7 +100,10 @@ public class TraditionalMainController {
     // Handler for MenuItem[fx:id="about"] onAction
     @FXML
     void onAbout(ActionEvent event) {
-        // handle the event here
+        Dialogs.create()
+                .title("About")
+                .message("just a simple application\nimanlhakim@gmail.com for details")
+                .showInformation();
     }
 
     // Handler for MenuItem[fx:id="alarm"] onAction
@@ -99,19 +121,83 @@ public class TraditionalMainController {
     // Handler for MenuItem[fx:id="adminCustomer"] onAction
     @FXML
     void onAdminCustomer(ActionEvent event) {
-        // handle the event here
+        Dialog dlg = new Dialog(null, MainApp.defaultProps.getProperty("user-management"));
+        CustomerJpaController cjc = new CustomerJpaController(emf);
+        List<Customer> ul = cjc.findCustomerEntities();
+//        TableViewFactory<User> tvfu= TableViewFactory.create(ujc.findUserEntities());
+        TableView<Customer> tvu = TableViewFactory.create(Customer.class, ul)
+                //                .selectColumns("Name", "Email")
+                //                .renameColumn("Name", "Nama")
+                //                .renameColumn("Email", "Surel")
+                .buildTableView();
+        
+//        ObservableList<TableColumn<User,?>> ol = tvu.getColumns();
+//        for(TableColumn<User,?> tc : ol){
+//            Class dataType = tc.
+//            tc.setOnEditCommit(new EventHandler<TableColumn.CellEditEvent<User,  >>() {
+//
+//             @Override
+//                public void handle(TableColumn.CellEditEvent<User, ?> event) {
+//                    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+//                }});
+//        }
+        dlg.setContent(tvu);
+        dlg.show();
     }
 
     // Handler for MenuItem[fx:id="adminUser"] onAction
     @FXML
     void onAdminUser(ActionEvent event) {
-        // handle the event here
+        Dialog dlg = new Dialog(null, MainApp.defaultProps.getProperty("user-management"));
+        UserJpaController ujc = new UserJpaController(emf);
+        List<User> ul = ujc.findUserEntities();
+
+        final TableView<User> tvu = TableViewFactory.create(User.class, ul)
+                //                .selectColumns("Name", "Email")
+                .renameColumn("Name", "Nama")
+                .renameColumn("Email", "Surel")
+                .buildTableView();
+       
+        
+        tvu.getColumns().forEach(new Consumer<TableColumn<User, ?>>(){
+
+            @Override
+            public void accept(TableColumn<User, ?> t) {
+               LOGGER.info(t.getText());
+               LOGGER.info(t.cellValueFactoryProperty().getValue());
+            }
+            
+        });
+        tvu.getSelectionModel().selectedItemProperty().addListener(new ChangeListener() {
+            // this method will be called whenever user selected row
+
+            @Override
+            public void changed(ObservableValue observable, Object oldValue, Object newValue) {
+                
+                TablePosition<User,?> o = tvu.getEditingCell();
+                LOGGER.info("old:" + oldValue + ", new:" + newValue);
+
+            }
+        });
+        ObservableList<TableColumn<User,?>> ol = tvu.getColumns();
+        for (TableColumn tc : ol) {
+            tc.setOnEditCommit(new EventHandler<TableColumn.CellEditEvent<User, ?>>() {
+
+                @Override
+                public void handle(TableColumn.CellEditEvent<User, ?> event) {
+                    
+                    Dialogs.create().title(event.getNewValue().toString()).showInformation();
+                }
+            });
+        }
+        dlg.setContent(tvu);
+        dlg.show();
     }
 
     // Handler for MenuItem[fx:id="close"] onAction
     @FXML
     void onClose(ActionEvent event) {
-         ((Stage) mainPane.getScene().getWindow()).close();
+        ((Stage) mainPane.getScene().getWindow()).close();
     }
 
     // Handler for MenuItem[fx:id="myAccount"] onAction
