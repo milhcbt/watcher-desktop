@@ -9,39 +9,41 @@ import com.codencare.watcher.component.MapView;
 import com.codencare.watcher.controller.CustomerJpaController;
 import com.codencare.watcher.controller.DeviceJpaController;
 import com.codencare.watcher.controller.UserJpaController;
+import com.codencare.watcher.controller.exceptions.NonexistentEntityException;
 import com.codencare.watcher.entity.Customer;
 import com.codencare.watcher.entity.Device;
 import com.codencare.watcher.entity.User;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.net.ServerSocket;
 import java.net.URL;
-import java.util.Iterator;
 import java.util.List;
 import java.util.ResourceBundle;
-import java.util.function.Consumer;
 import java.util.logging.Level;
-import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
+import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.geometry.Point2D;
+import javafx.geometry.Pos;
 import javafx.geometry.Rectangle2D;
+import javafx.scene.control.Button;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.ScrollPane;
+import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
-import javafx.scene.control.TablePosition;
 import javafx.scene.control.TableView;
-import javafx.scene.input.ContextMenuEvent;
+import javafx.scene.control.TextField;
 import javafx.scene.layout.FlowPane;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
+import javafx.util.Callback;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
-import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.log4j.Logger;
 import org.controlsfx.dialog.Dialog;
 import org.controlsfx.dialog.Dialogs;
@@ -55,6 +57,8 @@ public class TraditionalMainController {
     static ServerSocket server;
     static final int port = 7000;
     static final Rectangle2D primScreenBounds = Screen.getPrimary().getVisualBounds();
+
+    private ObservableList<User> ul;
 
     private Point2D loc;
     private List<Device> alarmedDevices;
@@ -130,7 +134,7 @@ public class TraditionalMainController {
                 //                .renameColumn("Name", "Nama")
                 //                .renameColumn("Email", "Surel")
                 .buildTableView();
-        
+
 //        ObservableList<TableColumn<User,?>> ol = tvu.getColumns();
 //        for(TableColumn<User,?> tc : ol){
 //            Class dataType = tc.
@@ -148,50 +152,94 @@ public class TraditionalMainController {
     // Handler for MenuItem[fx:id="adminUser"] onAction
     @FXML
     void onAdminUser(ActionEvent event) {
-        Dialog dlg = new Dialog(null, MainApp.defaultProps.getProperty("user-management"));
-        UserJpaController ujc = new UserJpaController(emf);
-        List<User> ul = ujc.findUserEntities();
-
-        final TableView<User> tvu = TableViewFactory.create(User.class, ul)
-                //                .selectColumns("Name", "Email")
-                .renameColumn("Name", "Nama")
-                .renameColumn("Email", "Surel")
-                .buildTableView();
-       
+        final Dialog dlg = new Dialog(null, MainApp.defaultProps.getProperty("user-management"));
+        final UserJpaController ujc = new UserJpaController(emf);
+        ul =  FXCollections.observableList(ujc.findUserEntities());
         
-        tvu.getColumns().forEach(new Consumer<TableColumn<User, ?>>(){
+        final TableView<User> tvu = TableViewFactory.create(User.class, ul)
+                .selectColumns("Name", "Email","Type")
+                .renameColumn("Name", MainApp.defaultProps.getProperty("name", "name"))
+                .renameColumn("Email", MainApp.defaultProps.getProperty("email", "email"))
+                .buildTableView();
+
+        final TextField addName = new TextField();
+        addName.setPromptText(MainApp.defaultProps.getProperty("add-name", "add-name"));
+        final TextField addEmail = new TextField();
+        addEmail.setPromptText(MainApp.defaultProps.getProperty("add-email","add-email"));
+        final TextField addPass = new TextField ();
+        addPass.setPromptText(MainApp.defaultProps.getProperty("password", "password"));
+        final ComboBox addUserType = new ComboBox();
+        addUserType.getItems().addAll(MainApp.defaultProps.getProperty("user", "user"),
+                MainApp.defaultProps.getProperty("admin", "admin"));
+        addUserType.setValue(MainApp.defaultProps.getProperty("user", "user"));
+        final Button addButton = new Button("+");
+        addButton.setOnAction(new EventHandler<ActionEvent>() {
 
             @Override
-            public void accept(TableColumn<User, ?> t) {
-               LOGGER.info(t.getText());
-               LOGGER.info(t.cellValueFactoryProperty().getValue());
-            }
-            
-        });
-        tvu.getSelectionModel().selectedItemProperty().addListener(new ChangeListener() {
-            // this method will be called whenever user selected row
-
-            @Override
-            public void changed(ObservableValue observable, Object oldValue, Object newValue) {
-                
-                TablePosition<User,?> o = tvu.getEditingCell();
-                LOGGER.info("old:" + oldValue + ", new:" + newValue);
-
-            }
-        });
-        ObservableList<TableColumn<User,?>> ol = tvu.getColumns();
-        for (TableColumn tc : ol) {
-            tc.setOnEditCommit(new EventHandler<TableColumn.CellEditEvent<User, ?>>() {
-
-                @Override
-                public void handle(TableColumn.CellEditEvent<User, ?> event) {
-                    
-                    Dialogs.create().title(event.getNewValue().toString()).showInformation();
+            public void handle(ActionEvent event) {
+                User newUser = new User();
+                newUser.setName(addName.getText());
+                newUser.setEmail(addEmail.getText());
+                newUser.setPassword(addPass.getText());//TODO:important implements hashing.
+                if (addUserType.getValue().equals(MainApp.defaultProps.getProperty("admin", "admin"))){
+                    newUser.setType(User.TYPE_ADMIN);
+                }else{
+                    newUser.setType(User.TYPE_USER);
                 }
-            });
-        }
-        dlg.setContent(tvu);
+               ujc.create(newUser);
+               ul.add(newUser);
+               LOGGER.info(newUser+" is saved");
+//                ul= FXCollections.observableList( ujc.findUserEntities());
+                addName.setText("");
+                addEmail.setText("");
+                addPass.setText("");
+                addUserType.setValue(MainApp.defaultProps.getProperty("user", "user"));
+            }
+        });
+
+        
+        TableColumn delCol = new TableColumn<User,Boolean>();
+        delCol.setCellFactory(new Callback<TableColumn<User,Boolean>,TableCell<User,Boolean>>() {
+            @Override
+            public TableCell<User, Boolean> call(TableColumn<User, Boolean> param) {
+                return new DeleteTableCell<User,Boolean>(ul);
+            }
+        });
+        tvu.getColumns().add(delCol);
+        HBox hbox = new HBox();
+        hbox.getChildren().add(addName);
+        hbox.getChildren().add(addEmail);
+        hbox.getChildren().add(addPass);
+        hbox.getChildren().add(addUserType);
+        hbox.getChildren().add(addButton);
+        VBox vbox = new VBox();
+        vbox.getChildren().add(tvu);
+        vbox.getChildren().add(hbox);
+//        tvu.getSelectionModel().selectedItemProperty().addListener(new ChangeListener() {
+//            // this method will be called whenever user selected row
+//
+//            @Override
+//            public void changed(ObservableValue observable, Object oldValue, Object newValue) {
+//
+//                TablePosition<User, ?> o = tvu.getEditingCell();
+//                LOGGER.info("old:" + oldValue + ", new:" + newValue);
+//
+//            }
+//        });
+        ObservableList<TableColumn<User, ?>> ol = tvu.getColumns();
+//        for (TableColumn tc : ol) {
+//            tc.setOnEditCommit(new EventHandler<TableColumn.CellEditEvent<User, ?>>() {
+//
+//                @Override
+//                public void handle(TableColumn.CellEditEvent<User, ?> event) {
+//
+//                    Dialogs.create().title(event.getNewValue().toString()).showInformation();
+//                }
+//            });
+//        }
+        dlg.setContent(vbox);
         dlg.show();
+        ul = null;
     }
 
     // Handler for MenuItem[fx:id="close"] onAction
@@ -232,4 +280,42 @@ public class TraditionalMainController {
         alarmedDevices = (new DeviceJpaController(emf)).findAlarmedDevice();
     }
 
+    
+    public static class DeleteTableCell<S, T> extends TableCell<S, T> {
+        private final Button del;
+        private final UserJpaController ujc = new UserJpaController(emf);
+        private ObservableValue<T> ov;
+
+        public DeleteTableCell(final ObservableList<?> data) {
+            this.del = new Button("X");
+            del.setStyle("-fx-base: red;");
+            this.del.setAlignment(Pos.CENTER);
+            setAlignment(Pos.CENTER);
+            setGraphic(del);
+            del.setOnAction(new EventHandler<ActionEvent> () {
+                @Override
+                public void handle(ActionEvent t) {
+                    int i= getIndex();
+                    User u = (User) data.get(i);
+                    try {
+                        ujc.destroy(u.getId());
+                        data.remove(i);
+                        setVisible(false);
+                    } catch (NonexistentEntityException ex) {
+                        LOGGER.error(ex.toString());
+                    }
+                }                
+            });
+        } 
+
+        @Override public void updateItem(T item, boolean empty) {
+            super.updateItem(item, empty);
+            if (empty) {
+                setText(null);
+                setGraphic(null);
+            } else {
+                setGraphic(del);
+            }
+        }
+    }
 }

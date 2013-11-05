@@ -6,6 +6,7 @@
 package com.codencare.watcher.entity;
 
 import java.io.Serializable;
+import java.security.InvalidParameterException;
 import javax.persistence.Basic;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -29,6 +30,8 @@ import javax.xml.bind.annotation.XmlRootElement;
     @NamedQuery(name = "User.findByPassword", query = "SELECT u FROM User u WHERE u.password = :password")})
 public class User implements Serializable {
     private static final long serialVersionUID = 1L;
+    public static final int TYPE_USER = 1;
+    public static final int TYPE_ADMIN = 2;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Basic(optional = false)
@@ -39,6 +42,8 @@ public class User implements Serializable {
     private String email;
     @Basic(optional = false)
     private String password;
+    @Basic(optional = false)
+    private int type;
 
     public User() {
     }
@@ -47,11 +52,13 @@ public class User implements Serializable {
         this.id = id;
     }
 
-    public User(Long id, String name, String email, String password) {
+    public User(Long id, String name, String email, String password,int type) {
         this.id = id;
         this.name = name;
         this.email = email;
         this.password = password;
+        setType(type);
+        
     }
 
     public Long getId() {
@@ -86,6 +93,20 @@ public class User implements Serializable {
         this.password = password;
     }
 
+    public int getType() {
+        return type;
+    }
+
+    public void setType(int type) {
+        if (type == TYPE_ADMIN || type == TYPE_USER){
+            this.type = type;
+        }else{
+            throw new InvalidParameterException("invalid user type");
+        }
+    }
+    
+    
+
     @Override
     public int hashCode() {
         int hash = 0;
@@ -108,7 +129,7 @@ public class User implements Serializable {
 
     @Override
     public String toString() {
-        return "User{" + "id=" + id + ", name=" + name + ", email=" + email + ", password="  + '}';
+        return "User{" + "id=" + id + ", name=" + name + ", email=" + email + ", type="  + type+'}';
     }
 
    

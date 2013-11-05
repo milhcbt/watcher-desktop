@@ -57,6 +57,7 @@ public class MainApp extends Application {
         }
     };
 
+   //TODO:make properties has default value, in case properties has error or typo
     static {
         try {
             InputStream is = MainApp.class.getResourceAsStream("/watcher.properties");
