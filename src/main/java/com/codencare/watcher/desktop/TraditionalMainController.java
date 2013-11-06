@@ -348,6 +348,7 @@ public class TraditionalMainController {
         currUser = null;
         clearUserInput();
         disableUserInput(false);
+        deleteUser.setDisable(true);
     }
 
     @FXML
@@ -355,7 +356,7 @@ public class TraditionalMainController {
         try {
             UserJpaController ujc = new UserJpaController(emf);
             User oldUser = null;
-            if (currUser != null) {
+            if (currUser != null && currUser.getId() != null) {
                 oldUser = ujc.findUser(currUser.getId());
             } else {
                 currUser = new User();
@@ -368,17 +369,17 @@ public class TraditionalMainController {
             } else {
                 currUser.setType(1);
             }
-
-            if (oldUser != null && validateUser(currUser)) {
+            boolean validInput = validateUser(currUser);
+            if (validInput && oldUser != null) {
                 ujc.edit(currUser);
                 userTable.getItems().set(userTable.getItems().indexOf(oldUser), currUser);
-                 disableUserInput(true);
-            } else  if (validateUser(currUser)){
+                disableUserInput(true);
+            } else  if (validInput){
                 ujc.create(currUser);
                 updateUser();
                 userTable.setItems(FXCollections.observableList(ujc.findByName(currUser.getName())));
-                 disableUserInput(true);
-            }           
+                disableUserInput(true);
+            }          
         } catch (Exception ex) {
             LOGGER.error(ex.toString());
         }
@@ -421,7 +422,7 @@ public class TraditionalMainController {
         if(!u.getName().matches("\\w{2,40}")){
             return false;
         }
-        if(!u.getPassword().matches("\\w{6,20}")){
+        if(!u.getPassword().matches(".{6,20}")){
             return false;
         }
         if(!u.getEmail().toUpperCase().matches("\\b[A-Z0-9._%-]+@[A-Z0-9.-]+\\.[A-Z]{2,4}\\b")){
