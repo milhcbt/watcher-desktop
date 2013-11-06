@@ -13,17 +13,23 @@ import com.codencare.watcher.controller.exceptions.NonexistentEntityException;
 import com.codencare.watcher.entity.Customer;
 import com.codencare.watcher.entity.Device;
 import com.codencare.watcher.entity.User;
+import com.codencare.watcher.util.ComboPair;
+import com.mytdev.javafx.scene.control.AutoCompleteTextField;
+import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.URL;
 import java.util.List;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
+import javafx.application.Platform;
+import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.geometry.Point2D;
 import javafx.geometry.Pos;
 import javafx.geometry.Rectangle2D;
@@ -31,16 +37,20 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
+import javafx.scene.control.PasswordField;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
+import javafx.scene.control.TablePosition;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
+import javafx.stage.WindowEvent;
 import javafx.util.Callback;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
@@ -58,12 +68,41 @@ public class TraditionalMainController {
     static final int port = 7000;
     static final Rectangle2D primScreenBounds = Screen.getPrimary().getVisualBounds();
 
-    private ObservableList<User> ul;
+//    private ObservableList<User> ul;
 
     private Point2D loc;
     private List<Device> alarmedDevices;
 
     private MapView mapView;
+    private ObservableList<ComboPair<Long, String>> userList;
+
+    private User currUser;
+
+    @FXML
+    private VBox userVBox;
+    @FXML
+    private TextField addEmail;
+
+    @FXML
+    private Button addUser;
+
+    @FXML
+    private Button saveUser;
+
+    @FXML
+    private Button deleteUser;
+
+    @FXML
+    private TextField addName;
+
+    @FXML
+    private PasswordField addPassword;
+
+    @FXML
+    private ComboBox<String> addUserType;
+
+    @FXML
+    private TableView userTable;
 
     @FXML // ResourceBundle that was given to the FXMLLoader
     private ResourceBundle resources;
@@ -152,94 +191,68 @@ public class TraditionalMainController {
     // Handler for MenuItem[fx:id="adminUser"] onAction
     @FXML
     void onAdminUser(ActionEvent event) {
-        final Dialog dlg = new Dialog(null, MainApp.defaultProps.getProperty("user-management"));
+        final Dialog dlg = new Dialog(mainPane.getScene().getWindow(), MainApp.defaultProps.getProperty("user-management"), true, true);
         final UserJpaController ujc = new UserJpaController(emf);
-        ul =  FXCollections.observableList(ujc.findUserEntities());
-        
-        final TableView<User> tvu = TableViewFactory.create(User.class, ul)
-                .selectColumns("Name", "Email","Type")
-                .renameColumn("Name", MainApp.defaultProps.getProperty("name", "name"))
-                .renameColumn("Email", MainApp.defaultProps.getProperty("email", "email"))
-                .buildTableView();
+        final AnchorPane root = new AnchorPane();
+        updateUser();
+//        ul = FXCollections.observableList(ujc.findUserEntities());
 
-        final TextField addName = new TextField();
-        addName.setPromptText(MainApp.defaultProps.getProperty("add-name", "add-name"));
-        final TextField addEmail = new TextField();
-        addEmail.setPromptText(MainApp.defaultProps.getProperty("add-email","add-email"));
-        final TextField addPass = new TextField ();
-        addPass.setPromptText(MainApp.defaultProps.getProperty("password", "password"));
-        final ComboBox addUserType = new ComboBox();
-        addUserType.getItems().addAll(MainApp.defaultProps.getProperty("user", "user"),
-                MainApp.defaultProps.getProperty("admin", "admin"));
-        addUserType.setValue(MainApp.defaultProps.getProperty("user", "user"));
-        final Button addButton = new Button("+");
-        addButton.setOnAction(new EventHandler<ActionEvent>() {
+        FXMLLoader fxmlLoader = new FXMLLoader(
+                getClass().getResource("/fxml/UserAdministration.fxml"));
 
-            @Override
-            public void handle(ActionEvent event) {
-                User newUser = new User();
-                newUser.setName(addName.getText());
-                newUser.setEmail(addEmail.getText());
-                newUser.setPassword(addPass.getText());//TODO:important implements hashing.
-                if (addUserType.getValue().equals(MainApp.defaultProps.getProperty("admin", "admin"))){
-                    newUser.setType(User.TYPE_ADMIN);
-                }else{
-                    newUser.setType(User.TYPE_USER);
+        fxmlLoader.setRoot(root);
+        fxmlLoader.setController(this);
+        try {
+            fxmlLoader.load();
+//            userTable.setItems(ul);
+            dlg.setContent(root);
+            final AutoCompleteTextField<ComboPair<Long, String>> nameBox = new AutoCompleteTextField();
+            nameBox.setItems(userList);
+            nameBox.getPopup().addEventHandler(WindowEvent.WINDOW_HIDING,
+                    new EventHandler<WindowEvent>() {
+                        @Override
+                        public void handle(WindowEvent t) {
+                            String name = nameBox.getSelectedData().getValue();
+                            ObservableList<User> ul = FXCollections.observableList(ujc.findByName(name));
+                            userTable.setItems(ul);
+                        }
+                    });
+
+            userVBox.getChildren().add(0, nameBox);
+            Platform.runLater(new Runnable() {
+                @Override
+                public void run() {
+                    nameBox.requestFocus();
                 }
-               ujc.create(newUser);
-               ul.add(newUser);
-               LOGGER.info(newUser+" is saved");
-//                ul= FXCollections.observableList( ujc.findUserEntities());
-                addName.setText("");
-                addEmail.setText("");
-                addPass.setText("");
-                addUserType.setValue(MainApp.defaultProps.getProperty("user", "user"));
-            }
-        });
+            });
 
-        
-        TableColumn delCol = new TableColumn<User,Boolean>();
-        delCol.setCellFactory(new Callback<TableColumn<User,Boolean>,TableCell<User,Boolean>>() {
-            @Override
-            public TableCell<User, Boolean> call(TableColumn<User, Boolean> param) {
-                return new DeleteTableCell<User,Boolean>(ul);
-            }
-        });
-        tvu.getColumns().add(delCol);
-        HBox hbox = new HBox();
-        hbox.getChildren().add(addName);
-        hbox.getChildren().add(addEmail);
-        hbox.getChildren().add(addPass);
-        hbox.getChildren().add(addUserType);
-        hbox.getChildren().add(addButton);
-        VBox vbox = new VBox();
-        vbox.getChildren().add(tvu);
-        vbox.getChildren().add(hbox);
-//        tvu.getSelectionModel().selectedItemProperty().addListener(new ChangeListener() {
-//            // this method will be called whenever user selected row
-//
-//            @Override
-//            public void changed(ObservableValue observable, Object oldValue, Object newValue) {
-//
-//                TablePosition<User, ?> o = tvu.getEditingCell();
-//                LOGGER.info("old:" + oldValue + ", new:" + newValue);
-//
-//            }
-//        });
-        ObservableList<TableColumn<User, ?>> ol = tvu.getColumns();
-//        for (TableColumn tc : ol) {
-//            tc.setOnEditCommit(new EventHandler<TableColumn.CellEditEvent<User, ?>>() {
-//
-//                @Override
-//                public void handle(TableColumn.CellEditEvent<User, ?> event) {
-//
-//                    Dialogs.create().title(event.getNewValue().toString()).showInformation();
-//                }
-//            });
-//        }
-        dlg.setContent(vbox);
-        dlg.show();
-        ul = null;
+            userTable.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<User>() {
+                // this method will be called whenever user selected row
+
+                @Override
+                public void changed(ObservableValue<? extends User> ov, User oldValue, User newValue) {
+
+                    // TablePosition<User, ?> o = tvu.getEditingCell();
+                    LOGGER.info("old:" + oldValue + ", new:" + newValue);
+                    if (newValue != null) {
+                        currUser = newValue;
+                        addName.setText(currUser.getName());
+                        addEmail.setText(currUser.getEmail());
+                        addPassword.setText(currUser.getPassword());
+                        if (currUser.getType() == 2) {
+                            addUserType.setValue("Administrator");
+                        } else {
+                            addUserType.setValue("User");
+                        }
+                        disableUserInput(false);
+                    }
+                }
+            });
+            dlg.show();
+        } catch (IOException exception) {
+            throw new RuntimeException(exception);
+        }
+
     }
 
     // Handler for MenuItem[fx:id="close"] onAction
@@ -280,8 +293,8 @@ public class TraditionalMainController {
         alarmedDevices = (new DeviceJpaController(emf)).findAlarmedDevice();
     }
 
-    
     public static class DeleteTableCell<S, T> extends TableCell<S, T> {
+
         private final Button del;
         private final UserJpaController ujc = new UserJpaController(emf);
         private ObservableValue<T> ov;
@@ -292,10 +305,10 @@ public class TraditionalMainController {
             this.del.setAlignment(Pos.CENTER);
             setAlignment(Pos.CENTER);
             setGraphic(del);
-            del.setOnAction(new EventHandler<ActionEvent> () {
+            del.setOnAction(new EventHandler<ActionEvent>() {
                 @Override
                 public void handle(ActionEvent t) {
-                    int i= getIndex();
+                    int i = getIndex();
                     User u = (User) data.get(i);
                     try {
                         ujc.destroy(u.getId());
@@ -304,11 +317,12 @@ public class TraditionalMainController {
                     } catch (NonexistentEntityException ex) {
                         LOGGER.error(ex.toString());
                     }
-                }                
+                }
             });
-        } 
+        }
 
-        @Override public void updateItem(T item, boolean empty) {
+        @Override
+        public void updateItem(T item, boolean empty) {
             super.updateItem(item, empty);
             if (empty) {
                 setText(null);
@@ -317,5 +331,102 @@ public class TraditionalMainController {
                 setGraphic(del);
             }
         }
+    }
+
+    private void updateUser() {
+        UserJpaController ujc = new UserJpaController(emf);
+        userList = FXCollections.observableArrayList();
+        List<User> userList = ujc.findUserEntities();
+        for (User user : userList) {
+            ComboPair p = new ComboPair(user.getId(), user.getName());
+            this.userList.add(p);
+        }
+    }
+
+    @FXML
+    void addUser(ActionEvent event) {
+        currUser = null;
+        clearUserInput();
+        disableUserInput(false);
+    }
+
+    @FXML
+    void saveUser(ActionEvent event) {
+        try {
+            UserJpaController ujc = new UserJpaController(emf);
+            User oldUser = null;
+            if (currUser != null) {
+                oldUser = ujc.findUser(currUser.getId());
+            } else {
+                currUser = new User();
+            }
+            currUser.setName(addName.getText());
+            currUser.setEmail(addEmail.getText());
+            currUser.setPassword(addPassword.getText());
+            if (addUserType.getValue().equalsIgnoreCase("Administrator")) {
+                currUser.setType(2);
+            } else {
+                currUser.setType(1);
+            }
+
+            if (oldUser != null && validateUser(currUser)) {
+                ujc.edit(currUser);
+                userTable.getItems().set(userTable.getItems().indexOf(oldUser), currUser);
+                 disableUserInput(true);
+            } else  if (validateUser(currUser)){
+                ujc.create(currUser);
+                updateUser();
+                userTable.setItems(FXCollections.observableList(ujc.findByName(currUser.getName())));
+                 disableUserInput(true);
+            }           
+        } catch (Exception ex) {
+            LOGGER.error(ex.toString());
+        }
+    }
+
+    @FXML
+    void deleteUser(ActionEvent event) {
+        try {
+            UserJpaController ujc = new UserJpaController(emf);
+            if(currUser !=null){
+                ujc.destroy(currUser.getId());
+                disableUserInput(true);
+                if (userTable.getItems() != null){
+                    userTable.getItems().remove(currUser);
+                }
+            }
+            
+        } catch (NonexistentEntityException ex) {
+            LOGGER.error(ex.toString());
+        }
+    }
+
+    private void disableUserInput(boolean disable) {
+        addName.setDisable(disable);
+        addEmail.setDisable(disable);
+        addPassword.setDisable(disable);
+        addUserType.setDisable(disable);
+        saveUser.setDisable(disable);
+        deleteUser.setDisable(disable);
+    }
+
+    private void clearUserInput() {
+        addName.setText("");
+        addEmail.setText("");
+        addPassword.setText("");
+        addUserType.setValue("User");
+    }
+    
+    private boolean validateUser (User u){
+        if(!u.getName().matches("\\w{2,40}")){
+            return false;
+        }
+        if(!u.getPassword().matches("\\w{6,20}")){
+            return false;
+        }
+        if(!u.getEmail().toUpperCase().matches("\\b[A-Z0-9._%-]+@[A-Z0-9.-]+\\.[A-Z]{2,4}\\b")){
+            return false;
+        }
+        return true;
     }
 }

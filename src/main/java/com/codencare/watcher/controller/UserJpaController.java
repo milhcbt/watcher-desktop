@@ -14,8 +14,10 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.EntityNotFoundException;
 import javax.persistence.Query;
+import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
+import javax.persistence.metamodel.EntityType;
 
 /**
  *
@@ -135,5 +137,14 @@ public class UserJpaController implements Serializable {
             em.close();
         }
     }
-    
+    public List<User> findByName(String name){
+        EntityManager em = getEntityManager();
+        try {
+          Query q = em.createNamedQuery("User.findByNameLike");
+          q.setParameter("name", name+"%");
+          return q.getResultList();
+        } finally {
+            em.close();
+        }
+    }
 }
