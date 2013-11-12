@@ -83,7 +83,7 @@ public class MainApp extends Application {
     public void start(Stage stage) throws Exception {
 
        
-        //showLoginDialog();
+        showLoginDialog();
         Rectangle2D primScreenBounds = Screen.getPrimary().getVisualBounds();
         Region contentRootRegion = FXMLLoader.load(getClass().getResource("/fxml/TraditionalMain.fxml"));
 
