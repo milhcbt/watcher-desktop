@@ -7,10 +7,11 @@ package com.codencare.watcher.controller;
 
 import com.codencare.watcher.controller.exceptions.IllegalOrphanException;
 import com.codencare.watcher.controller.exceptions.NonexistentEntityException;
+import com.codencare.watcher.controller.exceptions.PreexistingEntityException;
+import com.codencare.watcher.entity.City;
 import com.codencare.watcher.entity.Customer;
 import com.codencare.watcher.entity.Device;
 import java.io.Serializable;
-import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -36,7 +37,7 @@ public class CustomerJpaController implements Serializable {
         return emf.createEntityManager();
     }
 
-    public void create(Customer customer) {
+    public void create(Customer customer) throws PreexistingEntityException, Exception {
         if (customer.getDeviceCollection() == null) {
             customer.setDeviceCollection(new ArrayList<Device>());
         }
@@ -44,6 +45,11 @@ public class CustomerJpaController implements Serializable {
         try {
             em = getEntityManager();
             em.getTransaction().begin();
+            City city = customer.getCity();
+            if (city != null) {
+                city = em.getReference(city.getClass(), city.getId());
+                customer.setCity(city);
+            }
             Collection<Device> attachedDeviceCollection = new ArrayList<Device>();
             for (Device deviceCollectionDeviceToAttach : customer.getDeviceCollection()) {
                 deviceCollectionDeviceToAttach = em.getReference(deviceCollectionDeviceToAttach.getClass(), deviceCollectionDeviceToAttach.getId());
@@ -51,9 +57,13 @@ public class CustomerJpaController implements Serializable {
             }
             customer.setDeviceCollection(attachedDeviceCollection);
             em.persist(customer);
+            if (city != null) {
+                city.getCustomerCollection().add(customer);
+                city = em.merge(city);
+            }
             for (Device deviceCollectionDevice : customer.getDeviceCollection()) {
-                Customer oldCustomerIdOfDeviceCollectionDevice = deviceCollectionDevice.getCustomerId();
-                deviceCollectionDevice.setCustomerId(customer);
+                Customer oldCustomerIdOfDeviceCollectionDevice = deviceCollectionDevice.getCustomer();
+                deviceCollectionDevice.setCustomer(customer);
                 deviceCollectionDevice = em.merge(deviceCollectionDevice);
                 if (oldCustomerIdOfDeviceCollectionDevice != null) {
                     oldCustomerIdOfDeviceCollectionDevice.getDeviceCollection().remove(deviceCollectionDevice);
@@ -61,6 +71,11 @@ public class CustomerJpaController implements Serializable {
                 }
             }
             em.getTransaction().commit();
+        } catch (Exception ex) {
+            if (findCustomer(customer.getId()) != null) {
+                throw new PreexistingEntityException("Customer " + customer + " already exists.", ex);
+            }
+            throw ex;
         } finally {
             if (em != null) {
                 em.close();
@@ -74,6 +89,8 @@ public class CustomerJpaController implements Serializable {
             em = getEntityManager();
             em.getTransaction().begin();
             Customer persistentCustomer = em.find(Customer.class, customer.getId());
+            City cityOld = persistentCustomer.getCity();
+            City cityNew = customer.getCity();
             Collection<Device> deviceCollectionOld = persistentCustomer.getDeviceCollection();
             Collection<Device> deviceCollectionNew = customer.getDeviceCollection();
             List<String> illegalOrphanMessages = null;
@@ -88,6 +105,10 @@ public class CustomerJpaController implements Serializable {
             if (illegalOrphanMessages != null) {
                 throw new IllegalOrphanException(illegalOrphanMessages);
             }
+            if (cityNew != null) {
+                cityNew = em.getReference(cityNew.getClass(), cityNew.getId());
+                customer.setCity(cityNew);
+            }
             Collection<Device> attachedDeviceCollectionNew = new ArrayList<Device>();
             for (Device deviceCollectionNewDeviceToAttach : deviceCollectionNew) {
                 deviceCollectionNewDeviceToAttach = em.getReference(deviceCollectionNewDeviceToAttach.getClass(), deviceCollectionNewDeviceToAttach.getId());
@@ -96,10 +117,18 @@ public class CustomerJpaController implements Serializable {
             deviceCollectionNew = attachedDeviceCollectionNew;
             customer.setDeviceCollection(deviceCollectionNew);
             customer = em.merge(customer);
+            if (cityOld != null && !cityOld.equals(cityNew)) {
+                cityOld.getCustomerCollection().remove(customer);
+                cityOld = em.merge(cityOld);
+            }
+            if (cityNew != null && !cityNew.equals(cityOld)) {
+                cityNew.getCustomerCollection().add(customer);
+                cityNew = em.merge(cityNew);
+            }
             for (Device deviceCollectionNewDevice : deviceCollectionNew) {
                 if (!deviceCollectionOld.contains(deviceCollectionNewDevice)) {
-                    Customer oldCustomerIdOfDeviceCollectionNewDevice = deviceCollectionNewDevice.getCustomerId();
-                    deviceCollectionNewDevice.setCustomerId(customer);
+                    Customer oldCustomerIdOfDeviceCollectionNewDevice = deviceCollectionNewDevice.getCustomer();
+                    deviceCollectionNewDevice.setCustomer(customer);
                     deviceCollectionNewDevice = em.merge(deviceCollectionNewDevice);
                     if (oldCustomerIdOfDeviceCollectionNewDevice != null && !oldCustomerIdOfDeviceCollectionNewDevice.equals(customer)) {
                         oldCustomerIdOfDeviceCollectionNewDevice.getDeviceCollection().remove(deviceCollectionNewDevice);
@@ -111,7 +140,7 @@ public class CustomerJpaController implements Serializable {
         } catch (Exception ex) {
             String msg = ex.getLocalizedMessage();
             if (msg == null || msg.length() == 0) {
-                Long id = customer.getId();
+                Integer id = customer.getId();
                 if (findCustomer(id) == null) {
                     throw new NonexistentEntityException("The customer with id " + id + " no longer exists.");
                 }
@@ -124,7 +153,7 @@ public class CustomerJpaController implements Serializable {
         }
     }
 
-    public void destroy(Long id) throws IllegalOrphanException, NonexistentEntityException {
+    public void destroy(Integer id) throws IllegalOrphanException, NonexistentEntityException {
         EntityManager em = null;
         try {
             em = getEntityManager();
@@ -146,6 +175,11 @@ public class CustomerJpaController implements Serializable {
             }
             if (illegalOrphanMessages != null) {
                 throw new IllegalOrphanException(illegalOrphanMessages);
+            }
+            City city = customer.getCity();
+            if (city != null) {
+                city.getCustomerCollection().remove(customer);
+                city = em.merge(city);
             }
             em.remove(customer);
             em.getTransaction().commit();
@@ -180,7 +214,7 @@ public class CustomerJpaController implements Serializable {
         }
     }
 
-    public Customer findCustomer(Long id) {
+    public Customer findCustomer(Integer id) {
         EntityManager em = getEntityManager();
         try {
             return em.find(Customer.class, id);
@@ -196,16 +230,28 @@ public class CustomerJpaController implements Serializable {
             Root<Customer> rt = cq.from(Customer.class);
             cq.select(em.getCriteriaBuilder().count(rt));
             Query q = em.createQuery(cq);
-            return ((BigInteger) q.getSingleResult()).intValue();
+            return ((Long) q.getSingleResult()).intValue();
         } finally {
             em.close();
         }
     }
-    public long maxId(){
+    
+     public List<Customer> findByName(String name) {
+        EntityManager em = getEntityManager();
+        try {
+            Query q = em.createNamedQuery("Customer.findByNameLike");
+            q.setParameter("name", "%" + name + "%");
+            return q.getResultList();
+        } finally {
+            em.close();
+        }
+    }
+
+    public int maxId() {
         EntityManager em = getEntityManager();
         try {
             Query q = em.createNativeQuery("SELECT max(id) FROM `customer`");
-            return ((BigInteger)q.getSingleResult()).longValue();
+            return ((Long) q.getSingleResult()).intValue();///FIXME:may get overflow
         } finally {
             em.close();
         }

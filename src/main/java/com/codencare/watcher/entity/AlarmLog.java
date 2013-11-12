@@ -39,8 +39,10 @@ public class AlarmLog implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Basic(optional = false)
+    @Column(name = "id")
     private Integer id;
     @Basic(optional = false)
+    @Column(name = "notes")
     private String notes;
     @Basic(optional = false)
     @Column(name = "time_stamp")
@@ -52,6 +54,9 @@ public class AlarmLog implements Serializable {
     @JoinColumn(name = "device", referencedColumnName = "id")
     @ManyToOne(optional = false)
     private Device device;
+    @JoinColumn(name = "user", referencedColumnName = "id")
+    @ManyToOne(optional = false)
+    private User user;
 
     public AlarmLog() {
     }
@@ -104,6 +109,14 @@ public class AlarmLog implements Serializable {
 
     public void setDevice(Device device) {
         this.device = device;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
     }
 
     @Override

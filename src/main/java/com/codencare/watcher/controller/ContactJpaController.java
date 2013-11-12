@@ -6,13 +6,13 @@
 package com.codencare.watcher.controller;
 
 import com.codencare.watcher.controller.exceptions.NonexistentEntityException;
+import com.codencare.watcher.entity.Contact;
 import java.io.Serializable;
 import javax.persistence.Query;
 import javax.persistence.EntityNotFoundException;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
-import com.codencare.watcher.entity.Device;
-import com.codencare.watcher.entity.Message;
+import com.codencare.watcher.entity.ContactGroup;
 import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -21,9 +21,9 @@ import javax.persistence.EntityManagerFactory;
  *
  * @author abah
  */
-public class MessageJpaController implements Serializable {
+public class ContactJpaController implements Serializable {
 
-    public MessageJpaController(EntityManagerFactory emf) {
+    public ContactJpaController(EntityManagerFactory emf) {
         this.emf = emf;
     }
     private EntityManagerFactory emf = null;
@@ -32,20 +32,20 @@ public class MessageJpaController implements Serializable {
         return emf.createEntityManager();
     }
 
-    public void create(Message message) {
+    public void create(Contact contact) {
         EntityManager em = null;
         try {
             em = getEntityManager();
             em.getTransaction().begin();
-            Device deviceId = message.getDevice();
-            if (deviceId != null) {
-                deviceId = em.getReference(deviceId.getClass(), deviceId.getId());
-                message.setDevice(deviceId);
+            ContactGroup group1 = contact.getGroup1();
+            if (group1 != null) {
+                group1 = em.getReference(group1.getClass(), group1.getId());
+                contact.setGroup1(group1);
             }
-            em.persist(message);
-            if (deviceId != null) {
-                deviceId.getMessageCollection().add(message);
-                deviceId = em.merge(deviceId);
+            em.persist(contact);
+            if (group1 != null) {
+                group1.getContactCollection().add(contact);
+                group1 = em.merge(group1);
             }
             em.getTransaction().commit();
         } finally {
@@ -55,34 +55,34 @@ public class MessageJpaController implements Serializable {
         }
     }
 
-    public void edit(Message message) throws NonexistentEntityException, Exception {
+    public void edit(Contact contact) throws NonexistentEntityException, Exception {
         EntityManager em = null;
         try {
             em = getEntityManager();
             em.getTransaction().begin();
-            Message persistentMessage = em.find(Message.class, message.getId());
-            Device deviceIdOld = persistentMessage.getDevice();
-            Device deviceIdNew = message.getDevice();
-            if (deviceIdNew != null) {
-                deviceIdNew = em.getReference(deviceIdNew.getClass(), deviceIdNew.getId());
-                message.setDevice(deviceIdNew);
+            Contact persistentContact = em.find(Contact.class, contact.getId());
+            ContactGroup group1Old = persistentContact.getGroup1();
+            ContactGroup group1New = contact.getGroup1();
+            if (group1New != null) {
+                group1New = em.getReference(group1New.getClass(), group1New.getId());
+                contact.setGroup1(group1New);
             }
-            message = em.merge(message);
-            if (deviceIdOld != null && !deviceIdOld.equals(deviceIdNew)) {
-                deviceIdOld.getMessageCollection().remove(message);
-                deviceIdOld = em.merge(deviceIdOld);
+            contact = em.merge(contact);
+            if (group1Old != null && !group1Old.equals(group1New)) {
+                group1Old.getContactCollection().remove(contact);
+                group1Old = em.merge(group1Old);
             }
-            if (deviceIdNew != null && !deviceIdNew.equals(deviceIdOld)) {
-                deviceIdNew.getMessageCollection().add(message);
-                deviceIdNew = em.merge(deviceIdNew);
+            if (group1New != null && !group1New.equals(group1Old)) {
+                group1New.getContactCollection().add(contact);
+                group1New = em.merge(group1New);
             }
             em.getTransaction().commit();
         } catch (Exception ex) {
             String msg = ex.getLocalizedMessage();
             if (msg == null || msg.length() == 0) {
-                Long id = message.getId();
-                if (findMessage(id) == null) {
-                    throw new NonexistentEntityException("The message with id " + id + " no longer exists.");
+                Integer id = contact.getId();
+                if (findContact(id) == null) {
+                    throw new NonexistentEntityException("The contact with id " + id + " no longer exists.");
                 }
             }
             throw ex;
@@ -93,24 +93,24 @@ public class MessageJpaController implements Serializable {
         }
     }
 
-    public void destroy(Long id) throws NonexistentEntityException {
+    public void destroy(Integer id) throws NonexistentEntityException {
         EntityManager em = null;
         try {
             em = getEntityManager();
             em.getTransaction().begin();
-            Message message;
+            Contact contact;
             try {
-                message = em.getReference(Message.class, id);
-                message.getId();
+                contact = em.getReference(Contact.class, id);
+                contact.getId();
             } catch (EntityNotFoundException enfe) {
-                throw new NonexistentEntityException("The message with id " + id + " no longer exists.", enfe);
+                throw new NonexistentEntityException("The contact with id " + id + " no longer exists.", enfe);
             }
-            Device deviceId = message.getDevice();
-            if (deviceId != null) {
-                deviceId.getMessageCollection().remove(message);
-                deviceId = em.merge(deviceId);
+            ContactGroup group1 = contact.getGroup1();
+            if (group1 != null) {
+                group1.getContactCollection().remove(contact);
+                group1 = em.merge(group1);
             }
-            em.remove(message);
+            em.remove(contact);
             em.getTransaction().commit();
         } finally {
             if (em != null) {
@@ -119,19 +119,19 @@ public class MessageJpaController implements Serializable {
         }
     }
 
-    public List<Message> findMessageEntities() {
-        return findMessageEntities(true, -1, -1);
+    public List<Contact> findContactEntities() {
+        return findContactEntities(true, -1, -1);
     }
 
-    public List<Message> findMessageEntities(int maxResults, int firstResult) {
-        return findMessageEntities(false, maxResults, firstResult);
+    public List<Contact> findContactEntities(int maxResults, int firstResult) {
+        return findContactEntities(false, maxResults, firstResult);
     }
 
-    private List<Message> findMessageEntities(boolean all, int maxResults, int firstResult) {
+    private List<Contact> findContactEntities(boolean all, int maxResults, int firstResult) {
         EntityManager em = getEntityManager();
         try {
             CriteriaQuery cq = em.getCriteriaBuilder().createQuery();
-            cq.select(cq.from(Message.class));
+            cq.select(cq.from(Contact.class));
             Query q = em.createQuery(cq);
             if (!all) {
                 q.setMaxResults(maxResults);
@@ -143,20 +143,20 @@ public class MessageJpaController implements Serializable {
         }
     }
 
-    public Message findMessage(Long id) {
+    public Contact findContact(Integer id) {
         EntityManager em = getEntityManager();
         try {
-            return em.find(Message.class, id);
+            return em.find(Contact.class, id);
         } finally {
             em.close();
         }
     }
 
-    public int getMessageCount() {
+    public int getContactCount() {
         EntityManager em = getEntityManager();
         try {
             CriteriaQuery cq = em.getCriteriaBuilder().createQuery();
-            Root<Message> rt = cq.from(Message.class);
+            Root<Contact> rt = cq.from(Contact.class);
             cq.select(em.getCriteriaBuilder().count(rt));
             Query q = em.createQuery(cq);
             return ((Long) q.getSingleResult()).intValue();

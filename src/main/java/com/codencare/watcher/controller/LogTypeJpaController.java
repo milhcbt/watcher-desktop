@@ -13,13 +13,10 @@ import javax.persistence.EntityNotFoundException;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 import com.codencare.watcher.entity.AlarmLog;
-import com.codencare.watcher.entity.User;
-import com.codencare.watcher.util.ComboPair;
+import com.codencare.watcher.entity.LogType;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 
@@ -27,9 +24,9 @@ import javax.persistence.EntityManagerFactory;
  *
  * @author abah
  */
-public class UserJpaController implements Serializable {
+public class LogTypeJpaController implements Serializable {
 
-    public UserJpaController(EntityManagerFactory emf) {
+    public LogTypeJpaController(EntityManagerFactory emf) {
         this.emf = emf;
     }
     private EntityManagerFactory emf = null;
@@ -38,28 +35,28 @@ public class UserJpaController implements Serializable {
         return emf.createEntityManager();
     }
 
-    public void create(User user) {
-        if (user.getAlarmLogCollection() == null) {
-            user.setAlarmLogCollection(new ArrayList<AlarmLog>());
+    public void create(LogType logType) {
+        if (logType.getAlarmLogCollection() == null) {
+            logType.setAlarmLogCollection(new ArrayList<AlarmLog>());
         }
         EntityManager em = null;
         try {
             em = getEntityManager();
             em.getTransaction().begin();
             Collection<AlarmLog> attachedAlarmLogCollection = new ArrayList<AlarmLog>();
-            for (AlarmLog alarmLogCollectionAlarmLogToAttach : user.getAlarmLogCollection()) {
+            for (AlarmLog alarmLogCollectionAlarmLogToAttach : logType.getAlarmLogCollection()) {
                 alarmLogCollectionAlarmLogToAttach = em.getReference(alarmLogCollectionAlarmLogToAttach.getClass(), alarmLogCollectionAlarmLogToAttach.getId());
                 attachedAlarmLogCollection.add(alarmLogCollectionAlarmLogToAttach);
             }
-            user.setAlarmLogCollection(attachedAlarmLogCollection);
-            em.persist(user);
-            for (AlarmLog alarmLogCollectionAlarmLog : user.getAlarmLogCollection()) {
-                User oldUserOfAlarmLogCollectionAlarmLog = alarmLogCollectionAlarmLog.getUser();
-                alarmLogCollectionAlarmLog.setUser(user);
+            logType.setAlarmLogCollection(attachedAlarmLogCollection);
+            em.persist(logType);
+            for (AlarmLog alarmLogCollectionAlarmLog : logType.getAlarmLogCollection()) {
+                LogType oldTypeOfAlarmLogCollectionAlarmLog = alarmLogCollectionAlarmLog.getType();
+                alarmLogCollectionAlarmLog.setType(logType);
                 alarmLogCollectionAlarmLog = em.merge(alarmLogCollectionAlarmLog);
-                if (oldUserOfAlarmLogCollectionAlarmLog != null) {
-                    oldUserOfAlarmLogCollectionAlarmLog.getAlarmLogCollection().remove(alarmLogCollectionAlarmLog);
-                    oldUserOfAlarmLogCollectionAlarmLog = em.merge(oldUserOfAlarmLogCollectionAlarmLog);
+                if (oldTypeOfAlarmLogCollectionAlarmLog != null) {
+                    oldTypeOfAlarmLogCollectionAlarmLog.getAlarmLogCollection().remove(alarmLogCollectionAlarmLog);
+                    oldTypeOfAlarmLogCollectionAlarmLog = em.merge(oldTypeOfAlarmLogCollectionAlarmLog);
                 }
             }
             em.getTransaction().commit();
@@ -70,21 +67,21 @@ public class UserJpaController implements Serializable {
         }
     }
 
-    public void edit(User user) throws IllegalOrphanException, NonexistentEntityException, Exception {
+    public void edit(LogType logType) throws IllegalOrphanException, NonexistentEntityException, Exception {
         EntityManager em = null;
         try {
             em = getEntityManager();
             em.getTransaction().begin();
-            User persistentUser = em.find(User.class, user.getId());
-            Collection<AlarmLog> alarmLogCollectionOld = persistentUser.getAlarmLogCollection();
-            Collection<AlarmLog> alarmLogCollectionNew = user.getAlarmLogCollection();
+            LogType persistentLogType = em.find(LogType.class, logType.getId());
+            Collection<AlarmLog> alarmLogCollectionOld = persistentLogType.getAlarmLogCollection();
+            Collection<AlarmLog> alarmLogCollectionNew = logType.getAlarmLogCollection();
             List<String> illegalOrphanMessages = null;
             for (AlarmLog alarmLogCollectionOldAlarmLog : alarmLogCollectionOld) {
                 if (!alarmLogCollectionNew.contains(alarmLogCollectionOldAlarmLog)) {
                     if (illegalOrphanMessages == null) {
                         illegalOrphanMessages = new ArrayList<String>();
                     }
-                    illegalOrphanMessages.add("You must retain AlarmLog " + alarmLogCollectionOldAlarmLog + " since its user field is not nullable.");
+                    illegalOrphanMessages.add("You must retain AlarmLog " + alarmLogCollectionOldAlarmLog + " since its type field is not nullable.");
                 }
             }
             if (illegalOrphanMessages != null) {
@@ -96,16 +93,16 @@ public class UserJpaController implements Serializable {
                 attachedAlarmLogCollectionNew.add(alarmLogCollectionNewAlarmLogToAttach);
             }
             alarmLogCollectionNew = attachedAlarmLogCollectionNew;
-            user.setAlarmLogCollection(alarmLogCollectionNew);
-            user = em.merge(user);
+            logType.setAlarmLogCollection(alarmLogCollectionNew);
+            logType = em.merge(logType);
             for (AlarmLog alarmLogCollectionNewAlarmLog : alarmLogCollectionNew) {
                 if (!alarmLogCollectionOld.contains(alarmLogCollectionNewAlarmLog)) {
-                    User oldUserOfAlarmLogCollectionNewAlarmLog = alarmLogCollectionNewAlarmLog.getUser();
-                    alarmLogCollectionNewAlarmLog.setUser(user);
+                    LogType oldTypeOfAlarmLogCollectionNewAlarmLog = alarmLogCollectionNewAlarmLog.getType();
+                    alarmLogCollectionNewAlarmLog.setType(logType);
                     alarmLogCollectionNewAlarmLog = em.merge(alarmLogCollectionNewAlarmLog);
-                    if (oldUserOfAlarmLogCollectionNewAlarmLog != null && !oldUserOfAlarmLogCollectionNewAlarmLog.equals(user)) {
-                        oldUserOfAlarmLogCollectionNewAlarmLog.getAlarmLogCollection().remove(alarmLogCollectionNewAlarmLog);
-                        oldUserOfAlarmLogCollectionNewAlarmLog = em.merge(oldUserOfAlarmLogCollectionNewAlarmLog);
+                    if (oldTypeOfAlarmLogCollectionNewAlarmLog != null && !oldTypeOfAlarmLogCollectionNewAlarmLog.equals(logType)) {
+                        oldTypeOfAlarmLogCollectionNewAlarmLog.getAlarmLogCollection().remove(alarmLogCollectionNewAlarmLog);
+                        oldTypeOfAlarmLogCollectionNewAlarmLog = em.merge(oldTypeOfAlarmLogCollectionNewAlarmLog);
                     }
                 }
             }
@@ -113,9 +110,9 @@ public class UserJpaController implements Serializable {
         } catch (Exception ex) {
             String msg = ex.getLocalizedMessage();
             if (msg == null || msg.length() == 0) {
-                Integer id = user.getId();
-                if (findUser(id) == null) {
-                    throw new NonexistentEntityException("The user with id " + id + " no longer exists.");
+                Integer id = logType.getId();
+                if (findLogType(id) == null) {
+                    throw new NonexistentEntityException("The logType with id " + id + " no longer exists.");
                 }
             }
             throw ex;
@@ -131,25 +128,25 @@ public class UserJpaController implements Serializable {
         try {
             em = getEntityManager();
             em.getTransaction().begin();
-            User user;
+            LogType logType;
             try {
-                user = em.getReference(User.class, id);
-                user.getId();
+                logType = em.getReference(LogType.class, id);
+                logType.getId();
             } catch (EntityNotFoundException enfe) {
-                throw new NonexistentEntityException("The user with id " + id + " no longer exists.", enfe);
+                throw new NonexistentEntityException("The logType with id " + id + " no longer exists.", enfe);
             }
             List<String> illegalOrphanMessages = null;
-            Collection<AlarmLog> alarmLogCollectionOrphanCheck = user.getAlarmLogCollection();
+            Collection<AlarmLog> alarmLogCollectionOrphanCheck = logType.getAlarmLogCollection();
             for (AlarmLog alarmLogCollectionOrphanCheckAlarmLog : alarmLogCollectionOrphanCheck) {
                 if (illegalOrphanMessages == null) {
                     illegalOrphanMessages = new ArrayList<String>();
                 }
-                illegalOrphanMessages.add("This User (" + user + ") cannot be destroyed since the AlarmLog " + alarmLogCollectionOrphanCheckAlarmLog + " in its alarmLogCollection field has a non-nullable user field.");
+                illegalOrphanMessages.add("This LogType (" + logType + ") cannot be destroyed since the AlarmLog " + alarmLogCollectionOrphanCheckAlarmLog + " in its alarmLogCollection field has a non-nullable type field.");
             }
             if (illegalOrphanMessages != null) {
                 throw new IllegalOrphanException(illegalOrphanMessages);
             }
-            em.remove(user);
+            em.remove(logType);
             em.getTransaction().commit();
         } finally {
             if (em != null) {
@@ -158,19 +155,19 @@ public class UserJpaController implements Serializable {
         }
     }
 
-    public List<User> findUserEntities() {
-        return findUserEntities(true, -1, -1);
+    public List<LogType> findLogTypeEntities() {
+        return findLogTypeEntities(true, -1, -1);
     }
 
-    public List<User> findUserEntities(int maxResults, int firstResult) {
-        return findUserEntities(false, maxResults, firstResult);
+    public List<LogType> findLogTypeEntities(int maxResults, int firstResult) {
+        return findLogTypeEntities(false, maxResults, firstResult);
     }
 
-    private List<User> findUserEntities(boolean all, int maxResults, int firstResult) {
+    private List<LogType> findLogTypeEntities(boolean all, int maxResults, int firstResult) {
         EntityManager em = getEntityManager();
         try {
             CriteriaQuery cq = em.getCriteriaBuilder().createQuery();
-            cq.select(cq.from(User.class));
+            cq.select(cq.from(LogType.class));
             Query q = em.createQuery(cq);
             if (!all) {
                 q.setMaxResults(maxResults);
@@ -182,20 +179,20 @@ public class UserJpaController implements Serializable {
         }
     }
 
-    public User findUser(Integer id) {
+    public LogType findLogType(Integer id) {
         EntityManager em = getEntityManager();
         try {
-            return em.find(User.class, id);
+            return em.find(LogType.class, id);
         } finally {
             em.close();
         }
     }
 
-    public int getUserCount() {
+    public int getLogTypeCount() {
         EntityManager em = getEntityManager();
         try {
             CriteriaQuery cq = em.getCriteriaBuilder().createQuery();
-            Root<User> rt = cq.from(User.class);
+            Root<LogType> rt = cq.from(LogType.class);
             cq.select(em.getCriteriaBuilder().count(rt));
             Query q = em.createQuery(cq);
             return ((Long) q.getSingleResult()).intValue();
@@ -203,37 +200,5 @@ public class UserJpaController implements Serializable {
             em.close();
         }
     }
-
-    public List<User> findByNameLike(String name) {
-        EntityManager em = getEntityManager();
-        try {
-            Query q = em.createNamedQuery("User.findByNameLike");
-            q.setParameter("name", "%" + name + "%");
-            return q.getResultList();
-        } finally {
-            em.close();
-        }
-    }
-   
-    public List<Object[]> listIdName() {
-        EntityManager em = getEntityManager();
-        try {
-            Query q = em.createNamedQuery("User.listIdName");
-            return q.getResultList();
-        } finally {
-            em.close();
-        }
-    }
     
-     public  ObservableList<ComboPair<Long, String>> updateUser() {
-        ObservableList<ComboPair<Long, String>> userOList;
-        UserJpaController ujc = new UserJpaController(emf);
-        userOList = FXCollections.observableArrayList();
-        List<User> userList = ujc.findUserEntities();
-        for (User user : userList) {
-            ComboPair p = new ComboPair(user.getId(), user.getName());
-            userOList.add(p);
-        }
-        return userOList;
-    }
 }

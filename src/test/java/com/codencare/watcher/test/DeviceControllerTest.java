@@ -40,13 +40,13 @@ public class DeviceControllerTest {
     @Test
     public void insertNewDevice() {
         CustomerJpaController cjc = new CustomerJpaController(emf);
-        Customer currentCustomer = cjc.findCustomer(cjc.maxId());;
+        Customer currentCustomer = cjc.findCustomer(cjc.maxId()); 
         Random rand = new Random();
         Device newDev = new Device((long)Integer.MAX_VALUE + (long)rand.nextInt(10000));
         newDev.setLocX(rand.nextInt(1000));
         newDev.setLocY(rand.nextInt(1000));
          
-        newDev.setCustomerId(currentCustomer);
+        newDev.setCustomer(currentCustomer);
         DeviceJpaController djc = new DeviceJpaController(emf);
         try {
             djc.create(newDev);

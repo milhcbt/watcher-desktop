@@ -7,6 +7,7 @@ package com.codencare.watcher.entity;
 
 import java.io.Serializable;
 import javax.persistence.Basic;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -15,6 +16,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
+import javax.persistence.Table;
 import javax.xml.bind.annotation.XmlRootElement;
 
 /**
@@ -22,6 +24,7 @@ import javax.xml.bind.annotation.XmlRootElement;
  * @author abah
  */
 @Entity
+@Table(name = "contact")
 @XmlRootElement
 @NamedQueries({
     @NamedQuery(name = "Contact.findAll", query = "SELECT c FROM Contact c"),
@@ -33,16 +36,21 @@ import javax.xml.bind.annotation.XmlRootElement;
 public class Contact implements Serializable {
     private static final long serialVersionUID = 1L;
     @Basic(optional = false)
+    @Column(name = "name")
     private String name;
     @Basic(optional = false)
+    @Column(name = "phone")
     private String phone;
     @Basic(optional = false)
+    @Column(name = "email")
     private String email;
     @Basic(optional = false)
+    @Column(name = "description")
     private String description;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Basic(optional = false)
+    @Column(name = "id")
     private Integer id;
     @JoinColumn(name = "group", referencedColumnName = "id")
     @ManyToOne(optional = false)

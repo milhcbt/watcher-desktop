@@ -9,14 +9,17 @@ import java.io.Serializable;
 import java.util.Collection;
 import javax.persistence.Basic;
 import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
+import javax.persistence.Table;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 
@@ -25,77 +28,99 @@ import javax.xml.bind.annotation.XmlTransient;
  * @author abah
  */
 @Entity
+@Table(name = "customer")
 @XmlRootElement
 @NamedQueries({
     @NamedQuery(name = "Customer.findAll", query = "SELECT c FROM Customer c"),
     @NamedQuery(name = "Customer.findById", query = "SELECT c FROM Customer c WHERE c.id = :id"),
-    @NamedQuery(name = "Customer.findByNama", query = "SELECT c FROM Customer c WHERE c.nama = :nama"),
-    @NamedQuery(name = "Customer.findByAlamat", query = "SELECT c FROM Customer c WHERE c.alamat = :alamat"),
-    @NamedQuery(name = "Customer.findByPhone", query = "SELECT c FROM Customer c WHERE c.phone = :phone"),
+    @NamedQuery(name = "Customer.findByName", query = "SELECT c FROM Customer c WHERE c.name = :name"),
+    @NamedQuery(name = "Customer.findByNameLike", query = "SELECT DISTINCT c FROM Customer c WHERE c.name LIKE :name"),
+    @NamedQuery(name = "Customer.findByAddress", query = "SELECT c FROM Customer c WHERE c.address = :address"),
+    @NamedQuery(name = "Customer.findByPrimaryPhone", query = "SELECT c FROM Customer c WHERE c.primaryPhone = :primaryPhone"),
+    @NamedQuery(name = "Customer.findBySecondaryPhone", query = "SELECT c FROM Customer c WHERE c.secondaryPhone = :secondaryPhone"),
     @NamedQuery(name = "Customer.findByEmail", query = "SELECT c FROM Customer c WHERE c.email = :email")})
-
 public class Customer implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Basic(optional = false)
-    private Long id;
+    @Column(name = "id")
+    private Integer id;
     @Basic(optional = false)
-    private String nama;
+    @Column(name = "name")
+    private String name;
     @Basic(optional = false)
-    private String alamat;
+    @Column(name = "address")
+    private String address;
     @Basic(optional = false)
-    private String phone;
+    @Column(name = "primary_phone")
+    private String primaryPhone;
     @Basic(optional = false)
+    @Column(name = "secondary_phone")
+    private String secondaryPhone;
+    @Basic(optional = false)
+    @Column(name = "email")
     private String email;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "customerId", fetch = FetchType.LAZY)
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "customer")
     private Collection<Device> deviceCollection;
+    @JoinColumn(name = "city", referencedColumnName = "id")
+    @ManyToOne(optional = false)
+    private City city;
 
     public Customer() {
     }
 
-    public Customer(Long id) {
+    public Customer(Integer id) {
         this.id = id;
     }
 
-    public Customer(Long id, String nama, String alamat, String phone, String email) {
+    public Customer(Integer id, String name, String address, String primaryPhone, String secondaryPhone, String email) {
         this.id = id;
-        this.nama = nama;
-        this.alamat = alamat;
-        this.phone = phone;
+        this.name = name;
+        this.address = address;
+        this.primaryPhone = primaryPhone;
+        this.secondaryPhone = secondaryPhone;
         this.email = email;
     }
 
-    public Long getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 
-    public String getNama() {
-        return nama;
+    public String getName() {
+        return name;
     }
 
-    public void setNama(String nama) {
-        this.nama = nama;
+    public void setName(String name) {
+        this.name = name;
     }
 
-    public String getAlamat() {
-        return alamat;
+    public String getAddress() {
+        return address;
     }
 
-    public void setAlamat(String alamat) {
-        this.alamat = alamat;
+    public void setAddress(String address) {
+        this.address = address;
     }
 
-    public String getPhone() {
-        return phone;
+    public String getPrimaryPhone() {
+        return primaryPhone;
     }
 
-    public void setPhone(String phone) {
-        this.phone = phone;
+    public void setPrimaryPhone(String primaryPhone) {
+        this.primaryPhone = primaryPhone;
+    }
+
+    public String getSecondaryPhone() {
+        return secondaryPhone;
+    }
+
+    public void setSecondaryPhone(String secondaryPhone) {
+        this.secondaryPhone = secondaryPhone;
     }
 
     public String getEmail() {
@@ -113,6 +138,26 @@ public class Customer implements Serializable {
 
     public void setDeviceCollection(Collection<Device> deviceCollection) {
         this.deviceCollection = deviceCollection;
+    }
+
+    public City getCity() {
+        return city;
+    }
+
+    public void setCity(City city) {
+        this.city = city;
+    }
+    
+    public String getStringCity(){
+         return this.city.getDescription();
+    }
+    
+    public String getZipCode(){
+        return this.city.getZipCode();
+    }
+    
+    public String getArea(){
+        return this.city.getArea();
     }
 
     @Override

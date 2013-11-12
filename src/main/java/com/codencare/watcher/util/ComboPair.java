@@ -10,6 +10,8 @@ import javafx.util.Pair;
 /**
  *
  * @author abah
+ * @param <K> key
+ * @param <V> Value
  */
 public class ComboPair<K,V> extends Pair <K,V>{
     private static final String SEPARATOR = "|";
@@ -22,7 +24,4 @@ public class ComboPair<K,V> extends Pair <K,V>{
         return getValue().toString();
     }
     
-//    public static Long getKey(String value){
-//      return  Long.parseLong(value.substring(value.indexOf(SEPARATOR)+1));
-//    }
 }

@@ -9,17 +9,16 @@ import java.io.Serializable;
 import java.util.Collection;
 import java.util.Date;
 import javax.persistence.Basic;
-import javax.persistence.Cacheable;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
+import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -30,6 +29,7 @@ import javax.xml.bind.annotation.XmlTransient;
  * @author abah
  */
 @Entity
+@Table(name = "device")
 @XmlRootElement
 @NamedQueries({
     @NamedQuery(name = "Device.findAll", query = "SELECT d FROM Device d"),
@@ -45,9 +45,9 @@ import javax.xml.bind.annotation.XmlTransient;
     @NamedQuery(name = "Device.findByAnalog1", query = "SELECT d FROM Device d WHERE d.analog1 = :analog1"),
     @NamedQuery(name = "Device.findByAnalog2", query = "SELECT d FROM Device d WHERE d.analog2 = :analog2"),
     @NamedQuery(name = "Device.findByAnalog3", query = "SELECT d FROM Device d WHERE d.analog3 = :analog3"),
-    @NamedQuery(name = "Device.findByAnalog4", query = "SELECT d FROM Device d WHERE d.analog4 = :analog4")})
+    @NamedQuery(name = "Device.findByAnalog4", query = "SELECT d FROM Device d WHERE d.analog4 = :analog4"),
+    @NamedQuery(name = "Device.findByAddress", query = "SELECT d FROM Device d WHERE d.address = :address")})
 public class Device implements Serializable {
-    
     private static final long serialVersionUID = 1L;
     public static final byte RESOLVE_RESOLVED = 1;
     public static final byte RESOLVE_NORMAL = 1;
@@ -58,47 +58,67 @@ public class Device implements Serializable {
     
     @Id
     @Basic(optional = false)
-    private long id;
+    @Column(name = "id")
+    private Long id;
     @Basic(optional = false)
+    @Column(name = "loc_x")
     private int locX;
     @Basic(optional = false)
+    @Column(name = "loc_y")
     private int locY;
     @Basic(optional = false)
     @Column(name = "last_time")
     @Temporal(TemporalType.TIMESTAMP)
     private Date lastTime;
     @Basic(optional = false)
-    private byte resolve;
+    @Column(name = "resolve")
+    private short resolve;
     @Basic(optional = false)
-    private byte digit1;
+    @Column(name = "digit1")
+    private short digit1;
     @Basic(optional = false)
-    private byte digit2;
+    @Column(name = "digit2")
+    private short digit2;
     @Basic(optional = false)
-    private byte digit3;
+    @Column(name = "digit3")
+    private short digit3;
     @Basic(optional = false)
-    private byte digit4;
+    @Column(name = "digit4")
+    private short digit4;
     @Basic(optional = false)
+    @Column(name = "analog1")
     private short analog1;
     @Basic(optional = false)
+    @Column(name = "analog2")
     private short analog2;
     @Basic(optional = false)
+    @Column(name = "analog3")
     private short analog3;
     @Basic(optional = false)
+    @Column(name = "analog4")
     private short analog4;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "deviceId", fetch = FetchType.LAZY)
+    @Basic(optional = false)
+    @Column(name = "address")
+    private String address;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "device")
     private Collection<Message> messageCollection;
-    @JoinColumn(name = "customer_id", referencedColumnName = "id")
-    @ManyToOne(optional = false, fetch = FetchType.LAZY)
-    private Customer customerId;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "device")
+    private Collection<AlarmLog> alarmLogCollection;
+    @JoinColumn(name = "customer", referencedColumnName = "id")
+    @ManyToOne(optional = false)
+    private Customer customer;
+    @JoinColumn(name = "city", referencedColumnName = "id")
+    @ManyToOne(optional = false)
+    private City city;
 
     public Device() {
     }
 
-    public Device(long id) {
+    public Device(Long id) {
         this.id = id;
     }
 
-    public Device(long id, int locX, int locY, Date lastTime, byte resolve, byte digit1, byte digit2, byte digit3, byte digit4, short analog1, short analog2, short analog3, short analog4) {
+    public Device(Long id, int locX, int locY, Date lastTime, short resolve, short digit1, short digit2, short digit3, short digit4, short analog1, short analog2, short analog3, short analog4, String address) {
         this.id = id;
         this.locX = locX;
         this.locY = locY;
@@ -112,13 +132,14 @@ public class Device implements Serializable {
         this.analog2 = analog2;
         this.analog3 = analog3;
         this.analog4 = analog4;
+        this.address = address;
     }
 
-    public long getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
@@ -146,43 +167,43 @@ public class Device implements Serializable {
         this.lastTime = lastTime;
     }
 
-    public byte getResolve() {
+    public short getResolve() {
         return resolve;
     }
 
-    public void setResolve(byte resolve) {
+    public void setResolve(short resolve) {
         this.resolve = resolve;
     }
 
-    public byte getDigit1() {
+    public short getDigit1() {
         return digit1;
     }
 
-    public void setDigit1(byte digit1) {
+    public void setDigit1(short digit1) {
         this.digit1 = digit1;
     }
 
-    public byte getDigit2() {
+    public short getDigit2() {
         return digit2;
     }
 
-    public void setDigit2(byte digit2) {
+    public void setDigit2(short digit2) {
         this.digit2 = digit2;
     }
 
-    public byte getDigit3() {
+    public short getDigit3() {
         return digit3;
     }
 
-    public void setDigit3(byte digit3) {
+    public void setDigit3(short digit3) {
         this.digit3 = digit3;
     }
 
-    public byte getDigit4() {
+    public short getDigit4() {
         return digit4;
     }
 
-    public void setDigit4(byte digit4) {
+    public void setDigit4(short digit4) {
         this.digit4 = digit4;
     }
 
@@ -218,6 +239,14 @@ public class Device implements Serializable {
         this.analog4 = analog4;
     }
 
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
+    }
+
     @XmlTransient
     public Collection<Message> getMessageCollection() {
         return messageCollection;
@@ -227,33 +256,46 @@ public class Device implements Serializable {
         this.messageCollection = messageCollection;
     }
 
-    public Customer getCustomerId() {
-        return customerId;
+    @XmlTransient
+    public Collection<AlarmLog> getAlarmLogCollection() {
+        return alarmLogCollection;
     }
 
-    public void setCustomerId(Customer customerId) {
-        this.customerId = customerId;
+    public void setAlarmLogCollection(Collection<AlarmLog> alarmLogCollection) {
+        this.alarmLogCollection = alarmLogCollection;
+    }
+
+    public Customer getCustomer() {
+        return customer;
+    }
+
+    public void setCustomer(Customer customer) {
+        this.customer = customer;
+    }
+
+    public City getCity() {
+        return city;
+    }
+
+    public void setCity(City city) {
+        this.city = city;
     }
 
     @Override
     public int hashCode() {
-        int hash = 5;
-        hash = 97 * hash + (int) (this.id ^ (this.id >>> 32));
+        int hash = 0;
+        hash += (id != null ? id.hashCode() : 0);
         return hash;
     }
 
-   
-
     @Override
-    public boolean equals(Object obj) {
-        if (obj == null) {
+    public boolean equals(Object object) {
+        // TODO: Warning - this method won't work in the case the id fields are not set
+        if (!(object instanceof Device)) {
             return false;
         }
-        if (getClass() != obj.getClass()) {
-            return false;
-        }
-        final Device other = (Device) obj;
-        if (this.id != other.id) {
+        Device other = (Device) object;
+        if ((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id))) {
             return false;
         }
         return true;
@@ -261,14 +303,7 @@ public class Device implements Serializable {
 
     @Override
     public String toString() {
-        return "Device{" + "id=" + id + ", locX=" + locX + ", locY=" + locY + 
-                ", lastTime=" + lastTime + ", resolve=" + resolve + 
-                ", digit1=" + digit1 + ", digit2=" + digit2 + ", digit3=" +
-                digit3 + ", digit4=" + digit4 + ", analog1=" + analog1 + 
-                ", analog2=" + analog2 + ", analog3=" + analog3 + ", analog4=" +
-                analog4 + ", messageCollection=" + messageCollection +
-                ", customerId=" + customerId + '}';
+        return "com.codencare.watcher.entity.Device[ id=" + id + " ]";
     }
     
-  
 }

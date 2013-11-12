@@ -48,11 +48,11 @@ public class NewNodeDialog extends Stage {
 
     private Customer currentCustomer;
     private Point2D currentLoc;
-    private TextField namaTxt;
-    private TextField alamatTxt;
-    private TextField telpTxt;
+    private TextField nameTxt;
+    private TextField addressTxt;
+    private TextField primaryPhoneTxt;
     private TextField emailTxt;
-    private ObservableList<ComboPair<Long, String>> data; 
+    private ObservableList<ComboPair<Integer, String>> data; 
 
     public NewNodeDialog(Stage owner, boolean modality, String title, Point2D location) {
         super();
@@ -84,20 +84,20 @@ public class NewNodeDialog extends Stage {
         Label namaCustLbl = new Label("Nama: ");
         gridpane.add(namaCustLbl, 0, 2);
 
-        namaTxt = new TextField();
-        namaTxt.setVisible(false);
-        gridpane.add(namaTxt, 1, 2);
+        nameTxt = new TextField();
+        nameTxt.setVisible(false);
+        gridpane.add(nameTxt, 1, 2);
 
-        final AutoCompleteTextField<ComboPair<Long, String>> nameBox = new AutoCompleteTextField();
+        final AutoCompleteTextField<ComboPair<Integer, String>> nameBox = new AutoCompleteTextField();
         nameBox.setItems(data);
         nameBox.getPopup().addEventHandler(WindowEvent.WINDOW_HIDING,
                 new EventHandler<WindowEvent>() {
                 @Override
                     public void handle(WindowEvent t) {
-                        namaTxt.setText(nameBox.getText());
+                        nameTxt.setText(nameBox.getText());
                         currentCustomer = cjc.findCustomer(nameBox.getSelectedData().getKey());
-                        alamatTxt.setText(currentCustomer.getAlamat());
-                        telpTxt.setText(currentCustomer.getPhone());
+                        addressTxt.setText(currentCustomer.getAddress());
+                        primaryPhoneTxt.setText(currentCustomer.getPrimaryPhone());
                         emailTxt.setText(currentCustomer.getEmail());
                     }
                 });
@@ -113,36 +113,40 @@ public class NewNodeDialog extends Stage {
                         btn.setText("save");
                         nameBox.setVisible(false);
                         nameBox.setText("");
-                        namaTxt.setVisible(true);
-                        namaTxt.setText("");
-                        alamatTxt.setDisable(false);
-                        alamatTxt.setText("");
-                        telpTxt.setDisable(false);
-                        telpTxt.setText("");
+                        nameTxt.setVisible(true);
+                        nameTxt.setText("");
+                        addressTxt.setDisable(false);
+                        addressTxt.setText("");
+                        primaryPhoneTxt.setDisable(false);
+                        primaryPhoneTxt.setText("");
                         emailTxt.setDisable(false);
                         emailTxt.setText("");
 
                     } else {
-                        long newId = cjc.maxId() + 1;
-                        Customer newCust = new Customer(newId);
-                        newCust.setNama(namaTxt.getText());
-                        newCust.setAlamat(alamatTxt.getText());
-                        newCust.setPhone(telpTxt.getText());
-                        newCust.setEmail(emailTxt.getText());
-                        cjc.create(newCust);
-                        updateData();
-                        currentCustomer = newCust;
-                        btn.setText("+");
-                        nameBox.setVisible(true);
-                        nameBox.setText("");
-                        namaTxt.setVisible(false);
-                        namaTxt.setText("");
-                        alamatTxt.setDisable(true);
-                        alamatTxt.setText("");
-                        telpTxt.setDisable(true);
-                        telpTxt.setText("");
-                        emailTxt.setDisable(true);
-                        emailTxt.setText("");
+                        try {
+                            //                        long newId = cjc.maxId() + 1;
+                            Customer newCust = new Customer();
+                            newCust.setName(nameTxt.getText());
+                            newCust.setAddress(addressTxt.getText());
+                            newCust.setPrimaryPhone(primaryPhoneTxt.getText());
+                            newCust.setEmail(emailTxt.getText());
+                            cjc.create(newCust);
+                            updateData();
+                            currentCustomer = newCust;
+                            btn.setText("+");
+                            nameBox.setVisible(true);
+                            nameBox.setText("");
+                            nameTxt.setVisible(false);
+                            nameTxt.setText("");
+                            addressTxt.setDisable(true);
+                            addressTxt.setText("");
+                            primaryPhoneTxt.setDisable(true);
+                            primaryPhoneTxt.setText("");
+                            emailTxt.setDisable(true);
+                            emailTxt.setText("");
+                        } catch (Exception ex) {
+                            LOGGER.error(ex.toString());
+                        }
                     }
                 }
             }
@@ -152,16 +156,16 @@ public class NewNodeDialog extends Stage {
         Label alamatLbl = new Label("Alamat: ");
         gridpane.add(alamatLbl, 0, 3);
 
-        alamatTxt = new TextField("alamat");
-        alamatTxt.setDisable(true);
-        gridpane.add(alamatTxt, 1, 3, 2, 1);
+        addressTxt = new TextField("alamat");
+        addressTxt.setDisable(true);
+        gridpane.add(addressTxt, 1, 3, 2, 1);
 
         Label telpLbl = new Label("Telp");
         gridpane.add(telpLbl, 0, 4);
 
-        telpTxt = new TextField("telepon");
-        telpTxt.setDisable(true);
-        gridpane.add(telpTxt, 1, 4, 2, 1);
+        primaryPhoneTxt = new TextField("telepon");
+        primaryPhoneTxt.setDisable(true);
+        gridpane.add(primaryPhoneTxt, 1, 4, 2, 1);
 
         Label emailLbl = new Label("email");
         gridpane.add(emailLbl, 0, 5);
@@ -197,7 +201,7 @@ public class NewNodeDialog extends Stage {
                     Device newDev = new Device(newIp);
                     newDev.setLocX((int) currentLoc.getX());
                     newDev.setLocY((int) currentLoc.getY());
-                    newDev.setCustomerId(currentCustomer);
+                    newDev.setCustomer(currentCustomer);
                     DeviceJpaController djc = new DeviceJpaController(emf);
                     try {
                         djc.create(newDev);
@@ -215,7 +219,7 @@ public class NewNodeDialog extends Stage {
         data = FXCollections.observableArrayList();
         List<Customer> custList = cjc.findCustomerEntities();
         for (Customer c : custList) {
-            ComboPair p = new ComboPair(c.getId(), c.getNama());
+            ComboPair p = new ComboPair(c.getId(), c.getName());
             data.add(p);
         }
     }

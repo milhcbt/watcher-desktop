@@ -240,7 +240,7 @@ public class MainFXMLController implements Initializable {
         customerTable.setEditable(true);
         customerTable.setItems(ol);
         customerTable.autosize();
-        LOGGER.info("x:{0} y:{1}" + new Object[]{event.getX(), event.getY()});
+        LOGGER.debug("x:{0} y:{1}" + new Object[]{event.getX(), event.getY()});
     }
 
     @FXML

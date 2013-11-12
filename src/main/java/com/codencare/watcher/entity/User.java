@@ -6,29 +6,37 @@
 package com.codencare.watcher.entity;
 
 import java.io.Serializable;
-import java.security.InvalidParameterException;
+import java.util.Collection;
 import javax.persistence.Basic;
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
 
 /**
  *
  * @author abah
  */
 @Entity
+@Table(name = "user")
 @XmlRootElement
 @NamedQueries({
     @NamedQuery(name = "User.findAll", query = "SELECT u FROM User u"),
     @NamedQuery(name = "User.findById", query = "SELECT u FROM User u WHERE u.id = :id"),
     @NamedQuery(name = "User.findByName", query = "SELECT u FROM User u WHERE u.name = :name"),
+    @NamedQuery(name = "User.listIdName", query = "SELECT DISTINCT  u.name, u.id FROM User u "),
     @NamedQuery(name = "User.findByNameLike", query = "SELECT u FROM User u WHERE u.name LIKE :name"),
     @NamedQuery(name = "User.findByEmail", query = "SELECT u FROM User u WHERE u.email = :email"),
-    @NamedQuery(name = "User.findByPassword", query = "SELECT u FROM User u WHERE u.password = :password")})
+    @NamedQuery(name = "User.findByPassword", query = "SELECT u FROM User u WHERE u.password = :password"),
+    @NamedQuery(name = "User.findByType", query = "SELECT u FROM User u WHERE u.type = :type")})
 public class User implements Serializable {
     private static final long serialVersionUID = 1L;
     public static final int TYPE_USER = 1;
@@ -36,37 +44,43 @@ public class User implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Basic(optional = false)
-    private Long id;
+    @Column(name = "id")
+    private Integer id;
     @Basic(optional = false)
+    @Column(name = "name")
     private String name;
     @Basic(optional = false)
+    @Column(name = "email")
     private String email;
     @Basic(optional = false)
+    @Column(name = "password")
     private String password;
     @Basic(optional = false)
+    @Column(name = "type")
     private int type;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "user")
+    private Collection<AlarmLog> alarmLogCollection;
 
     public User() {
     }
 
-    public User(Long id) {
+    public User(Integer id) {
         this.id = id;
     }
 
-    public User(Long id, String name, String email, String password,int type) {
+    public User(Integer id, String name, String email, String password, int type) {
         this.id = id;
         this.name = name;
         this.email = email;
         this.password = password;
-        setType(type);
-        
+        this.type = type;
     }
 
-    public Long getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 
@@ -99,14 +113,21 @@ public class User implements Serializable {
     }
 
     public void setType(int type) {
-        if (type == TYPE_ADMIN || type == TYPE_USER){
-            this.type = type;
-        }else{
-            throw new InvalidParameterException("invalid user type");
-        }
+        this.type = type;
     }
     
-    
+    public String getStringType(){
+        return this.type == 2 ?"Administrator" : "User";
+    }
+
+    @XmlTransient
+    public Collection<AlarmLog> getAlarmLogCollection() {
+        return alarmLogCollection;
+    }
+
+    public void setAlarmLogCollection(Collection<AlarmLog> alarmLogCollection) {
+        this.alarmLogCollection = alarmLogCollection;
+    }
 
     @Override
     public int hashCode() {
@@ -130,9 +151,7 @@ public class User implements Serializable {
 
     @Override
     public String toString() {
-        return "User{" + "id=" + id + ", name=" + name + ", email=" + email + ", type="  + type+'}';
+        return "com.codencare.watcher.entity.User[ id=" + id + " ]";
     }
-
-   
     
 }

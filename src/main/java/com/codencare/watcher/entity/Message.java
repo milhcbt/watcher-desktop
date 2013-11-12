@@ -10,7 +10,6 @@ import java.util.Date;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -18,6 +17,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
+import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -27,6 +27,7 @@ import javax.xml.bind.annotation.XmlRootElement;
  * @author abah
  */
 @Entity
+@Table(name = "message")
 @XmlRootElement
 @NamedQueries({
     @NamedQuery(name = "Message.findAll", query = "SELECT m FROM Message m"),
@@ -39,18 +40,21 @@ public class Message implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Basic(optional = false)
+    @Column(name = "id")
     private Long id;
     @Basic(optional = false)
+    @Column(name = "msgtime")
     @Temporal(TemporalType.TIMESTAMP)
     private Date msgtime;
     @Basic(optional = false)
+    @Column(name = "message")
     private String message;
     @Basic(optional = false)
     @Column(name = "msg_type")
     private boolean msgType;
-    @JoinColumn(name = "device_id", referencedColumnName = "id")
-    @ManyToOne(optional = false, fetch = FetchType.LAZY)
-    private Device deviceId;
+    @JoinColumn(name = "device", referencedColumnName = "id")
+    @ManyToOne(optional = false)
+    private Device device;
 
     public Message() {
     }
@@ -98,12 +102,12 @@ public class Message implements Serializable {
         this.msgType = msgType;
     }
 
-    public Device getDeviceId() {
-        return deviceId;
+    public Device getDevice() {
+        return device;
     }
 
-    public void setDeviceId(Device deviceId) {
-        this.deviceId = deviceId;
+    public void setDevice(Device device) {
+        this.device = device;
     }
 
     @Override

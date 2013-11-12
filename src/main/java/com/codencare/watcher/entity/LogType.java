@@ -9,6 +9,7 @@ import java.io.Serializable;
 import java.util.Collection;
 import javax.persistence.Basic;
 import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -19,7 +20,6 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
-import org.codehaus.jackson.annotate.JsonIgnore;
 
 /**
  *
@@ -31,15 +31,17 @@ import org.codehaus.jackson.annotate.JsonIgnore;
 @NamedQueries({
     @NamedQuery(name = "LogType.findAll", query = "SELECT l FROM LogType l"),
     @NamedQuery(name = "LogType.findById", query = "SELECT l FROM LogType l WHERE l.id = :id"),
-    @NamedQuery(name = "LogType.findByDesc", query = "SELECT l FROM LogType l WHERE l.desc = :desc")})
+    @NamedQuery(name = "LogType.findByDesc", query = "SELECT l FROM LogType l WHERE l.description = :description")})
 public class LogType implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Basic(optional = false)
+    @Column(name = "id")
     private Integer id;
     @Basic(optional = false)
-    private String desc;
+    @Column(name = "description")
+    private String description;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "type")
     private Collection<AlarmLog> alarmLogCollection;
 
@@ -52,7 +54,7 @@ public class LogType implements Serializable {
 
     public LogType(Integer id, String desc) {
         this.id = id;
-        this.desc = desc;
+        this.description = desc;
     }
 
     public Integer getId() {
@@ -63,16 +65,15 @@ public class LogType implements Serializable {
         this.id = id;
     }
 
-    public String getDesc() {
-        return desc;
+    public String getDescription() {
+        return description;
     }
 
-    public void setDesc(String desc) {
-        this.desc = desc;
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     @XmlTransient
-    @JsonIgnore
     public Collection<AlarmLog> getAlarmLogCollection() {
         return alarmLogCollection;
     }
