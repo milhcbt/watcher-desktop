@@ -531,10 +531,7 @@ public class TraditionalMainController {
         if (!u.getPassword().matches(".{6,20}")) {
             return false;
         }
-        if (!u.getEmail().toUpperCase().matches("\\b[A-Z0-9._%-]+@[A-Z0-9.-]+\\.[A-Z]{2,4}\\b")) {
-            return false;
-        }
-        return true;
+        return u.getEmail().toUpperCase().matches("\\b[A-Z0-9._%-]+@[A-Z0-9.-]+\\.[A-Z]{2,4}\\b");
     }
 
     @FXML
@@ -585,9 +582,20 @@ public class TraditionalMainController {
         }
     }
     
-    public boolean validateCust(Customer cust){
-      
-        return true;
+    private boolean validateCust(Customer cust){
+        if(!cust.getAddress().matches("[\\w\\s]{2,40}")){
+            return false;
+        }
+        if(!cust.getName().matches("[\\w\\s]{2,40}")){
+            return false;
+        }
+        if(!cust.getPrimaryPhone().matches("\\d{4,20}|\\u002B\\d{4,20}")){
+            return false;
+        }
+        if(!cust.getSecondaryPhone().matches("\\d{4,20}|\\u002B\\d{4,20}")){
+            return false;
+        }
+        return cust.getEmail().toUpperCase().matches("\\b[A-Z0-9._%-]+@[A-Z0-9.-]+\\.[A-Z]{2,4}\\b");
     }
 
     @FXML
