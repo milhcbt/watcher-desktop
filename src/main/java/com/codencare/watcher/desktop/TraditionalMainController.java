@@ -18,8 +18,13 @@ import com.codencare.watcher.entity.Device;
 import com.codencare.watcher.entity.User;
 import com.codencare.watcher.util.ComboPair;
 import com.mytdev.javafx.scene.control.AutoCompleteTextField;
+import java.io.BufferedInputStream;
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.Reader;
 import java.net.ServerSocket;
+import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
 import javafx.application.Platform;
@@ -27,6 +32,7 @@ import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -50,10 +56,10 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
-import javafx.util.Pair;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 import org.apache.log4j.Logger;
+import org.controlsfx.control.action.Action;
 import org.controlsfx.dialog.Dialog;
 import org.controlsfx.dialog.Dialogs;
 
@@ -62,6 +68,8 @@ public class TraditionalMainController {
 
     private static final Logger LOGGER = Logger.getLogger(MainFXMLController.class.getName());
     private static final EntityManagerFactory emf = Persistence.createEntityManagerFactory("watcherDB");
+    
+    
 
     static ServerSocket server;
     static final int port = 7000;
@@ -200,6 +208,7 @@ public class TraditionalMainController {
         assert statusPane != null : "fx:id=\"statusPane\" was not injected: check your FXML file 'TraditionalMain.fxml'.";
 
         // Initialize your logic here: all @FXML variables will have been injected
+        startServer();
         updateDevice();
         mapView = new MapView(alarmedDevices);
         mapView.setId("mapView");
@@ -695,4 +704,70 @@ public class TraditionalMainController {
             }
         }
     }
+    
+    private void startServer(){
+        try {
+            if (server == null || server.isClosed()) {
+                server = new ServerSocket(port);
+            }
+            Thread t = new Thread(task);
+            t.setDaemon(true);
+            t.start();
+        } catch (IOException ex) {
+            LOGGER.error(ex);
+        }
+    }
+    
+    Task<Void> task = new Task<Void>() {
+        @Override
+        protected Void call() {
+            while (true) {
+                Socket sock = null;
+                try {
+                    sock = server.accept();
+                    BufferedInputStream bis = new BufferedInputStream(sock.getInputStream());
+                    Reader reader = new InputStreamReader(bis);
+                    BufferedReader br = new BufferedReader(reader);
+                    final StringBuilder data = new StringBuilder();
+//                    do {
+//                        int i = bis.read();
+//                        LOGGER.info(i + "->"+(char)i);
+//                        if(Character.isLetterOrDigit(i))
+//                        data.append((char) i);
+//                    } while (bis.available() > 0);
+//                    LOGGER.info(data.toString());
+                    data.append(br.readLine());
+                    LOGGER.info(data.toString());
+                    Platform.runLater(new Runnable() {
+                        public void run() {
+                            Action response = Dialogs.create()
+                                    .title("alarm")
+                                    .owner(mainPane.getScene().getWindow())
+                                    .message(data.toString().trim())
+                                    .lightweight()
+                                    .showWarning();
+
+                            if (response == Dialog.Actions.OK) {
+                                // ... submit user input
+                            } else {
+                                // ... user cancelled, reset form to default
+                            }
+                        }
+                    });
+//                System.out.println((new Date()).toString());
+//                Thread.sleep(1000);
+                } catch (IOException ex) {
+                    LOGGER.error(ex);
+                } finally {
+                    if (sock != null) {
+                        try {
+                            sock.close();
+                        } catch (IOException ex) {
+                            LOGGER.error(ex);
+                        }
+                    }
+                }
+            }
+        }
+    };
 }
