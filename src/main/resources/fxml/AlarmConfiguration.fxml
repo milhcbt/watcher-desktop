@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.collections.*?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.control.cell.*?>
+<?import javafx.scene.layout.*?>
+
+<fx:root type="javafx.scene.layout.AnchorPane" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/2.2">
+  <children>
+    <GridPane layoutX="0.0" layoutY="0.0" prefHeight="362.0" prefWidth="-1.0" vgap="10.0">
+      <children>
+        <Label text="Digital1" GridPane.columnIndex="0" GridPane.rowIndex="0" />
+        <Label text="Digital2" GridPane.columnIndex="0" GridPane.rowIndex="1" />
+        <Label text="Digital3" GridPane.columnIndex="0" GridPane.rowIndex="2" />
+        <Label text="Digital4" GridPane.columnIndex="0" GridPane.rowIndex="3" />
+        <Label text="Team A" GridPane.columnIndex="0" GridPane.rowIndex="4" />
+        <Label text="Team B" GridPane.columnIndex="0" GridPane.rowIndex="5" />
+        <HBox prefHeight="100.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="0">
+          <children>
+            <CheckBox fx:id="digit1Owner" mnemonicParsing="false" text="sms owner">
+              <HBox.margin>
+                <Insets />
+              </HBox.margin>
+            </CheckBox>
+            <CheckBox fx:id="digit1Popup" mnemonicParsing="false" text="popup">
+              <HBox.margin>
+                <Insets left="20.0" />
+              </HBox.margin>
+            </CheckBox>
+            <CheckBox fx:id="digit1Sound" mnemonicParsing="false" text="sound">
+              <HBox.margin>
+                <Insets left="20.0" />
+              </HBox.margin>
+            </CheckBox>
+            <ComboBox fx:id="digit1Team">
+              <items>
+                <FXCollections fx:factory="observableArrayList">
+                  <String fx:value="Tim A" />
+                  <String fx:value="Tim B" />
+                </FXCollections>
+              </items>
+              <HBox.margin>
+                <Insets left="20.0" />
+              </HBox.margin>
+            </ComboBox>
+          </children>
+        </HBox>
+        <HBox prefHeight="100.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="1">
+          <children>
+            <CheckBox fx:id="digit2Owner" mnemonicParsing="false" text="sms owner">
+              <HBox.margin>
+                <Insets />
+              </HBox.margin>
+            </CheckBox>
+            <CheckBox fx:id="digit2Popup" mnemonicParsing="false" text="popup">
+              <HBox.margin>
+                <Insets left="20.0" />
+              </HBox.margin>
+            </CheckBox>
+            <CheckBox fx:id="digit2Sound" mnemonicParsing="false" text="sound">
+              <HBox.margin>
+                <Insets left="20.0" />
+              </HBox.margin>
+            </CheckBox>
+            <ComboBox fx:id="digit2Team">
+              <items>
+                <FXCollections fx:factory="observableArrayList">
+                  <String fx:value="Tim A" />
+                  <String fx:value="Tim B" />
+                </FXCollections>
+              </items>
+              <HBox.margin>
+                <Insets left="20.0" />
+              </HBox.margin>
+            </ComboBox>
+          </children>
+        </HBox>
+        <HBox prefHeight="100.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="2">
+          <children>
+            <CheckBox id="digit1Owner" fx:id="digit3Owner" mnemonicParsing="false" text="sms owner">
+              <HBox.margin>
+                <Insets />
+              </HBox.margin>
+            </CheckBox>
+            <CheckBox fx:id="digit3Popup" mnemonicParsing="false" text="popup">
+              <HBox.margin>
+                <Insets left="20.0" />
+              </HBox.margin>
+            </CheckBox>
+            <CheckBox fx:id="digit3Sound" mnemonicParsing="false" text="sound">
+              <HBox.margin>
+                <Insets left="20.0" />
+              </HBox.margin>
+            </CheckBox>
+            <ComboBox fx:id="digit3Team">
+              <items>
+                <FXCollections fx:factory="observableArrayList">
+                  <String fx:value="Tim A" />
+                  <String fx:value="Tim B" />
+                </FXCollections>
+              </items>
+              <HBox.margin>
+                <Insets left="20.0" />
+              </HBox.margin>
+            </ComboBox>
+          </children>
+        </HBox>
+        <HBox prefHeight="100.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="3">
+          <children>
+            <CheckBox fx:id="digit4Owner" mnemonicParsing="false" text="sms owner">
+              <HBox.margin>
+                <Insets />
+              </HBox.margin>
+            </CheckBox>
+            <CheckBox fx:id="digit4Popup" mnemonicParsing="false" text="popup">
+              <HBox.margin>
+                <Insets left="20.0" />
+              </HBox.margin>
+            </CheckBox>
+            <CheckBox fx:id="digit4Sound" mnemonicParsing="false" text="sound">
+              <HBox.margin>
+                <Insets left="20.0" />
+              </HBox.margin>
+            </CheckBox>
+            <ComboBox fx:id="digit4Team">
+              <items>
+                <FXCollections fx:factory="observableArrayList">
+                  <String fx:value="Tim A" />
+                  <String fx:value="Tim B" />
+                </FXCollections>
+              </items>
+              <HBox.margin>
+                <Insets left="20.0" />
+              </HBox.margin>
+            </ComboBox>
+          </children>
+        </HBox>
+        <TextArea id="timA" fx:id="teamA" prefHeight="200.0" prefWidth="-1.0" wrapText="true" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+        <TextArea fx:id="teamB" prefHeight="200.0" prefWidth="-1.0" wrapText="true" GridPane.columnIndex="1" GridPane.rowIndex="5" />
+        <Button fx:id="saveAlarmConf" mnemonicParsing="false" onAction="#onSaveAlarmConf" text="save" GridPane.columnIndex="1" GridPane.rowIndex="6" />
+      </children>
+      <columnConstraints>
+        <ColumnConstraints hgrow="SOMETIMES" maxWidth="265.0" minWidth="10.0" prefWidth="83.0" />
+        <ColumnConstraints hgrow="SOMETIMES" maxWidth="452.0" minWidth="10.0" prefWidth="449.0" />
+      </columnConstraints>
+      <rowConstraints>
+        <RowConstraints maxHeight="27.0" minHeight="10.0" prefHeight="27.0" vgrow="SOMETIMES" />
+        <RowConstraints maxHeight="27.0" minHeight="10.0" prefHeight="27.0" vgrow="SOMETIMES" />
+        <RowConstraints maxHeight="27.0" minHeight="10.0" prefHeight="27.0" vgrow="SOMETIMES" />
+        <RowConstraints maxHeight="27.0" minHeight="10.0" prefHeight="27.0" vgrow="SOMETIMES" />
+        <RowConstraints maxHeight="80.0" minHeight="10.0" prefHeight="80.0" vgrow="SOMETIMES" />
+        <RowConstraints maxHeight="80.0" minHeight="0.0" prefHeight="80.0" vgrow="SOMETIMES" />
+        <RowConstraints maxHeight="29.0" minHeight="0.0" prefHeight="29.0" vgrow="SOMETIMES" />
+      </rowConstraints>
+    </GridPane>
+  </children>
+</fx:root>

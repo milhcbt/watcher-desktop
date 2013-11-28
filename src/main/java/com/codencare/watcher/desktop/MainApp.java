@@ -1,5 +1,6 @@
 package com.codencare.watcher.desktop;
 
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
@@ -59,10 +60,11 @@ public class MainApp extends Application {
 
    //TODO:make properties has default value, in case properties has error or typo
     static {
-        try {
-            InputStream is = MainApp.class.getResourceAsStream("/watcher.properties");
-            defaultProps.load(is);
-        } catch (IOException ex) {
+        
+//            try (InputStream is = MainApp.class.getResourceAsStream("/watcher.properties")) {
+            try (InputStream is = new FileInputStream("./watcher.properties")) {
+                defaultProps.load(is);
+            }catch (IOException ex) {
             LOGGER.error(ex);
         }
     }

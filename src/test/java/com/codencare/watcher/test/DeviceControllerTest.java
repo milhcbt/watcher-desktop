@@ -5,7 +5,7 @@
  */
 package com.codencare.watcher.test;
 
-import com.codencare.message.MessageLabel;
+import com.codencare.esb.message.MessageLabel;
 import com.codencare.watcher.controller.CustomerJpaController;
 import com.codencare.watcher.controller.DeviceJpaController;
 import com.codencare.watcher.dialog.NewNodeDialog;

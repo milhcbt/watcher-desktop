@@ -5,6 +5,9 @@
  */
 package com.codencare.watcher.desktop;
 
+import com.codencare.esb.message.IMessage;
+import com.codencare.esb.message.Metajasa01;
+import com.codencare.esb.message.Prasimax;
 import com.codencare.watcher.component.MapView;
 import com.codencare.watcher.controller.CityJpaController;
 import com.codencare.watcher.controller.CustomerJpaController;
@@ -16,17 +19,21 @@ import com.codencare.watcher.entity.City;
 import com.codencare.watcher.entity.Customer;
 import com.codencare.watcher.entity.Device;
 import com.codencare.watcher.entity.User;
+import com.codencare.watcher.esb.processor.Metajasa01Processor;
+import com.codencare.watcher.esb.processor.PrasimakProcessor;
 import com.codencare.watcher.util.ComboPair;
 import com.mytdev.javafx.scene.control.AutoCompleteTextField;
-import java.io.BufferedInputStream;
-import java.io.BufferedReader;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.Reader;
+import java.io.OutputStream;
 import java.net.ServerSocket;
-import java.net.Socket;
+import java.net.URL;
+import java.net.UnknownHostException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.logging.Level;
 import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -41,6 +48,7 @@ import javafx.geometry.Point2D;
 import javafx.geometry.Pos;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.control.Button;
+import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
@@ -53,121 +61,45 @@ import javafx.scene.control.TextField;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.VBox;
+import javafx.scene.media.Media;
+import javafx.scene.media.MediaPlayer;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
+import org.apache.camel.CamelContext;
+import org.apache.camel.Exchange;
+import org.apache.camel.builder.RouteBuilder;
+import org.apache.camel.impl.DefaultCamelContext;
+import org.apache.camel.Processor;
 import org.apache.log4j.Logger;
 import org.controlsfx.control.action.Action;
 import org.controlsfx.dialog.Dialog;
 import org.controlsfx.dialog.Dialogs;
 
-//FIXME: THIS CLASS EVERYTHING AT ONE, SHOULD SEPARATED FOR EACH FORM, AND MAKE FORM COMPONENT GENERIC
 public class TraditionalMainController {
 
     private static final Logger LOGGER = Logger.getLogger(MainFXMLController.class.getName());
     private static final EntityManagerFactory emf = Persistence.createEntityManagerFactory("watcherDB");
-    
-    
+    private static  CamelContext context;
 
     static ServerSocket server;
     static final int port = 7000;
     static final Rectangle2D primScreenBounds = Screen.getPrimary().getVisualBounds();
+    static final URL MEDIA_URL = TraditionalMainController.class.getResource("/styles/mine/audio/alarm.mp3");
 
     private Point2D loc;
     private List<Device> alarmedDevices;
 
     private MapView mapView;
 
-//    @FXML // ResourceBundle that was given to the FXMLLoader
-//    private ResourceBundle resources;
-//
-//    @FXML // URL userForm of the FXML file that was given to the FXMLLoader
-//    private URL location;
     @FXML // fx:id="mainPane"
     private ScrollPane mainPane; // Value injected by FXMLLoader
 
     @FXML // fx:id="statusPane"
     private FlowPane statusPane; // Value injected by FXMLLoader
 
-    //FIXME: THIS CLASS EVERYTHING AT ONE, SHOULD SEPARATED FOR EACH FORM, AND MAKE FORM COMPONENT GENERIC
-    //user form properties - start
-    private User currUser;
-
-    @FXML
-    private VBox userVBox;
-    @FXML
-    private TextField addUserEmail;
-
-    @FXML
-    private Button addUser;
-
-    @FXML
-    private Button saveUser;
-
-    @FXML
-    private Button deleteUser;
-
-    @FXML
-    private TextField addUserName;
-
-    @FXML
-    private PasswordField addUserPassword;
-
-    @FXML
-    private ComboBox<String> addUserType;
-
-    @FXML
-    private TableView<User> userTable;
-    private final ObservableList<ComboPair<Long, String>> userList = FXCollections.observableArrayList();
-
-    //user form properties - end
-    //FIXME: THIS CLASS EVERYTHING AT ONE :), SHOULD SEPARATED FOR EACH FORM, AND MAKE FORM COMPONENT GENERIC
-    // customer form properties - start
-    Customer currCust;
-
-    @FXML
-    private TableView<Customer> customerTable;
-    private final ObservableList<ComboPair<Long, String>> custList = FXCollections.observableArrayList();
-
-    @FXML
-    private VBox custVBox;
-
-    @FXML
-    private Button addCust;
-
-    @FXML
-    private Button deleteCust;
-
-    @FXML
-    private Button saveCust;
-
-    @FXML
-    private TextArea addCustAddress;
-
-    @FXML
-    private ComboBox<ComboPair<Integer, String>> addCustArea;
-
-    @FXML
-    private ComboBox<String> addCustCity;
-
-    @FXML
-    private TextField addCustEmail;
-
-    @FXML
-    private TextField addCustName;
-
-    @FXML
-    private TextField addCustPrimaryPhone;
-
-    @FXML
-    private TextField addCustSecPhone;
-
-    @FXML
-    private ComboBox<ComboPair<Integer, String>> addCustZipCode;
-
-    // customer form properties - end
     // menu bar - start
     @FXML // fx:id="about"
     private MenuItem about; // Value injected by FXMLLoader
@@ -227,7 +159,21 @@ public class TraditionalMainController {
     // Handler for MenuItem[fx:id="alarm"] onAction
     @FXML
     void onAdminAlarm(ActionEvent event) {
-        // handle the event here
+        final AnchorPane root = new AnchorPane();
+        Dialog dlg = new Dialog(null, MainApp.defaultProps.getProperty("alarm-management"), true, true);
+
+        FXMLLoader fxmlLoader = new FXMLLoader(
+                getClass().getResource("/fxml/AlarmConfiguration.fxml"));
+
+        fxmlLoader.setRoot(root);
+        fxmlLoader.setController(new AlarmAdminController());
+        try {
+            fxmlLoader.load();
+            dlg.setContent(root);
+            dlg.show();
+        } catch (IOException ex) {
+            LOGGER.error(ex.toString());
+        }
     }
 
     // Handler for MenuItem[fx:id="adminComm"] onAction
@@ -247,62 +193,10 @@ public class TraditionalMainController {
                 getClass().getResource("/fxml/CustomerAdministration.fxml"));
 
         fxmlLoader.setRoot(root);
-        fxmlLoader.setController(this);
+        fxmlLoader.setController(new CustAdminController());
         try {
             fxmlLoader.load();
             dlg.setContent(root);
-            final AutoCompleteTextField<ComboPair<Long, String>> nameBox = new AutoCompleteTextField();
-            updateCustomer();
-            nameBox.setItems(custList);
-            nameBox.getPopup().addEventHandler(WindowEvent.WINDOW_HIDING,
-                    new EventHandler<WindowEvent>() {
-                        @Override
-                        public void handle(WindowEvent t) {
-                            String name = nameBox.getSelectedData().getValue();
-                            ObservableList<Customer> cl = FXCollections.observableList(cjc.findByName(name));
-                            customerTable.setItems(cl);
-                        }
-                    });
-            custVBox.getChildren().add(0, nameBox);
-            Platform.runLater(new Runnable() {
-                @Override
-                public void run() {
-                    nameBox.requestFocus();
-                }
-            });
-
-            customerTable.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<Customer>() {
-                // this method will be called whenever user selected row
-
-                @Override
-                public void changed(ObservableValue<? extends Customer> ov, Customer oldValue, Customer newValue) {
-
-                    // TablePosition<User, ?> o = tvu.getEditingCell();
-                    LOGGER.debug("old:" + oldValue + ", new:" + newValue);
-                    if (newValue != null) {
-                        CityJpaController cityCont = new CityJpaController(emf);
-                        currCust = newValue;
-                        addCustAddress.setText(currCust.getAddress());
-                        addCustCity.getItems().addAll(cityCont.listUniqueName());
-                        addCustCity.setValue(currCust.getStringCity());
-                        addCustEmail.setText(currCust.getEmail());
-                        addCustName.setText(currCust.getName());
-                        addCustPrimaryPhone.setText(currCust.getPrimaryPhone());
-                        addCustSecPhone.setText(currCust.getSecondaryPhone());
-                        ComboPair<Integer, String> selectedArea
-                                = new ComboPair<>(
-                                currCust.getCity().getId(), currCust.getArea());
-                        addCustArea.setValue(selectedArea);
-                        ComboPair<Integer, String> selectedZip
-                                = new ComboPair<>(
-                                currCust.getCity().getId(), currCust.getZipCode());
-                        addCustZipCode.setValue(selectedZip);
-
-                        disableCustInput(false);
-                    }
-                }
-            });
-
             dlg.show();
         } catch (IOException ex) {
             LOGGER.error(ex.toString());
@@ -314,78 +208,37 @@ public class TraditionalMainController {
     void onAdminUser(ActionEvent event) {
         final Dialog dlg;
         dlg = new Dialog(mainPane.getScene().getWindow(), MainApp.defaultProps.getProperty("user-management"), true, true);
-        final UserJpaController ujc = new UserJpaController(emf);
         final AnchorPane root = new AnchorPane();
-        updateUser();
 
         FXMLLoader fxmlLoader = new FXMLLoader(
                 getClass().getResource("/fxml/UserAdministration.fxml"));
 
         fxmlLoader.setRoot(root);
-        fxmlLoader.setController(this);
-        try {
+        fxmlLoader.setController(new UserAdminController());
+        try  {
             fxmlLoader.load();
             dlg.setContent(root);
-            final AutoCompleteTextField<ComboPair<Long, String>> nameBox = new AutoCompleteTextField();
-            nameBox.setItems(userList);//FIXME: may become problem for large user data.
-            nameBox.getPopup().addEventHandler(WindowEvent.WINDOW_HIDING,
-                    new EventHandler<WindowEvent>() {
-                        @Override
-                        public void handle(WindowEvent t) {
-                            String name = nameBox.getSelectedData().getValue();
-                            ObservableList<User> ul = FXCollections.observableList(ujc.findByNameLike(name));
-                            userTable.setItems(ul);
-                        }
-                    });
-
-            userVBox.getChildren().add(0, nameBox);
-            Platform.runLater(new Runnable() {
-                @Override
-                public void run() {
-                    nameBox.requestFocus();
-                }
-            });
-
-            userTable.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<User>() {
-                // this method will be called whenever user selected row
-
-                @Override
-                public void changed(ObservableValue<? extends User> ov, User oldValue, User newValue) {
-
-                    // TablePosition<User, ?> o = tvu.getEditingCell();
-                    LOGGER.debug("old:" + oldValue + ", new:" + newValue);
-                    if (newValue != null) {
-                        currUser = newValue;
-                        addUserName.setText(currUser.getName());
-                        addUserEmail.setText(currUser.getEmail());
-                        addUserPassword.setText(currUser.getPassword());
-                        if (currUser.getType() == 2) {
-                            addUserType.setValue("Administrator");
-                        } else {
-                            addUserType.setValue("User");
-                        }
-                        disableUserInput(false);
-                    }
-                }
-            });
             dlg.show();
         } catch (IOException ex) {
             LOGGER.error(ex.toString());
         }
-
     }
 
     // Handler for MenuItem[fx:id="close"] onAction
     @FXML
-    void onClose(ActionEvent event
-            ) {
+    void onClose(ActionEvent event) {
+        try {
+            context.stop();
+        } catch (Exception ex) {
+           LOGGER.error(ex);
+        }
         ((Stage) mainPane.getScene().getWindow()).close();
     }
 
     // Handler for MenuItem[fx:id="myAccount"] onAction
     @FXML
     void onMyAccount(ActionEvent event
-            ) {
+    ) {
         // handle the event here
     }
 
@@ -395,379 +248,89 @@ public class TraditionalMainController {
         alarmedDevices = (new DeviceJpaController(emf)).findAlarmedDevice();
     }
 
-    public static class DeleteTableCell<S, T> extends TableCell<S, T> {
-
-        private final Button del;
-        private final UserJpaController ujc = new UserJpaController(emf);
-        private ObservableValue<T> ov;
-
-        public DeleteTableCell(final ObservableList<?> data) {
-            this.del = new Button("X");
-            del.setStyle("-fx-base: red;");
-            this.del.setAlignment(Pos.CENTER);
-            setAlignment(Pos.CENTER);
-            setGraphic(del);
-            del.setOnAction(new EventHandler<ActionEvent>() {
+   
+    private void startServer() {
+        context = new DefaultCamelContext();
+        try {
+            context.addRoutes(new RouteBuilder() {
                 @Override
-                public void handle(ActionEvent t) {
-                    int i = getIndex();
-                    User u = (User) data.get(i);
-                    try {
-                        ujc.destroy(u.getId());
-                        data.remove(i);
-                        setVisible(false);
-                    } catch (NonexistentEntityException ex) {
-                        LOGGER.error(ex.toString());
-                    } catch (IllegalOrphanException ex) {
-                        LOGGER.error(ex.toString());
-                    }
+                public void configure() {
+                    from("netty:tcp://localhost:5000?sync=false&backlog=128&allowDefaultCodec=false&textline=false&delimiter=NULL")
+                            .process(new Processor() {
+
+                                @Override
+                                public void process(Exchange exchng) throws Exception {
+                                    final String body = exchng.getIn().getBody(String.class);
+                                    IMessage msg = null;
+                                    if (body.matches("[ijklIJKL]|M\\d{1,4}|N\\d{1,4}|O\\d{1,4}|P\\d{1,4}")) {
+                                        msg = new Prasimax(exchng.getIn());
+                                    }
+                                    if (body.matches("IO[^IORST]*\\*|RST[^IORST]*\\*")) {
+                                        msg = new Metajasa01(exchng.getIn());
+                                    }
+                                    LOGGER.debug(body);
+                                    exchng.getIn().setBody(msg, IMessage.class);
+                                }
+
+                            })
+                            .process(new Processor() {
+                                @Override
+                                public void process(final Exchange exchng) throws Exception {
+                                    Platform.runLater(new Runnable() {
+
+                                        @Override
+                                        public void run() {
+                                            try {
+                                                IMessage msg = exchng.getIn().getBody(IMessage.class);
+                                                Media media = new Media(MEDIA_URL.toString());
+                                                MediaPlayer mediaPlayer = new MediaPlayer(media);
+                                                mediaPlayer.setAutoPlay(true);
+                                                Action response = Dialogs.create()
+                                                .title("alarm")
+                                                .owner(mainPane.getScene().getWindow())
+                                                .message(msg.getLocalAddress().toString())
+                                                //.lightweight()
+                                                .showWarning();
+
+                                                if (response == Dialog.Actions.OK) {
+                                                    // ... submit user input
+                                                } else {
+                                                    // ... user cancelled, reset form to default
+                                                }
+                                            } catch (UnknownHostException ex) {
+                                                LOGGER.error(ex);
+                                            }
+                                        }
+                                    });
+                                }
+
+                            })
+                            .to("log:com.codencare.watcher");
                 }
             });
-        }
-
-        @Override
-        public void updateItem(T item, boolean empty) {
-            super.updateItem(item, empty);
-            if (empty) {
-                setText(null);
-                setGraphic(null);
-            } else {
-                setGraphic(del);
-            }
-        }
-    }
-
-    private void updateUser() {
-        UserJpaController ujc = new UserJpaController(emf);
-
-        List<Object[]> ul = ujc.listIdName();
-        for (Object[] user : ul) {
-            ComboPair p = new ComboPair(user[1], user[0]);///1=id, 0= name.
-            this.userList.add(p);
-        }
-    }
-
-    private void updateCustomer() {
-        CustomerJpaController cjc = new CustomerJpaController(emf);
-        List<Customer> cl = cjc.findCustomerEntities();
-        for (Customer c : cl) {
-            ComboPair p = new ComboPair(c.getId(), c.getName());
-            this.custList.add(p);
-        }
-    }
-
-    @FXML
-    void addUser(ActionEvent event) {
-        currUser = null;
-        clearUserInput();
-        disableUserInput(false);
-        deleteUser.setDisable(true);
-    }
-
-    @FXML
-    void saveUser(ActionEvent event) {
-        try {
-            UserJpaController ujc = new UserJpaController(emf);
-            User oldUser = null;
-            if (currUser != null && currUser.getId() != null) {
-                oldUser = ujc.findUser(currUser.getId());
-            } else {
-                currUser = new User();
-            }
-            currUser.setName(addUserName.getText());
-            currUser.setEmail(addUserEmail.getText());
-            currUser.setPassword(addUserPassword.getText());
-            if (addUserType.getValue().equalsIgnoreCase("Administrator")) {
-                currUser.setType(2);
-            } else {
-                currUser.setType(1);
-            }
-            boolean validInput = validateUser(currUser);
-            if (validInput && oldUser != null) {
-                ujc.edit(currUser);
-                userTable.getItems().set(userTable.getItems().indexOf(oldUser), currUser);
-                disableUserInput(true);
-            } else if (validInput) {
-                ujc.create(currUser);
-                updateUser();
-                userTable.setItems(FXCollections.observableList(ujc.findByNameLike(currUser.getName())));
-                disableUserInput(true);
-            }
+            context.start();
         } catch (Exception ex) {
-            LOGGER.error(ex.toString());
-        }
-    }
-
-    @FXML
-    void deleteUser(ActionEvent event) {
-        try {
-            UserJpaController ujc = new UserJpaController(emf);
-            if (currUser != null) {
-                ujc.destroy(currUser.getId());
-                disableUserInput(true);
-                if (userTable.getItems() != null) {
-                    userTable.getItems().remove(currUser);
-                }
-            }
-
-        } catch (NonexistentEntityException ex) {
-            LOGGER.error(ex.toString());
-        } catch (IllegalOrphanException ex) {
-            LOGGER.error(ex.toString());
-        }
-    }
-
-    private void disableUserInput(boolean disable) {
-        addUserName.setDisable(disable);
-        addUserEmail.setDisable(disable);
-        addUserPassword.setDisable(disable);
-        addUserType.setDisable(disable);
-        saveUser.setDisable(disable);
-        deleteUser.setDisable(disable);
-    }
-
-    private void clearUserInput() {
-        addUserName.setText("");
-        addUserEmail.setText("");
-        addUserPassword.setText("");
-        addUserType.setValue("User");
-    }
-
-    private boolean validateUser(User u) {
-        if (!u.getName().matches("\\w{2,40}")) {
-            return false;
-        }
-        if (!u.getPassword().matches(".{6,20}")) {
-            return false;
-        }
-        return u.getEmail().toUpperCase().matches("\\b[A-Z0-9._%-]+@[A-Z0-9.-]+\\.[A-Z]{2,4}\\b");
-    }
-
-    @FXML
-    void addCust(ActionEvent event) {
-        currCust = null;
-        clearCustInput();
-        disableCustInput(false);
-        deleteCust.setDisable(true);
-    }
-
-    @FXML
-    void deleteCust(ActionEvent event) {
-    }
-
-    @FXML
-    void saveCust(ActionEvent event) {
-        try {
-            CustomerJpaController cjc = new CustomerJpaController(emf);
-            CityJpaController cityCont = new CityJpaController(emf);
-            Customer oldCust = null;
-            if (currCust != null && currCust.getId() != null) {
-                oldCust = cjc.findCustomer(currCust.getId());
-            } else {
-                currCust = new Customer();
-            }
-            currCust.setAddress(addCustAddress.getText());
-            City newCity = cityCont.findCity(addCustArea.getValue().getKey());
-            currCust.setCity(newCity);
-//            currCust.setDeviceCollection(alarmedDevices);
-            currCust.setEmail(addCustEmail.getText());
-//            currCust.setId(port);
-            currCust.setName(addCustName.getText());
-            currCust.setPrimaryPhone(addCustPrimaryPhone.getText());
-            currCust.setSecondaryPhone(addCustSecPhone.getText());
-            boolean validInput = validateCust(currCust);
-            if (validInput && oldCust != null) {
-                cjc.edit(currCust);
-                customerTable.getItems().set(customerTable.getItems().indexOf(oldCust), currCust);
-                disableCustInput(true);
-            } else if (validInput) {
-                cjc.create(currCust);
-                updateCustomer();
-                customerTable.setItems(FXCollections.observableList(cjc.findByName(currCust.getName())));
-                disableCustInput(true);
-            }
-        } catch (Exception ex) {
-            LOGGER.error(ex.toString());
-        }
-    }
-    
-    private boolean validateCust(Customer cust){
-        if(!cust.getAddress().matches("[\\w\\s]{2,40}")){
-            return false;
-        }
-        if(!cust.getName().matches("[\\w\\s]{2,40}")){
-            return false;
-        }
-        if(!cust.getPrimaryPhone().matches("\\d{4,20}|\\u002B\\d{4,20}")){
-            return false;
-        }
-        if(!cust.getSecondaryPhone().matches("\\d{4,20}|\\u002B\\d{4,20}")){
-            return false;
-        }
-        return cust.getEmail().toUpperCase().matches("\\b[A-Z0-9._%-]+@[A-Z0-9.-]+\\.[A-Z]{2,4}\\b");
-    }
-
-    @FXML
-    void onCitySelected(ActionEvent event) {
-        LOGGER.debug("city " + addCustCity.getValue() + " selected");
-        cityUpdated(addCustCity.getValue());
-    }
-
-    @FXML
-    void onAreaSelected(ActionEvent event) {
-        if (addCustArea != null && addCustArea.getValue() != null) {
-            LOGGER.debug("area " + addCustArea.getValue().getKey()
-                    + ":" + addCustArea.getValue().getValue() + " selected");
-            if (addCustZipCode != null && addCustZipCode.getItems() != null) {
-
-                List<ComboPair<Integer, String>> zipChoices
-                        = addCustZipCode.getItems();
-                for (ComboPair<Integer, String> pair : zipChoices) {
-                    if (pair.getKey() == addCustArea.getValue().getKey()) {
-                        addCustZipCode.setValue(pair);
-                    }
-                }
-            }
-        }
-    }
-
-    @FXML
-    void onZipSelected(ActionEvent event) {
-        if (addCustZipCode != null && addCustZipCode.getValue() != null) {
-            LOGGER.debug("zip " + addCustZipCode.getValue().getKey()
-                    + ":" + addCustZipCode.getValue().getValue() + " selected");
-            if (addCustArea != null && addCustArea.getItems() != null) {
-                List<ComboPair<Integer, String>> areaChoices
-                        = addCustArea.getItems();
-                for (ComboPair<Integer, String> pair : areaChoices) {
-                    if (pair.getKey() == addCustZipCode.getValue().getKey()) {
-                        addCustArea.setValue(pair);
-                    }
-                }
-            }
-        }
-    }
-
-    private void clearCustInput() {
-        CityJpaController cityCont = new CityJpaController(emf);
-        addCustAddress.setText("");
-
-        addCustCity.getItems().addAll(cityCont.listUniqueName());
-        if(addCustCity.getItems().size()>0){
-            addCustCity.setValue(addCustCity.getItems().get(0));//FIXME: Magic number
-            //        addCustZipCode.setValue(null);
-            //        addCustArea.setValue(null);
-        }
-        addCustEmail.setText("");
-        addCustName.setText("");
-        addCustPrimaryPhone.setText("");
-        addCustSecPhone.setText("");
-
-    }
-
-    private void disableCustInput(boolean disable) {
-        addCustAddress.setDisable(disable);
-        addCustArea.setDisable(disable);
-        addCustCity.setDisable(disable);
-        addCustEmail.setDisable(disable);
-        addCustName.setDisable(disable);
-        addCustPrimaryPhone.setDisable(disable);
-        addCustSecPhone.setDisable(disable);
-        addCustZipCode.setDisable(disable);
-        saveCust.setDisable(disable);
-        deleteCust.setDisable(disable);
-    }
-
-    private void cityUpdated(String cityName) {
-        CityJpaController cityCont = new CityJpaController(emf);
-        List<City> selectedCity = cityCont.findByDesc(cityName);
-        List<ComboPair<Integer, String>> areaChoices;
-        List<ComboPair<Integer, String>> zipChoices;
-        if (selectedCity != null) {
-            areaChoices = new ArrayList<>();
-            zipChoices = new ArrayList<>();
-            for (City city : selectedCity) {
-                areaChoices.add(new ComboPair<>(
-                        city.getId(), city.getArea()));
-                zipChoices.add(new ComboPair<>(
-                        city.getId(), city.getZipCode()));
-            }
-            addCustArea.getItems().clear();
-            addCustArea.getItems().addAll(areaChoices);
-            if (areaChoices.size() > 0) {
-                addCustArea.setValue(areaChoices.get(0));///FIXME: Magic number
-            }
-            addCustZipCode.getItems().clear();
-            addCustZipCode.getItems().addAll(zipChoices);
-            if (zipChoices.size() > 0) {
-                addCustZipCode.setValue(zipChoices.get(0));///FIXME: Magic number
-            }
-        }
-    }
-    
-    private void startServer(){
-        try {
-            if (server == null || server.isClosed()) {
-                server = new ServerSocket(port);
-            }
-            Thread t = new Thread(task);
-            t.setDaemon(true);
-            t.start();
-        } catch (IOException ex) {
             LOGGER.error(ex);
         }
+//        try {
+//            if (server == null || server.isClosed()) {
+//                server = new ServerSocket(port);
+//            }
+//            Thread t = new Thread(task);
+//            t.setDaemon(true);
+//            t.start();
+//        } catch (IOException ex) {
+//            LOGGER.error(ex);
+//        }
     }
-    
+
     Task<Void> task = new Task<Void>() {
         @Override
         protected Void call() {
-            while (true) {
-                Socket sock = null;
-                try {
-                    sock = server.accept();
-                    BufferedInputStream bis = new BufferedInputStream(sock.getInputStream());
-                    Reader reader = new InputStreamReader(bis);
-                    BufferedReader br = new BufferedReader(reader);
-                    final StringBuilder data = new StringBuilder();
-//                    do {
-//                        int i = bis.read();
-//                        LOGGER.info(i + "->"+(char)i);
-//                        if(Character.isLetterOrDigit(i))
-//                        data.append((char) i);
-//                    } while (bis.available() > 0);
-//                    LOGGER.info(data.toString());
-                    data.append(br.readLine());
-                    LOGGER.info(data.toString());
-                    Platform.runLater(new Runnable() {
-                        public void run() {
-                            Action response = Dialogs.create()
-                                    .title("alarm")
-                                    .owner(mainPane.getScene().getWindow())
-                                    .message(data.toString().trim())
-                                    .lightweight()
-                                    .showWarning();
+            // while (true) {
 
-                            if (response == Dialog.Actions.OK) {
-                                // ... submit user input
-                            } else {
-                                // ... user cancelled, reset form to default
-                            }
-                        }
-                    });
-//                System.out.println((new Date()).toString());
-//                Thread.sleep(1000);
-                } catch (IOException ex) {
-                    LOGGER.error(ex);
-                } finally {
-                    if (sock != null) {
-                        try {
-                            sock.close();
-                        } catch (IOException ex) {
-                            LOGGER.error(ex);
-                        }
-                    }
-                }
-            }
+            //}
+            return null;
         }
     };
 }

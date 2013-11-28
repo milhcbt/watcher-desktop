@@ -12,6 +12,7 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <mainClass>com.codencare.watcher.desktop.MainApp</mainClass>
+         <camel-version>2.12.0</camel-version>
     </properties>
 
     <organization>
@@ -40,7 +41,7 @@
                     </execution>
                 </executions>
             </plugin>
-            <!--            <plugin>
+                        <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>exec-maven-plugin</artifactId>
                 <version>1.2.1</version>
@@ -53,6 +54,7 @@
                         </goals>
                         <configuration>
                             <executable>${java.home}/../bin/javafxpackager</executable>
+                             <!--<executable>Y:/progs/Java/32bit/jdk1.7.0_25/bin/javafxpackager</executable>-->
                             <arguments>
                                 <argument>-createjar</argument>
                                 <argument>-nocss2bin</argument>
@@ -68,7 +70,7 @@
                         </configuration>
                     </execution>
                 </executions>  
-            </plugin>-->
+            </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
@@ -103,6 +105,26 @@
             <artifactId>datafx-cell</artifactId>
             <version>2.0-SNAPSHOT-LOCAL</version>
         </dependency>-->
+         <!-- Camel Dependencies -->
+        <dependency>
+            <groupId>org.apache.camel</groupId>
+            <artifactId>camel-core</artifactId>
+            <version>${camel-version}</version>
+        </dependency>
+        
+        <dependency>
+            <groupId>org.apache.camel</groupId>
+            <artifactId>camel-netty</artifactId>
+            <version>${camel-version}</version>
+        </dependency>
+        
+         <dependency>
+            <groupId>org.glassfish</groupId>
+            <artifactId>javax.json</artifactId>
+            <version>1.0.2</version>
+            <!--<scope>provided</scope>-->
+        </dependency>
+        
         <dependency>
             <groupId>org.eclipse.persistence</groupId>
             <artifactId>eclipselink</artifactId>
@@ -148,11 +170,6 @@
             <version>1.2.17</version>
         </dependency>
         <dependency>
-            <groupId>org.controlsfx</groupId>
-            <artifactId>controlsfx</artifactId>
-            <version>8.0.2-developer-preview-2-milh</version>
-        </dependency>
-        <dependency>
             <groupId>org.apache.lucene</groupId>
             <artifactId>lucene-core</artifactId>
             <version>3.2.0</version>
@@ -170,7 +187,7 @@
             <version>4.10</version>
             <scope>test</scope>
         </dependency>
-        <dependency>
+<!--        <dependency>
             <groupId>org.javafxdata</groupId>
             <artifactId>datafx-cell</artifactId>
             <version>2.0-SNAPSHOT-LOCAL</version>
@@ -184,6 +201,11 @@
             <groupId>org.javafxdata</groupId>
             <artifactId>datafx-controller</artifactId>
             <version>2.0-SNAPSHOT-LOCAL</version>
+        </dependency>-->
+        <dependency>
+            <groupId>org.controlsfx</groupId>
+            <artifactId>controlsfx</artifactId>
+            <version>8.0.2-developer-preview-2-milh</version>
         </dependency>
     </dependencies>
 </project>
