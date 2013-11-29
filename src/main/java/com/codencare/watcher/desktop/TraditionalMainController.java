@@ -9,70 +9,37 @@ import com.codencare.esb.message.IMessage;
 import com.codencare.esb.message.Metajasa01;
 import com.codencare.esb.message.Prasimax;
 import com.codencare.watcher.component.MapView;
-import com.codencare.watcher.controller.CityJpaController;
 import com.codencare.watcher.controller.CustomerJpaController;
 import com.codencare.watcher.controller.DeviceJpaController;
-import com.codencare.watcher.controller.UserJpaController;
-import com.codencare.watcher.controller.exceptions.IllegalOrphanException;
-import com.codencare.watcher.controller.exceptions.NonexistentEntityException;
-import com.codencare.watcher.entity.City;
-import com.codencare.watcher.entity.Customer;
 import com.codencare.watcher.entity.Device;
-import com.codencare.watcher.entity.User;
-import com.codencare.watcher.esb.processor.Metajasa01Processor;
-import com.codencare.watcher.esb.processor.PrasimakProcessor;
-import com.codencare.watcher.util.ComboPair;
-import com.mytdev.javafx.scene.control.AutoCompleteTextField;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.OutputStream;
 import java.net.ServerSocket;
 import java.net.URL;
 import java.net.UnknownHostException;
-import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
-import java.util.logging.Level;
 import javafx.application.Platform;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Point2D;
-import javafx.geometry.Pos;
 import javafx.geometry.Rectangle2D;
-import javafx.scene.control.Button;
-import javafx.scene.control.CheckBox;
-import javafx.scene.control.ComboBox;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
-import javafx.scene.control.PasswordField;
 import javafx.scene.control.ScrollPane;
-import javafx.scene.control.TableCell;
-import javafx.scene.control.TableView;
-import javafx.scene.control.TextArea;
-import javafx.scene.control.TextField;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.FlowPane;
-import javafx.scene.layout.VBox;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
-import javafx.stage.WindowEvent;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 import org.apache.camel.CamelContext;
 import org.apache.camel.Exchange;
+import org.apache.camel.Processor;
 import org.apache.camel.builder.RouteBuilder;
 import org.apache.camel.impl.DefaultCamelContext;
-import org.apache.camel.Processor;
 import org.apache.log4j.Logger;
 import org.controlsfx.control.action.Action;
 import org.controlsfx.dialog.Dialog;
@@ -82,7 +49,7 @@ public class TraditionalMainController {
 
     private static final Logger LOGGER = Logger.getLogger(MainFXMLController.class.getName());
     private static final EntityManagerFactory emf = Persistence.createEntityManagerFactory("watcherDB");
-    private static  CamelContext context;
+    private static CamelContext context;
 
     static ServerSocket server;
     static final int port = 7000;
@@ -215,7 +182,7 @@ public class TraditionalMainController {
 
         fxmlLoader.setRoot(root);
         fxmlLoader.setController(new UserAdminController());
-        try  {
+        try {
             fxmlLoader.load();
             dlg.setContent(root);
             dlg.show();
@@ -229,8 +196,9 @@ public class TraditionalMainController {
     void onClose(ActionEvent event) {
         try {
             context.stop();
+            task.cancel();
         } catch (Exception ex) {
-           LOGGER.error(ex);
+            LOGGER.error(ex);
         }
         ((Stage) mainPane.getScene().getWindow()).close();
     }
@@ -242,93 +210,85 @@ public class TraditionalMainController {
         // handle the event here
     }
 
-    void updateDevice() {
-//          alarmedDevices = null;
-        //  emf.getCache().evict(Device.class);
+    void updateDevice() {   
         alarmedDevices = (new DeviceJpaController(emf)).findAlarmedDevice();
     }
 
-   
     private void startServer() {
-        context = new DefaultCamelContext();
-        try {
-            context.addRoutes(new RouteBuilder() {
-                @Override
-                public void configure() {
-                    from("netty:tcp://localhost:5000?sync=false&backlog=128&allowDefaultCodec=false&textline=false&delimiter=NULL")
-                            .process(new Processor() {
-
-                                @Override
-                                public void process(Exchange exchng) throws Exception {
-                                    final String body = exchng.getIn().getBody(String.class);
-                                    IMessage msg = null;
-                                    if (body.matches("[ijklIJKL]|M\\d{1,4}|N\\d{1,4}|O\\d{1,4}|P\\d{1,4}")) {
-                                        msg = new Prasimax(exchng.getIn());
-                                    }
-                                    if (body.matches("IO[^IORST]*\\*|RST[^IORST]*\\*")) {
-                                        msg = new Metajasa01(exchng.getIn());
-                                    }
-                                    LOGGER.debug(body);
-                                    exchng.getIn().setBody(msg, IMessage.class);
-                                }
-
-                            })
-                            .process(new Processor() {
-                                @Override
-                                public void process(final Exchange exchng) throws Exception {
-                                    Platform.runLater(new Runnable() {
-
-                                        @Override
-                                        public void run() {
-                                            try {
-                                                IMessage msg = exchng.getIn().getBody(IMessage.class);
-                                                Media media = new Media(MEDIA_URL.toString());
-                                                MediaPlayer mediaPlayer = new MediaPlayer(media);
-                                                mediaPlayer.setAutoPlay(true);
-                                                Action response = Dialogs.create()
-                                                .title("alarm")
-                                                .owner(mainPane.getScene().getWindow())
-                                                .message(msg.getLocalAddress().toString())
-                                                //.lightweight()
-                                                .showWarning();
-
-                                                if (response == Dialog.Actions.OK) {
-                                                    // ... submit user input
-                                                } else {
-                                                    // ... user cancelled, reset form to default
-                                                }
-                                            } catch (UnknownHostException ex) {
-                                                LOGGER.error(ex);
-                                            }
-                                        }
-                                    });
-                                }
-
-                            })
-                            .to("log:com.codencare.watcher");
-                }
-            });
-            context.start();
-        } catch (Exception ex) {
-            LOGGER.error(ex);
+        if (context == null) {
+            context = new DefaultCamelContext();
         }
-//        try {
-//            if (server == null || server.isClosed()) {
-//                server = new ServerSocket(port);
-//            }
-//            Thread t = new Thread(task);
-//            t.setDaemon(true);
-//            t.start();
-//        } catch (IOException ex) {
-//            LOGGER.error(ex);
-//        }
+        Thread t = new Thread(task);
+        t.setDaemon(true);
+        t.start();
     }
 
     Task<Void> task = new Task<Void>() {
         @Override
         protected Void call() {
-            // while (true) {
+            try {
+               
+                context.addRoutes(new RouteBuilder() {
+                    @Override
+                    public void configure() {
+                        from("netty:tcp://localhost:5000?sync=false&backlog=128&allowDefaultCodec=false&textline=false&delimiter=NULL")
+                                .process(new Processor() {
 
+                                    @Override
+                                    public void process(Exchange exchng) throws Exception {
+                                        final String body = exchng.getIn().getBody(String.class);
+                                        IMessage msg = null;
+                                        if (body.matches("[ijklIJKL]|M\\d{1,4}|N\\d{1,4}|O\\d{1,4}|P\\d{1,4}")) {
+                                            msg = new Prasimax(exchng.getIn());
+                                        }
+                                        if (body.matches("IO[^IORST]*\\*|RST[^IORST]*\\*")) {
+                                            msg = new Metajasa01(exchng.getIn());
+                                        }
+                                        LOGGER.debug(body);
+                                        exchng.getIn().setBody(msg, IMessage.class);
+                                    }
+
+                                })
+                                .process(new Processor() {
+                                    @Override
+                                    public void process(final Exchange exchng) throws Exception {
+                                        Platform.runLater(new Runnable() {
+
+                                            @Override
+                                            public void run() {
+                                                try {
+                                                    IMessage msg = exchng.getIn().getBody(IMessage.class);
+                                                    Media media = new Media(MEDIA_URL.toString());
+                                                    MediaPlayer mediaPlayer = new MediaPlayer(media);
+                                                    mediaPlayer.setAutoPlay(true);
+                                                    Action response = Dialogs.create()
+                                                    .title("alarm")
+                                                    .owner(mainPane.getScene().getWindow())
+                                                    .message(msg.getLocalAddress().toString())
+                                                    //.lightweight()
+                                                    .showWarning();
+
+                                                    if (response == Dialog.Actions.OK) {
+                                                        // ... submit user input
+                                                    } else {
+                                                        // ... user cancelled, reset form to default
+                                                    }
+                                                } catch (UnknownHostException ex) {
+                                                    LOGGER.error(ex);
+                                                }
+                                            }
+                                        });
+                                    }
+
+                                })
+                                .to("log:com.codencare.watcher");
+                    }
+                });
+                context.start();
+            } catch (Exception ex) {
+                LOGGER.error(ex);
+            }
+            // while (true) {
             //}
             return null;
         }
