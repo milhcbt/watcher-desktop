@@ -95,6 +95,18 @@ public class AlarmAdminController {
         MainApp.defaultProps.setProperty("digit1-popup",String.valueOf(digit1Popup.isSelected()));
         MainApp.defaultProps.setProperty("digit1-sound",String.valueOf(digit1Sound.isSelected()));
         MainApp.defaultProps.setProperty("digit1-team",String.valueOf(digit1Team.getValue()));
+        MainApp.defaultProps.setProperty("digit2-owner",String.valueOf(digit2Owner.isSelected()));
+        MainApp.defaultProps.setProperty("digit2-popup",String.valueOf(digit2Popup.isSelected()));
+        MainApp.defaultProps.setProperty("digit2-sound",String.valueOf(digit2Sound.isSelected()));
+        MainApp.defaultProps.setProperty("digit2-team",String.valueOf(digit2Team.getValue()));
+        MainApp.defaultProps.setProperty("digit3-owner",String.valueOf(digit3Owner.isSelected()));
+        MainApp.defaultProps.setProperty("digit3-popup",String.valueOf(digit3Popup.isSelected()));
+        MainApp.defaultProps.setProperty("digit3-sound",String.valueOf(digit3Sound.isSelected()));
+        MainApp.defaultProps.setProperty("digit3-team",String.valueOf(digit3Team.getValue()));
+        MainApp.defaultProps.setProperty("digit4-owner",String.valueOf(digit4Owner.isSelected()));
+        MainApp.defaultProps.setProperty("digit4-popup",String.valueOf(digit4Popup.isSelected()));
+        MainApp.defaultProps.setProperty("digit4-sound",String.valueOf(digit4Sound.isSelected()));
+        MainApp.defaultProps.setProperty("digit4-team",String.valueOf(digit4Team.getValue()));
         try {
             LOGGER.debug("saving alarm confinguration");
             OutputStream os = new FileOutputStream("./watcher.properties");
