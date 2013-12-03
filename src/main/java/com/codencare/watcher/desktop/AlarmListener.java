@@ -42,6 +42,10 @@ public class AlarmListener extends Task<Void> {
         AlarmListener.target = target;
     }
 
+    /**
+     * Receiving alarm/message from device
+     * @return 
+     */
     @Override
     protected Void call() {
         try {
@@ -51,7 +55,17 @@ public class AlarmListener extends Task<Void> {
             context.addRoutes(new RouteBuilder() {
                 @Override
                 public void configure() {
-                    from("netty:tcp://localhost:5000?sync=false&backlog=128&allowDefaultCodec=false&textline=false&delimiter=NULL")
+                    //get message from devices
+                    from("netty:tcp://"
+                            + MainApp.defaultProps.getProperty("localhost")
+                            + ":"
+                            + MainApp.defaultProps.getProperty("localport")
+                            + "?sync=false"
+                            + "&backlog=128"
+                            + "&allowDefaultCodec=false"
+                            + "&textline=false"
+                            + "&delimiter=NULL")
+                            /*parse message base on device */
                             .process(new Processor() {
 
                                 @Override
@@ -69,6 +83,11 @@ public class AlarmListener extends Task<Void> {
                                 }
 
                             })
+                            /*save message to database*/
+                            /* and complete it with meta-data from database*/
+                            /*turn sound if needed*/
+                            /*show dialog box with address if needed*/
+                            /*sent SMS notification if needed*/
                             .process(new Processor() {
                                 @Override
                                 public void process(final Exchange exchng) throws Exception {
@@ -101,6 +120,7 @@ public class AlarmListener extends Task<Void> {
                                 }
 
                             })
+                            /*save to log*/
                             .to("log:com.codencare.watcher");
                 }
             });

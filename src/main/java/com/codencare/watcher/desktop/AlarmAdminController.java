@@ -185,7 +185,7 @@ public class AlarmAdminController {
             sb.append(s);
             sb.append(',');
         }
-        sb.delete(sb.lastIndexOf(","), sb.lastIndexOf(","));
+        sb.delete(sb.lastIndexOf(","), sb.lastIndexOf(""));
         return sb.toString();
     }
     private String csvToList(String csv){
