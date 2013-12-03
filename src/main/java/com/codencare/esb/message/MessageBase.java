@@ -1,7 +1,6 @@
 /*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+ * Copyright belong to www.codencare.com and its client.
+ * for more information contact imanlhakim@gmail.com
  */
 package com.codencare.esb.message;
 
@@ -18,8 +17,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- *
- * @author abah
+ * Helper implementation of IMessage interface
+ * see IMessage Documentation for more details.
+ * @author ImanLHakim@gmail.com
  */
 public abstract class MessageBase implements IMessage, Serializable {
 
@@ -53,26 +53,32 @@ public abstract class MessageBase implements IMessage, Serializable {
         remotePort = Integer.parseInt(dest[1]);
     }
 
+    @Override
     public InetAddress getLocalAddress() throws UnknownHostException {
         return localAddress;
     }
-
+    
+    @Override
     public InetAddress getRemoteAddress() throws UnknownHostException {
         return remoteAddress;
     }
-
+    
+    @Override
     public int getLocalPort() {
         return localPort;
     }
-
+    
+    @Override
     public int getRemotePort() {
         return remotePort;
     }
 
+    @Override
     public Map<String, Object> getHeaders() {
         return raw.getHeaders();
     }
 
+    @Override
     public String getJsonMessage() {
         ByteArrayOutputStream jsonResult = new ByteArrayOutputStream();
         JsonGenerator jg = Json.createGenerator(jsonResult);
@@ -96,6 +102,7 @@ public abstract class MessageBase implements IMessage, Serializable {
         return jsonResult.toString();
     }
 
+    @Override
     public Message getRawMessage() {
         return raw;
     }

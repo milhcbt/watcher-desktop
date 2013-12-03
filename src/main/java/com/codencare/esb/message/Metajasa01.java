@@ -1,7 +1,6 @@
 /*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+ * Copyright belong to www.codencare.com and its client.
+ * for more information contact imanlhakim@gmail.com
  */
 package com.codencare.esb.message;
 
@@ -13,8 +12,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- *
- * @author abah
+ * IMessage implementation for Metajasa type 1.
+ * @author ImanLHakim@gmail.com
  */
 public class Metajasa01 extends MessageBase {
 
@@ -26,6 +25,11 @@ public class Metajasa01 extends MessageBase {
     private final String [] strBody ;
     
 
+    /**
+     * A Constructor as mandated by class BaseMessage
+     * @param raw Message in Camel Netty Socket format.
+     * @throws UnknownHostException 
+     */
     public Metajasa01(final Message raw) throws UnknownHostException {
         super(raw);
         Pattern pattern = Pattern.compile("IO[^IORST]*\\*$|RST[^IORST]*\\*$");
@@ -40,6 +44,7 @@ public class Metajasa01 extends MessageBase {
       
     }
 
+    @Override
     public DigitalInput getDigit1() {
         if (strBody[BODY_DIGITAL].charAt(0) == '0') {
             return DigitalInput.LOW;
@@ -50,6 +55,7 @@ public class Metajasa01 extends MessageBase {
         }
     }
 
+    @Override
     public DigitalInput getDigit2() {
         if (strBody[BODY_DIGITAL].charAt(1) == '0') {
             return DigitalInput.LOW;
@@ -60,6 +66,7 @@ public class Metajasa01 extends MessageBase {
         }
     }
 
+    @Override
     public DigitalInput getDigit3() {
         if (strBody[BODY_DIGITAL].charAt(2) == '0') {
             return DigitalInput.LOW;
@@ -70,6 +77,7 @@ public class Metajasa01 extends MessageBase {
         }
     }
 
+    @Override
     public DigitalInput getDigit4() {
         if (strBody[BODY_DIGITAL].charAt(3) == '0') {
             return DigitalInput.LOW;
@@ -80,6 +88,7 @@ public class Metajasa01 extends MessageBase {
         }
     }
 
+    @Override
     public int getAnalog1() {
        if (strBody[BODY_SOURCE].charAt(strBody[BODY_SOURCE].length()-1) == '5'){
            return Integer.parseInt(strBody[BODY_ANALOG]);
@@ -87,6 +96,7 @@ public class Metajasa01 extends MessageBase {
        else return ANALOG_UNKNOW;
     }
 
+    @Override
     public int getAnalog2() {
        if (strBody[BODY_SOURCE].charAt(strBody[BODY_SOURCE].length()-1) == '6'){
            return Integer.parseInt(strBody[BODY_ANALOG]);
@@ -94,6 +104,7 @@ public class Metajasa01 extends MessageBase {
        else return ANALOG_UNKNOW;
     }
 
+    @Override
     public int getAnalog3() {
        if (strBody[BODY_SOURCE].charAt(strBody[BODY_SOURCE].length()-1) == '7'){
            return Integer.parseInt(strBody[BODY_ANALOG]);
@@ -101,6 +112,7 @@ public class Metajasa01 extends MessageBase {
       else return ANALOG_UNKNOW;
     }
 
+    @Override
     public int getAnalog4() {
       if (strBody[BODY_SOURCE].charAt(strBody[BODY_SOURCE].length()-1) == '8'){
            return Integer.parseInt(strBody[BODY_ANALOG]);
@@ -108,10 +120,12 @@ public class Metajasa01 extends MessageBase {
        else return ANALOG_UNKNOW;
     }
 
+    @Override
     public boolean getUrgent() {
         return strBody[BODY_SOURCE].charAt(strBody[BODY_SOURCE].length()-1) == '1';
     }
 
+    @Override
     public ResolveStatus getResolve() {
         if (getDigit1() == DigitalInput.HIGH) {
             return ResolveStatus.UNRESOLVED;

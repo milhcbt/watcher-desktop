@@ -1,13 +1,12 @@
 /*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+ * Copyright belong to www.codencare.com and its client.
+ * for more information contact imanlhakim@gmail.com
  */
 package com.codencare.esb.message;
 
 /**
- *
- * @author abah
+ * Valid value for message respond status
+ * @author ImanLHakim@gmail.com
  */
 public enum ResolveStatus {
 
@@ -19,6 +18,10 @@ public enum ResolveStatus {
         value = newValue;
     }
 
+    /**
+     * Integer value of status
+     * @return status in Integer
+     */
     public int getValue() {
         return value;
     }
