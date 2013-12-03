@@ -5,19 +5,13 @@
  */
 package com.codencare.watcher.desktop;
 
-import com.codencare.esb.message.IMessage;
-import com.codencare.esb.message.Metajasa01;
-import com.codencare.esb.message.Prasimax;
 import com.codencare.watcher.component.MapView;
 import com.codencare.watcher.controller.CustomerJpaController;
 import com.codencare.watcher.controller.DeviceJpaController;
 import com.codencare.watcher.entity.Device;
 import java.io.IOException;
-import java.net.ServerSocket;
 import java.net.URL;
-import java.net.UnknownHostException;
 import java.util.List;
-import javafx.application.Platform;
 import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -29,19 +23,11 @@ import javafx.scene.control.MenuItem;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.FlowPane;
-import javafx.scene.media.Media;
-import javafx.scene.media.MediaPlayer;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
-import org.apache.camel.CamelContext;
-import org.apache.camel.Exchange;
-import org.apache.camel.Processor;
-import org.apache.camel.builder.RouteBuilder;
-import org.apache.camel.impl.DefaultCamelContext;
 import org.apache.log4j.Logger;
-import org.controlsfx.control.action.Action;
 import org.controlsfx.dialog.Dialog;
 import org.controlsfx.dialog.Dialogs;
 
@@ -49,10 +35,9 @@ public class TraditionalMainController {
 
     private static final Logger LOGGER = Logger.getLogger(MainFXMLController.class.getName());
     private static final EntityManagerFactory emf = Persistence.createEntityManagerFactory("watcherDB");
-    private static CamelContext context;
-
-    static ServerSocket server;
-    static final int port = 7000;
+    
+//    static ServerSocket server;
+//    static final int port = 7000;
     static final Rectangle2D primScreenBounds = Screen.getPrimary().getVisualBounds();
     static final URL MEDIA_URL = TraditionalMainController.class.getResource("/styles/mine/audio/alarm.mp3");
 
@@ -91,8 +76,12 @@ public class TraditionalMainController {
 
     @FXML // fx:id="menuBar"
     private MenuBar menuBar; // Value injected by FXMLLoader
-
+    
     // menu bar - end
+    
+  
+    
+    
     @FXML // This method is called by the FXMLLoader when initialization is complete
     void initialize() {
         assert about != null : "fx:id=\"about\" was not injected: check your FXML file 'TraditionalMain.fxml'.";
@@ -107,7 +96,6 @@ public class TraditionalMainController {
         assert statusPane != null : "fx:id=\"statusPane\" was not injected: check your FXML file 'TraditionalMain.fxml'.";
 
         // Initialize your logic here: all @FXML variables will have been injected
-        startServer();
         updateDevice();
         mapView = new MapView(alarmedDevices);
         mapView.setId("mapView");
@@ -194,12 +182,7 @@ public class TraditionalMainController {
     // Handler for MenuItem[fx:id="close"] onAction
     @FXML
     void onClose(ActionEvent event) {
-        try {
-            context.stop();
-            task.cancel();
-        } catch (Exception ex) {
-            LOGGER.error(ex);
-        }
+        MainApp.stopServer();
         ((Stage) mainPane.getScene().getWindow()).close();
     }
 
@@ -212,85 +195,5 @@ public class TraditionalMainController {
 
     void updateDevice() {   
         alarmedDevices = (new DeviceJpaController(emf)).findAlarmedDevice();
-    }
-
-    private void startServer() {
-        if (context == null) {
-            context = new DefaultCamelContext();
-        }
-        Thread t = new Thread(task);
-        t.setDaemon(true);
-        t.start();
-    }
-
-    Task<Void> task = new Task<Void>() {
-        @Override
-        protected Void call() {
-            try {
-               
-                context.addRoutes(new RouteBuilder() {
-                    @Override
-                    public void configure() {
-                        from("netty:tcp://localhost:5000?sync=false&backlog=128&allowDefaultCodec=false&textline=false&delimiter=NULL")
-                                .process(new Processor() {
-
-                                    @Override
-                                    public void process(Exchange exchng) throws Exception {
-                                        final String body = exchng.getIn().getBody(String.class);
-                                        IMessage msg = null;
-                                        if (body.matches("[ijklIJKL]|M\\d{1,4}|N\\d{1,4}|O\\d{1,4}|P\\d{1,4}")) {
-                                            msg = new Prasimax(exchng.getIn());
-                                        }
-                                        if (body.matches("IO[^IORST]*\\*|RST[^IORST]*\\*")) {
-                                            msg = new Metajasa01(exchng.getIn());
-                                        }
-                                        LOGGER.debug(body);
-                                        exchng.getIn().setBody(msg, IMessage.class);
-                                    }
-
-                                })
-                                .process(new Processor() {
-                                    @Override
-                                    public void process(final Exchange exchng) throws Exception {
-                                        Platform.runLater(new Runnable() {
-
-                                            @Override
-                                            public void run() {
-                                                try {
-                                                    IMessage msg = exchng.getIn().getBody(IMessage.class);
-                                                    Media media = new Media(MEDIA_URL.toString());
-                                                    MediaPlayer mediaPlayer = new MediaPlayer(media);
-                                                    mediaPlayer.setAutoPlay(true);
-                                                    Action response = Dialogs.create()
-                                                    .title("alarm")
-                                                    .owner(mainPane.getScene().getWindow())
-                                                    .message(msg.getLocalAddress().toString())
-                                                    //.lightweight()
-                                                    .showWarning();
-
-                                                    if (response == Dialog.Actions.OK) {
-                                                        // ... submit user input
-                                                    } else {
-                                                        // ... user cancelled, reset form to default
-                                                    }
-                                                } catch (UnknownHostException ex) {
-                                                    LOGGER.error(ex);
-                                                }
-                                            }
-                                        });
-                                    }
-
-                                })
-                                .to("log:com.codencare.watcher");
-                    }
-                });
-                context.start();
-            } catch (Exception ex) {
-                LOGGER.error(ex);
-            }
-            // while (true) {
-            //}
-            return null;
-        }
-    };
+    }    
 }

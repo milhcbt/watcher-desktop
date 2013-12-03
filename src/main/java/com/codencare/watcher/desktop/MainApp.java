@@ -4,11 +4,13 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
+import java.util.logging.Level;
 import javafx.application.Application;
 import static javafx.application.Application.launch;
 import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
+import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Rectangle2D;
@@ -26,6 +28,7 @@ import javafx.scene.layout.StackPane;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
+import javafx.stage.Window;
 import org.apache.log4j.Logger;
 import org.controlsfx.control.ButtonBar;
 import org.controlsfx.control.ButtonBar.ButtonType;
@@ -37,12 +40,13 @@ public class MainApp extends Application {
 
     private static final Logger LOGGER = Logger.getLogger(MainApp.class.getName());
     public static final Properties defaultProps = new Properties();
+    private static AlarmListener task;
 
     private static final double W_GAP = 10;
     private static final double H_GAP = 20;
 
-     // This dialog will consist of two input fields (username and password),
-        // and have two buttons: Login and Cancel.
+    // This dialog will consist of two input fields (username and password),
+    // and have two buttons: Login and Cancel.
     final TextField txUserName = new TextField();
     final PasswordField txPassword = new PasswordField();
     final Action actionLogin = new AbstractAction("Login") {
@@ -58,13 +62,16 @@ public class MainApp extends Application {
         }
     };
 
-   //TODO:make properties has default value, in case properties has error or typo
+    //TODO:make properties has default value, in case properties has error or typo
     static {
-        
+        loadConfig();
+    }
+
+    public static void loadConfig() {
 //            try (InputStream is = MainApp.class.getResourceAsStream("/watcher.properties")) {
-            try (InputStream is = new FileInputStream("./watcher.properties")) {
-                defaultProps.load(is);
-            }catch (IOException ex) {
+        try (InputStream is = new FileInputStream("./watcher.properties")) {
+            defaultProps.load(is);
+        } catch (IOException ex) {
             LOGGER.error(ex);
         }
     }
@@ -84,7 +91,6 @@ public class MainApp extends Application {
     @Override
     public void start(Stage stage) throws Exception {
 
-       
         showLoginDialog();
         Rectangle2D primScreenBounds = Screen.getPrimary().getVisualBounds();
         Region contentRootRegion = FXMLLoader.load(getClass().getResource("/fxml/TraditionalMain.fxml"));
@@ -130,6 +136,7 @@ public class MainApp extends Application {
         stage.initStyle(StageStyle.UNDECORATED);
         stage.setResizable(false);
         stage.show();
+        startServer(scene.getWindow());
     }
 
     // This method is called when the user types into the username / password fields  
@@ -181,5 +188,21 @@ public class MainApp extends Application {
         });
 
         dlg.show();
+    }
+
+    private void startServer(Window target) {
+        task = new AlarmListener(target);
+        Thread t = new Thread(task);
+        t.setDaemon(true);
+        t.start();
+    }
+
+    public static void stopServer(){
+        try {
+            task.stopContext();
+        } catch (Exception ex) {
+            LOGGER.error(ex);
+        }
+        task.cancel();
     }
 }

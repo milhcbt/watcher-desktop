@@ -1,10 +1,10 @@
 package com.codencare.watcher.desktop;
 
 /**
- * Sample Skeleton for "AlarmConfiguration.fxml" Controller Class
- * You can copy and paste this code into your favorite IDE
- **/
-
+ * Sample Skeleton for "AlarmConfiguration.fxml" Controller Class You can copy
+ * and paste this code into your favorite IDE
+ *
+ */
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -20,8 +20,8 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextArea;
 import org.apache.log4j.Logger;
 
-
 public class AlarmAdminController {
+
     private static final Logger LOGGER = Logger.getLogger(MainFXMLController.class.getName());
 
     @FXML // ResourceBundle that was given to the FXMLLoader
@@ -40,7 +40,7 @@ public class AlarmAdminController {
     private CheckBox digit1Sound; // Value injected by FXMLLoader
 
     @FXML // fx:id="digit1Team"
-    private ComboBox<?> digit1Team; // Value injected by FXMLLoader
+    private ComboBox<String> digit1Team; // Value injected by FXMLLoader
 
     @FXML // fx:id="digit2Owner"
     private CheckBox digit2Owner; // Value injected by FXMLLoader
@@ -52,7 +52,7 @@ public class AlarmAdminController {
     private CheckBox digit2Sound; // Value injected by FXMLLoader
 
     @FXML // fx:id="digit2Team"
-    private ComboBox<?> digit2Team; // Value injected by FXMLLoader
+    private ComboBox<String> digit2Team; // Value injected by FXMLLoader
 
     @FXML // fx:id="digit3Owner"
     private CheckBox digit3Owner; // Value injected by FXMLLoader
@@ -64,7 +64,7 @@ public class AlarmAdminController {
     private CheckBox digit3Sound; // Value injected by FXMLLoader
 
     @FXML // fx:id="digit3Team"
-    private ComboBox<?> digit3Team; // Value injected by FXMLLoader
+    private ComboBox<String> digit3Team; // Value injected by FXMLLoader
 
     @FXML // fx:id="digit4Owner"
     private CheckBox digit4Owner; // Value injected by FXMLLoader
@@ -76,7 +76,7 @@ public class AlarmAdminController {
     private CheckBox digit4Sound; // Value injected by FXMLLoader
 
     @FXML // fx:id="digit4Team"
-    private ComboBox<?> digit4Team; // Value injected by FXMLLoader
+    private ComboBox<String> digit4Team; // Value injected by FXMLLoader
 
     @FXML // fx:id="saveAlarmConf"
     private Button saveAlarmConf; // Value injected by FXMLLoader
@@ -87,35 +87,51 @@ public class AlarmAdminController {
     @FXML // fx:id="teamB"
     private TextArea teamB; // Value injected by FXMLLoader
 
-
     // Handler for Button[fx:id="saveAlarmConf"] onAction
     @FXML
     void onSaveAlarmConf(ActionEvent event) {
-        MainApp.defaultProps.setProperty("digit1-owner",String.valueOf(digit1Owner.isSelected()));
-        MainApp.defaultProps.setProperty("digit1-popup",String.valueOf(digit1Popup.isSelected()));
-        MainApp.defaultProps.setProperty("digit1-sound",String.valueOf(digit1Sound.isSelected()));
-        MainApp.defaultProps.setProperty("digit1-team",String.valueOf(digit1Team.getValue()));
-        MainApp.defaultProps.setProperty("digit2-owner",String.valueOf(digit2Owner.isSelected()));
-        MainApp.defaultProps.setProperty("digit2-popup",String.valueOf(digit2Popup.isSelected()));
-        MainApp.defaultProps.setProperty("digit2-sound",String.valueOf(digit2Sound.isSelected()));
-        MainApp.defaultProps.setProperty("digit2-team",String.valueOf(digit2Team.getValue()));
-        MainApp.defaultProps.setProperty("digit3-owner",String.valueOf(digit3Owner.isSelected()));
-        MainApp.defaultProps.setProperty("digit3-popup",String.valueOf(digit3Popup.isSelected()));
-        MainApp.defaultProps.setProperty("digit3-sound",String.valueOf(digit3Sound.isSelected()));
-        MainApp.defaultProps.setProperty("digit3-team",String.valueOf(digit3Team.getValue()));
-        MainApp.defaultProps.setProperty("digit4-owner",String.valueOf(digit4Owner.isSelected()));
-        MainApp.defaultProps.setProperty("digit4-popup",String.valueOf(digit4Popup.isSelected()));
-        MainApp.defaultProps.setProperty("digit4-sound",String.valueOf(digit4Sound.isSelected()));
-        MainApp.defaultProps.setProperty("digit4-team",String.valueOf(digit4Team.getValue()));
-        try {
+        String[] listTeamA = phoneList(teamA.getText());
+        String[] listTeamB = phoneList(teamB.getText());
+        boolean valid = false;
+        for (String s : listTeamA) {
+            valid = validatePhone(s);
+        }
+        for (String s : listTeamB) {
+            valid = validatePhone(s);
+        }
+
+        if (valid) {
+
+            MainApp.defaultProps.setProperty("digit1-owner", String.valueOf(digit1Owner.isSelected()));
+            MainApp.defaultProps.setProperty("digit1-popup", String.valueOf(digit1Popup.isSelected()));
+            MainApp.defaultProps.setProperty("digit1-sound", String.valueOf(digit1Sound.isSelected()));
+            MainApp.defaultProps.setProperty("digit1-team", String.valueOf(digit1Team.getValue()));
+            MainApp.defaultProps.setProperty("digit2-owner", String.valueOf(digit2Owner.isSelected()));
+            MainApp.defaultProps.setProperty("digit2-popup", String.valueOf(digit2Popup.isSelected()));
+            MainApp.defaultProps.setProperty("digit2-sound", String.valueOf(digit2Sound.isSelected()));
+            MainApp.defaultProps.setProperty("digit2-team", String.valueOf(digit2Team.getValue()));
+            MainApp.defaultProps.setProperty("digit3-owner", String.valueOf(digit3Owner.isSelected()));
+            MainApp.defaultProps.setProperty("digit3-popup", String.valueOf(digit3Popup.isSelected()));
+            MainApp.defaultProps.setProperty("digit3-sound", String.valueOf(digit3Sound.isSelected()));
+            MainApp.defaultProps.setProperty("digit3-team", String.valueOf(digit3Team.getValue()));
+            MainApp.defaultProps.setProperty("digit4-owner", String.valueOf(digit4Owner.isSelected()));
+            MainApp.defaultProps.setProperty("digit4-popup", String.valueOf(digit4Popup.isSelected()));
+            MainApp.defaultProps.setProperty("digit4-sound", String.valueOf(digit4Sound.isSelected()));
+            MainApp.defaultProps.setProperty("digit4-team", String.valueOf(digit4Team.getValue()));
+            MainApp.defaultProps.setProperty("teamA", listToCSV(listTeamA));
+            MainApp.defaultProps.setProperty("teamB", listToCSV(listTeamB));
+
             LOGGER.debug("saving alarm confinguration");
-            OutputStream os = new FileOutputStream("./watcher.properties");
-            MainApp.defaultProps.store(os, (new Date()).toString());
-            os.close();
-        } catch (FileNotFoundException ex) {
-            LOGGER.error(ex);
-        } catch (IOException ex) {
-            LOGGER.error(ex);
+            try (OutputStream os = new FileOutputStream("./watcher.properties")) {
+                MainApp.defaultProps.store(os, (new Date()).toString());
+                MainApp.loadConfig();
+            } catch (FileNotFoundException ex) {
+                LOGGER.error(ex);
+            } catch (IOException ex) {
+                LOGGER.error(ex);
+            }
+        } else {
+            LOGGER.debug("somephone number not valid");
         }
     }
 
@@ -142,7 +158,58 @@ public class AlarmAdminController {
         assert teamB != null : "fx:id=\"teamB\" was not injected: check your FXML file 'AlarmConfiguration.fxml'.";
 
         // Initialize your logic here: all @FXML variables will have been injected
-
+        
+        loadConf();
     }
 
+    private boolean validatePhone(String phone) {
+        return phone.matches("\\+62[0-9]{6,15}");
+    }
+
+    private String normalizePhone(String phone) {
+        return phone.replaceFirst("^0", "+62");
+    }
+
+    private String[] phoneList(String allPhone) {
+        String[] phoneList = allPhone.split("[\\s]");
+        for (int i = 0; i < phoneList.length; i++) {
+            phoneList[i] = normalizePhone(phoneList[i]);
+        }
+
+        return phoneList;
+    }
+
+    private String listToCSV(String[] phoneList) {
+        StringBuilder sb = new StringBuilder();
+        for (String s : phoneList) {
+            sb.append(s);
+            sb.append(',');
+        }
+        sb.delete(sb.lastIndexOf(","), sb.lastIndexOf(","));
+        return sb.toString();
+    }
+    private String csvToList(String csv){
+        return csv.replace(",", "\n");
+    }
+
+    private void loadConf() {      
+        digit1Owner.setSelected(Boolean.parseBoolean(MainApp.defaultProps.getProperty("digit1-owner")));
+        digit1Popup.setSelected(Boolean.parseBoolean(MainApp.defaultProps.getProperty("digit1-popup")));
+        digit1Sound.setSelected(Boolean.parseBoolean(MainApp.defaultProps.getProperty("digit1-sound")));
+        digit1Team.setValue(MainApp.defaultProps.getProperty("digit1-team"));
+        digit2Owner.setSelected(Boolean.parseBoolean(MainApp.defaultProps.getProperty("digit2-owner")));
+        digit2Popup.setSelected(Boolean.parseBoolean(MainApp.defaultProps.getProperty("digit2-popup")));
+        digit2Sound.setSelected(Boolean.parseBoolean(MainApp.defaultProps.getProperty("digit2-sound")));
+        digit2Team.setValue(MainApp.defaultProps.getProperty("digit2-team"));
+        digit3Owner.setSelected(Boolean.parseBoolean(MainApp.defaultProps.getProperty("digit3-owner")));
+        digit3Popup.setSelected(Boolean.parseBoolean(MainApp.defaultProps.getProperty("digit3-popup")));
+        digit3Sound.setSelected(Boolean.parseBoolean(MainApp.defaultProps.getProperty("digit3-sound")));
+        digit3Team.setValue(MainApp.defaultProps.getProperty("digit3-team"));
+        digit4Owner.setSelected(Boolean.parseBoolean(MainApp.defaultProps.getProperty("digit4-owner")));
+        digit4Popup.setSelected(Boolean.parseBoolean(MainApp.defaultProps.getProperty("digit4-popup")));
+        digit4Sound.setSelected(Boolean.parseBoolean(MainApp.defaultProps.getProperty("digit4-sound")));
+        digit4Team.setValue(MainApp.defaultProps.getProperty("digit4-team"));
+        teamA.setText(csvToList(MainApp.defaultProps.getProperty("teamA")));
+        teamB.setText(csvToList(MainApp.defaultProps.getProperty("teamB")));
+    }
 }
