@@ -1,14 +1,12 @@
 /*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+ * Copyright belong to www.codencare.com and its client.
+ * for more information contact imanlhakim@gmail.com
  */
 package com.codencare.watcher.component;
 
 import com.codencare.watcher.desktop.MainApp;
 import com.codencare.watcher.desktop.MainFXMLController;
 import com.codencare.watcher.entity.Device;
-import com.sun.prism.paint.Color;
 import java.util.Objects;
 import javafx.event.EventHandler;
 import javafx.scene.control.Button;
@@ -23,20 +21,66 @@ import org.controlsfx.dialog.Dialog;
 import org.controlsfx.dialog.Dialogs;
 
 /**
- *
- * @author abah
+ * This class is implementation of home icon
+ * @author ImanLHakim@gmail.com
  */
 public class Home extends Button{
    
+    /**
+     * Margin between image and location edge
+     */
     private static final int MARGIN = Integer.parseInt(MainApp.defaultProps.getProperty("margin"));
-    private static final Image HOME_IMG = new Image(MapView.class.getResourceAsStream(MainApp.defaultProps.getProperty("home-image")));
+    /**
+     * Image link when home alarm active
+     */
+    private static final Image HOME_IMG_ACTIVE = new Image(MapView.class.getResourceAsStream(MainApp.defaultProps.getProperty("home-image-active")));
+    /**
+     * Image link when home alarm inactive
+     */
+    private static final Image HOME_IMG_INACTIVE = new Image(MapView.class.getResourceAsStream(MainApp.defaultProps.getProperty("home-image-inactive")));
+    /**
+     * width of home icon
+     */
     private static final double HOME_WIDTH =Double.parseDouble(MainApp.defaultProps.getProperty("home-width"));
+    /**
+     * height of home icon
+     */
     private static final double HOME_HEIGHT =Double.parseDouble(MainApp.defaultProps.getProperty("home-height"));
+    /** 
+     * horizontal ratio for zooming
+     */
     private static double xRatio = 1;
+    /**
+     * vertical ration for zooming
+     */
     private static double yRatio = 1;
-    private ImageView HOME_VIEW = new ImageView(HOME_IMG);
+    /** 
+     * image place-holder
+     */
+    private ImageView HOME_VIEW = new ImageView(HOME_IMG_INACTIVE);
     
-    public Home(final Device d){
+    /**
+     * is alarm active or not, these states will show different image.
+     */
+    private boolean active;
+    /**
+     * Create home alarm icon
+     * 
+     * TODO: Create more functionality to this icon, including 
+     * <li> context menu
+     * for alarm and device administration.</li>
+     * <li>context menu for alarm details</li>
+     * <li>context menu for alarm/message respond</li>
+     * @param d
+     * @param active 
+     */
+    public Home(final Device d, boolean active){
+        this.active = active;
+        if(this.active){
+            HOME_VIEW = new ImageView(HOME_IMG_ACTIVE);
+        }else{
+            HOME_VIEW = new ImageView(HOME_IMG_INACTIVE);
+        }
         HOME_VIEW.setFitWidth(HOME_WIDTH*xRatio);
         HOME_VIEW.setFitHeight(HOME_HEIGHT*yRatio);
         double locX = ((d.getLocX()-MARGIN)*xRatio) - (HOME_WIDTH/2);
@@ -59,30 +103,47 @@ public class Home extends Button{
                                     .message(d.toString())
                                     .showWarning();
 
+//                            TODO: what should system do after click ?
                             if (response == Dialog.Actions.OK) {
-                                // ... submit user input
+                                //TODO: ... submit user input
                                MapView mapView = (MapView) getScene().lookup("#mapView");
                                mapView.removeDevice(d);
                                MainFXMLController.removeAlarm(d);
                             } else {
-                                // ... user cancelled, reset form to default
+                                //TODO: ... user cancelled, reset form to default
                             }
                 }
          });
     } 
 
+    /**
+     * Set horizontal ration for icon
+     * @param ratio horizontal ratio
+     */    
     public static void setXRatio(double ratio) {
         Home.xRatio = ratio;
     }
 
+    /**
+     * Get horizontal ratio of icon
+     * @return 
+     */
     public static double getXRatio() {
         return xRatio;
     }   
 
+    /**
+     * Get vertical ratio of icon
+     * @return 
+     */
     public static double getyRatio() {
         return yRatio;
     }
 
+    /**
+     * Set vertical ratio of icon
+     * @param yRatio 
+     */
     public static void setyRatio(double yRatio) {
         Home.yRatio = yRatio;
     }
@@ -94,6 +155,11 @@ public class Home extends Button{
         return hash;
     }
 
+    /**
+     * icon unique identified by it's id (from device's id)
+     * @param obj
+     * @return 
+     */
     @Override
     public boolean equals(Object obj) {
         if (obj == null) {
@@ -103,10 +169,6 @@ public class Home extends Button{
             return false;
         }
         final Home other = (Home) obj;
-        if (!Objects.equals(this.getId(), other.getId())) {
-            return false;
-        }
-        return true;
+        return Objects.equals(this.getId(), other.getId());
     }
-    
 }

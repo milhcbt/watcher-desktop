@@ -1,7 +1,6 @@
 /*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+ * Copyright belong to www.codencare.com and its client.
+ * for more information contact imanlhakim@gmail.com
  */
 package com.codencare.watcher.component;
 
@@ -14,22 +13,45 @@ import javafx.scene.image.Image;
 import javafx.scene.layout.Pane;
 
 /**
- *
- * @author abah
+ * This component represent map of area
+ * @author ImanLHakim@gmail.com
  */
 public class MapView extends Control {
 
+    /**
+     * margin between map and location edge in window.
+     */
     private static final int MARGIN = Integer.parseInt(MainApp.defaultProps.getProperty("margin"));
-    private static final int HOME_WH = 20;
+    
     private final Pane pane = new Pane();
+    /**
+     * map image place holder.
+     */
     private final Canvas mapCanvas = new Canvas();
     private final Image map;
+    /**
+     * list of device to be viewed in map
+     */
     private List<Device> devices;
+    /**
+     * Horizontal ratio of map image.
+     */
     private double xRatio = 1;
+    /**
+     * Vertical ratio of map image.
+     */
     private double yRatio = 1;
     
+    /**
+     * Map zoom type, only limited value allowed, because it's only bitmap image
+     * TODO: vector image will give better result
+     */
     private MapZoom mapZoom;
     
+    /**
+     * A constructor.
+     * @param devices list of device to be viewed in map 
+     */
     public MapView(List<Device> devices) {
         this.devices = devices;
         getStyleClass().add("map-view");
@@ -42,6 +64,7 @@ public class MapView extends Control {
         this.getChildren().add(pane);
         putAllHome();
     }
+    
     
     public void addDevice(Device d){
         devices.add(d);
@@ -126,11 +149,11 @@ public class MapView extends Control {
     private void putHomeIcon(Device d) {
         Home.setXRatio(xRatio);
         Home.setyRatio(yRatio);
-        final Home b = new Home(d);
+        final Home b = new Home(d,false);
         pane.getChildren().add(b);
     }
     private void removeHomeIcon(Device d){
-        final Home b = new Home(d);
+        final Home b = new Home(d,false);
         pane.getChildren().remove(b);
     }
     
