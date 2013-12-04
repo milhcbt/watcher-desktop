@@ -21,10 +21,10 @@ public enum DigitalInput {
     }
 
     /**
-     * Get <code>Integer</code> value of digital input
+     * Get <code>short</code> value of digital input
      * @return integer value of digital input
      */
-    public int getValue() {
-        return value;
+    public short getValue() {
+        return (short) value;
     }
 }

@@ -4,6 +4,7 @@
  */
 package com.codencare.watcher.controller;
 
+import com.codencare.esb.message.IMessage;
 import com.codencare.watcher.controller.exceptions.IllegalOrphanException;
 import com.codencare.watcher.controller.exceptions.NonexistentEntityException;
 import com.codencare.watcher.controller.exceptions.PreexistingEntityException;
@@ -22,6 +23,7 @@ import com.codencare.watcher.entity.AlarmLog;
 import com.codencare.watcher.entity.Device;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.Date;
 import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -30,9 +32,11 @@ import org.apache.log4j.Logger;
 
 /**
  * TODO: documentation same as AlarmLog Controller
+ *
  * @author ImanLHakim@gmail.com
  */
 public class DeviceJpaController implements Serializable {
+
     private static final Logger LOGGER = Logger.getLogger(DeviceJpaController.class.getName());
 
     public DeviceJpaController(EntityManagerFactory emf) {
@@ -323,7 +327,7 @@ public class DeviceJpaController implements Serializable {
             em.close();
         }
     }
-    
+
     public List<Device> findAlarmedDevice() {
         EntityManager em = getEntityManager();
         String template = "SELECT d FROM Device d WHERE d.resolve=-1";
@@ -333,12 +337,38 @@ public class DeviceJpaController implements Serializable {
             Query query = em.createQuery(strQuery);
             return query.getResultList();
         } finally {
-           if (em != null) {
+            if (em != null) {
                 em.close();
-}
+            }
         }
     }
 
+    
+    
+    public void newDevice(long id) {
+        EntityManager em = getEntityManager();
+        //it's safe to concate long value, no sql injection
+        String template = "INSERT INTO `device`(`id`) VALUES ("
+                + String.valueOf(id)
+                + ")";
+        try {
+             
+            Query query = em.createNativeQuery(template);
+            em.getTransaction().begin();
+            query.executeUpdate();
+            em.getTransaction().commit();
+        } finally {
+            if (em != null) {
+                em.close();
+            }
+        }
+    }
+    
+    
+    /**
+     * 
+     * @param d 
+     */
     public void turnOfAlarm(Device d) {
         EntityManager em = getEntityManager();
 
@@ -351,9 +381,9 @@ public class DeviceJpaController implements Serializable {
             ud.setResolve(Device.RESOLVE_RESOLVED);
             em.getTransaction().commit();
         } catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException ex) {
-           LOGGER.error(ex.toString());
+            LOGGER.error(ex.toString());
         } finally {
-             if (em != null) {
+            if (em != null) {
                 em.close();
             }
         }

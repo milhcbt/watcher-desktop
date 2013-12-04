@@ -68,15 +68,15 @@ public class AlarmLogJpaController implements Serializable {
             em.persist(alarmLog);
             if (type != null) {
                 type.getAlarmLogCollection().add(alarmLog);
-                type = em.merge(type);//FIXME
+                type = em.merge(type);//FIXME:assigned value never used
             }
             if (device != null) {
                 device.getAlarmLogCollection().add(alarmLog);
-                device = em.merge(device);//FIXME
+                device = em.merge(device);//FIXME:assigned value never used
             }
             if (user != null) {
                 user.getAlarmLogCollection().add(alarmLog);
-                user = em.merge(user);//FIXME
+                user = em.merge(user);//FIXME:assigned value never used
             }
             em.getTransaction().commit();
         } finally {

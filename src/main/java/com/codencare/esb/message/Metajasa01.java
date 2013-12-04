@@ -13,6 +13,7 @@ import org.slf4j.LoggerFactory;
 
 /**
  * IMessage implementation for Metajasa type 1.
+ *
  * @author ImanLHakim@gmail.com
  */
 public class Metajasa01 extends MessageBase {
@@ -22,26 +23,26 @@ public class Metajasa01 extends MessageBase {
     private static final int BODY_SOURCE = 1;
     private static final int BODY_DIGITAL = 2;
     private static final int BODY_ANALOG = 3;
-    private final String [] strBody ;
-    
+    private final String[] strBody;
 
     /**
      * A Constructor as mandated by class BaseMessage
+     *
      * @param raw Message in Camel Netty Socket format.
-     * @throws UnknownHostException 
+     * @throws UnknownHostException
      */
     public Metajasa01(final Message raw) throws UnknownHostException {
         super(raw);
         Pattern pattern = Pattern.compile("IO[^IORST]*\\*$|RST[^IORST]*\\*$");
         Matcher matcher = pattern.matcher(raw.getBody(String.class).trim());
-        
+
         if (matcher.find()) {
             this.strBody = matcher.group(0).split("\\.");
-            LOGGER.debug("processing:"+matcher.group(0)+":"+strBody.length);
-        }else{
-            this.strBody="....".split(".");
+            LOGGER.debug("processing:" + matcher.group(0) + ":" + strBody.length);
+        } else {
+            this.strBody = "....".split(".");
         }
-      
+
     }
 
     @Override
@@ -89,40 +90,65 @@ public class Metajasa01 extends MessageBase {
     }
 
     @Override
-    public int getAnalog1() {
-       if (strBody[BODY_SOURCE].charAt(strBody[BODY_SOURCE].length()-1) == '5'){
-           return Integer.parseInt(strBody[BODY_ANALOG]);
-       }
-       else return ANALOG_UNKNOW;
+    public short getAnalog1() {
+        if (strBody[BODY_SOURCE].charAt(strBody[BODY_SOURCE].length() - 1) == '5') {
+            try {
+                return Short.parseShort(strBody[BODY_ANALOG]);
+            } catch (NumberFormatException ex) {
+                LOGGER.error(ex.toString());
+                return ANALOG_UNKNOW;
+            }
+
+        } else {
+            return ANALOG_UNKNOW;
+        }
     }
 
     @Override
-    public int getAnalog2() {
-       if (strBody[BODY_SOURCE].charAt(strBody[BODY_SOURCE].length()-1) == '6'){
-           return Integer.parseInt(strBody[BODY_ANALOG]);
-       }
-       else return ANALOG_UNKNOW;
+    public short getAnalog2() {
+        if (strBody[BODY_SOURCE].charAt(strBody[BODY_SOURCE].length() - 1) == '6') {
+            try {
+                return Short.parseShort(strBody[BODY_ANALOG]);
+            } catch (NumberFormatException ex) {
+                LOGGER.error(ex.toString());
+                return ANALOG_UNKNOW;
+            }
+        } else {
+            return ANALOG_UNKNOW;
+        }
     }
 
     @Override
-    public int getAnalog3() {
-       if (strBody[BODY_SOURCE].charAt(strBody[BODY_SOURCE].length()-1) == '7'){
-           return Integer.parseInt(strBody[BODY_ANALOG]);
-       }
-      else return ANALOG_UNKNOW;
+    public short getAnalog3() {
+        if (strBody[BODY_SOURCE].charAt(strBody[BODY_SOURCE].length() - 1) == '7') {
+            try {
+                return Short.parseShort(strBody[BODY_ANALOG]);
+            } catch (NumberFormatException ex) {
+                LOGGER.error(ex.toString());
+                return ANALOG_UNKNOW;
+            }
+        } else {
+            return ANALOG_UNKNOW;
+        }
     }
 
     @Override
-    public int getAnalog4() {
-      if (strBody[BODY_SOURCE].charAt(strBody[BODY_SOURCE].length()-1) == '8'){
-           return Integer.parseInt(strBody[BODY_ANALOG]);
-       }
-       else return ANALOG_UNKNOW;
+    public short getAnalog4() {
+        if (strBody[BODY_SOURCE].charAt(strBody[BODY_SOURCE].length() - 1) == '8') {
+            try {
+                return Short.parseShort(strBody[BODY_ANALOG]);
+            } catch (NumberFormatException ex) {
+                LOGGER.error(ex.toString());
+                return ANALOG_UNKNOW;
+            }
+        } else {
+            return ANALOG_UNKNOW;
+        }
     }
 
     @Override
     public boolean getUrgent() {
-        return strBody[BODY_SOURCE].charAt(strBody[BODY_SOURCE].length()-1) == '1';
+        return strBody[BODY_SOURCE].charAt(strBody[BODY_SOURCE].length() - 1) == '1';
     }
 
     @Override
@@ -134,5 +160,5 @@ public class Metajasa01 extends MessageBase {
         }
         return ResolveStatus.NORMAL;
     }
-       
+
 }

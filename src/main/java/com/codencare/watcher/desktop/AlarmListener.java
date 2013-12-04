@@ -7,8 +7,14 @@ package com.codencare.watcher.desktop;
 import com.codencare.esb.message.IMessage;
 import com.codencare.esb.message.Metajasa01;
 import com.codencare.esb.message.Prasimax;
+import com.codencare.watcher.controller.DeviceJpaController;
+import com.codencare.watcher.controller.exceptions.IllegalOrphanException;
+import com.codencare.watcher.controller.exceptions.NonexistentEntityException;
 import static com.codencare.watcher.desktop.TraditionalMainController.MEDIA_URL;
+import com.codencare.watcher.entity.Device;
+import com.codencare.watcher.util.DataConverter;
 import java.net.UnknownHostException;
+import java.util.Date;
 import javafx.application.Platform;
 import javafx.concurrent.Task;
 import javafx.scene.media.Media;
@@ -28,10 +34,11 @@ import org.controlsfx.dialog.Dialogs;
 
 /**
  * Camel-netty listener, listen to socket message from devices
+ *
  * @author Iman L Hakim <imanlhakim at gmail.com>
  */
 public class AlarmListener extends Task<Void> {
-
+    
     private static final Logger LOGGER = Logger.getLogger(MainFXMLController.class.getName());
     private static final EntityManagerFactory emf = Persistence.createEntityManagerFactory("watcherDB");
     /**
@@ -39,22 +46,23 @@ public class AlarmListener extends Task<Void> {
      */
     private static CamelContext context;
     /**
-     * owner for warning dialog of alarm.
-     * where warning should be shown.
+     * owner for warning dialog of alarm. where warning should be shown.
      */
     private static Window target;
-    
+
     /**
      * Contructor
-     * @param target owner for warning dialog of alarm.where 
-     * warning should be shown.
+     *
+     * @param target owner for warning dialog of alarm.where warning should be
+     * shown.
      */
-    public AlarmListener(Window target){
+    public AlarmListener(Window target) {
         AlarmListener.target = target;
     }
 
     /**
      * Receiving alarm/message from device
+     *
      * @return nothing Void just a stamp.
      */
     @Override
@@ -78,7 +86,7 @@ public class AlarmListener extends Task<Void> {
                             + "&delimiter=NULL")
                             /*parse message base on device */
                             .process(new Processor() {
-
+                                
                                 @Override
                                 public void process(Exchange exchng) throws Exception {
                                     final String body = exchng.getIn().getBody(String.class);
@@ -92,10 +100,40 @@ public class AlarmListener extends Task<Void> {
                                     LOGGER.debug(body);
                                     exchng.getIn().setBody(msg, IMessage.class);
                                 }
-
+                                
                             })
-                            /*TODO:save message to database 
-                            and complete it with meta-data from database*/
+                            /*save message to database 
+                             and complete it with meta-data from database*/
+                            .process(new Processor() {
+                                
+                                @Override
+                                public void process(Exchange exchange)
+                                throws Exception {
+                                    DeviceJpaController dc
+                                    = new DeviceJpaController(emf);
+                                    IMessage msg = exchange.getIn()
+                                    .getBody(IMessage.class);
+                                    /*FIXME: loading device first is unnecessary
+                                     and may decrease performance, use native query
+                                     for better performance */
+                                    Device d = dc.findDevice(DataConverter.
+                                            bytesToLong(msg.getLocalAddress().
+                                                    getAddress()));
+                                    if (d != null) {
+                                        fillDevice(d, msg);
+                                        try {
+                                            dc.edit(d);
+                                        } catch (IllegalOrphanException | NonexistentEntityException ex) {
+                                            LOGGER.error(ex.toString());
+                                        }
+                                    } else {
+                                        dc.newDevice(DataConverter.
+                                                bytesToLong(msg.getLocalAddress().
+                                                        getAddress()));
+                                    }
+                                }
+                                
+                            })
                             /*TODO:turn sound if needed*/
                             /*TODO:show dialog box with address if needed*/
                             /*TODO:sent SMS notification if needed*/
@@ -103,7 +141,7 @@ public class AlarmListener extends Task<Void> {
                                 @Override
                                 public void process(final Exchange exchng) throws Exception {
                                     Platform.runLater(new Runnable() {
-
+                                        
                                         @Override
                                         public void run() {
                                             try {
@@ -117,7 +155,7 @@ public class AlarmListener extends Task<Void> {
                                                 .message(msg.getLocalAddress().toString())
                                                 //.lightweight()
                                                 .showWarning();
-
+                                                
                                                 if (response == Dialog.Actions.OK) {
                                                     //TODO: ... submit user input
                                                 } else {
@@ -129,7 +167,7 @@ public class AlarmListener extends Task<Void> {
                                         }
                                     });
                                 }
-
+                                
                             })
                             /*save to log*/
                             .to("log:com.codencare.watcher");
@@ -139,16 +177,29 @@ public class AlarmListener extends Task<Void> {
         } catch (Exception ex) {
             LOGGER.error(ex);
         }
-            // while (true) {
+        // while (true) {
         //}
         return null;
     }
+
     /**
      * Stop camel engine
-     * @throws Exception 
+     *
+     * @throws Exception
      */
-    public void stopContext() throws Exception{
+    public void stopContext() throws Exception {
         context.stop();
     }
-
+    
+    public static void fillDevice(Device d, IMessage msg) {
+        d.setAnalog1(msg.getAnalog1());
+        d.setAnalog2(msg.getAnalog2());
+        d.setAnalog3(msg.getAnalog3());
+        d.setAnalog4(msg.getAnalog4());
+        d.setDigit1(msg.getDigit1().getValue());
+        d.setDigit2(msg.getDigit2().getValue());
+        d.setDigit3(msg.getDigit3().getValue());
+        d.setDigit4(msg.getDigit4().getValue());
+        d.setLastTime(new Date());
+    }
 }

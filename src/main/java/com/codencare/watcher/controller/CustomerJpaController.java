@@ -250,7 +250,9 @@ public class CustomerJpaController implements Serializable {
         EntityManager em = getEntityManager();
         try {
             Query q = em.createNativeQuery("SELECT max(id) FROM `customer`");
-            return ((Long) q.getSingleResult()).intValue();///FIXME:may get overflow
+            return q.getFirstResult();
+            
+           /// return ((Long) q.getSingleResult()).intValue();
         } finally {
             em.close();
         }

@@ -66,22 +66,22 @@ public interface IMessage {
      * Get value of analog input number 1
      * @return return positive Integer off analog input
      */
-    public int getAnalog1();
+    public short getAnalog1();
     /**
      * Get value of analog input number 2
      * @return return positive Integer off analog input
      */
-    public int getAnalog2();
+    public short getAnalog2();
     /**
      * Get value of analog input number 3
      * @return return positive Integer off analog input
      */
-    public int getAnalog3();
+    public short getAnalog3();
     /**
      * Get value of analog input number 4
      * @return return positive Integer off analog input
      */
-    public int getAnalog4();
+    public short getAnalog4();
 
     /**
      * Get raw message in Camel's Message format. 

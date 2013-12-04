@@ -24,8 +24,8 @@ import org.slf4j.LoggerFactory;
 public abstract class MessageBase implements IMessage, Serializable {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(MessageBase.class);
-    private final Message raw;//TODO:bug, it's make non-sense Message raw always changed
-    private final String strRaw;//TODO: store raw massage because raw always changed.
+    private final Message raw;//FIXME:bug, it's make non-sense Message raw always changed
+    private final String strRaw;//FIXME: store raw massage because raw always changed.
     private final InetAddress localAddress;
     private final int localPort;
     private final InetAddress remoteAddress;

@@ -13,6 +13,7 @@ import org.slf4j.LoggerFactory;
 
 /**
  * IMessage implementation of Prasimax device.
+ *
  * @author ImanLHakim@gmail.com
  */
 public class Prasimax extends MessageBase {
@@ -22,8 +23,9 @@ public class Prasimax extends MessageBase {
 
     /**
      * A Constructor as mandated by class BaseMessage
+     *
      * @param raw Message in Camel Netty Socket format.
-     * @throws UnknownHostException 
+     * @throws UnknownHostException
      */
     public Prasimax(Message raw) throws UnknownHostException {
         super(raw);
@@ -31,7 +33,6 @@ public class Prasimax extends MessageBase {
         LOGGER.debug("processing:" + strBody);
     }
 
-    
     @Override
     public DigitalInput getDigit1() {
         if (strBody.matches("i")) {
@@ -77,41 +78,61 @@ public class Prasimax extends MessageBase {
     }
 
     @Override
-    public int getAnalog1() {
+    public short getAnalog1() {
         Pattern pattern = Pattern.compile("M\\d{1,4}");
         Matcher matcher = pattern.matcher(strBody);
         if (matcher.find()) {
-            return Integer.parseInt(matcher.group(0).substring(1));
+            try {
+                return Short.parseShort(matcher.group(0).substring(1));
+            } catch (NumberFormatException ex) {
+                LOGGER.error(ex.toString());
+                return ANALOG_UNKNOW;
+            }
         }
         return ANALOG_UNKNOW;
     }
 
     @Override
-    public int getAnalog2() {
+    public short getAnalog2() {
         Pattern pattern = Pattern.compile("N\\d{1,4}");
         Matcher matcher = pattern.matcher(strBody);
         if (matcher.find()) {
-            return Integer.parseInt(matcher.group(0).substring(1));
+            try {
+                return Short.parseShort(matcher.group(0).substring(1));
+            } catch (NumberFormatException ex) {
+                LOGGER.error(ex.toString());
+                return ANALOG_UNKNOW;
+            }
         }
         return ANALOG_UNKNOW;
     }
 
     @Override
-    public int getAnalog3() {
+    public short getAnalog3() {
         Pattern pattern = Pattern.compile("O\\d{1,4}");
         Matcher matcher = pattern.matcher(strBody);
         if (matcher.find()) {
-            return Integer.parseInt(matcher.group(0).substring(1));
+            try {
+                return Short.parseShort(matcher.group(0).substring(1));
+            } catch (NumberFormatException ex) {
+                LOGGER.error(ex.toString());
+                return ANALOG_UNKNOW;
+            }
         }
         return ANALOG_UNKNOW;
     }
 
     @Override
-    public int getAnalog4() {
+    public short getAnalog4() {
         Pattern pattern = Pattern.compile("P\\d{1,4}");
         Matcher matcher = pattern.matcher(strBody);
         if (matcher.find()) {
-            return Integer.parseInt(matcher.group(0).substring(1));
+            try {
+                return Short.parseShort(matcher.group(0).substring(1));
+            } catch (NumberFormatException ex) {
+                LOGGER.error(ex.toString());
+                return ANALOG_UNKNOW;
+            }
         }
         return ANALOG_UNKNOW;
     }
