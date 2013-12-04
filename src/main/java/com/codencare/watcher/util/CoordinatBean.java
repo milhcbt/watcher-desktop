@@ -1,15 +1,14 @@
 /*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+ * Copyright belong to www.codencare.com and its client.
+ * for more information contact imanlhakim@gmail.com
  */
 package com.codencare.watcher.util;
 
 import javafx.beans.property.SimpleDoubleProperty;
 
 /**
- *
- * @author abah
+ * a bean for Cartesian (XY) Coordinate.
+ * @author Iman L Hakim <imanlhakim at gmail.com>
  */
 public final class CoordinatBean {
 

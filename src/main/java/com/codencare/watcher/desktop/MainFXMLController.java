@@ -151,9 +151,9 @@ public class MainFXMLController implements Initializable {
                 
                 updateDevice();
                 if (newValue.intValue() ==  0) {
-                    mapView.setMapZoom(MapZoom.Original, alarmedDevices);
+                    mapView.setMapZoom(MapZoom.Original, alarmedDevices,false);
                 } else if (newValue.intValue() == 1) {
-                    mapView.setMapZoom(MapZoom.FitAll, alarmedDevices);
+                    mapView.setMapZoom(MapZoom.FitAll, alarmedDevices,false);
                 }// else if (newValue == 2) {
 //                    mapView.setMapZoom(MapZoom.FitWidth, alarmedDevices);
 //                } else if (newValue == 3) {
@@ -247,14 +247,14 @@ public class MainFXMLController implements Initializable {
     void zoom(ActionEvent event) {
         updateDevice();
         if (mapView.getMapZoom() == MapZoom.Original) {
-            mapView.setMapZoom(MapZoom.FitAll, alarmedDevices);
+            mapView.setMapZoom(MapZoom.FitAll, alarmedDevices,false);
         }if (mapView.getMapZoom() == MapZoom.FitHeight) {
-            mapView.setMapZoom(MapZoom.FitHeight, alarmedDevices);
+            mapView.setMapZoom(MapZoom.FitHeight, alarmedDevices,false);
         }if (mapView.getMapZoom() == MapZoom.FitWidth) {
-            mapView.setMapZoom(MapZoom.FitWidth, alarmedDevices);
+            mapView.setMapZoom(MapZoom.FitWidth, alarmedDevices,false);
         }
         else {
-            mapView.setMapZoom(MapZoom.Original, alarmedDevices);
+            mapView.setMapZoom(MapZoom.Original, alarmedDevices,false);
         }
     }
 

@@ -65,34 +65,59 @@ public class MapView extends Control {
         putAllHome();
     }
     
-    
+    /**
+     * Add a device icon (home) into  map
+     * @param d device
+     */    
     public void addDevice(Device d){
         devices.add(d);
         putHomeIcon(d);
     }
+    /**
+     * Remove a device icon from map
+     * @param d device
+     */
     public void removeDevice(Device d){
-        removeHomeIcon(d);
+        removeIcon(d);
         devices.remove(d);
     }
     
+    /**
+     * Default css for this component.
+     * @return 
+     */
     @Override
     protected String getUserAgentStylesheet() {
         return MapView.class.getResource("MapView.css").toExternalForm();
     }
     
+    /**
+     * Put all icons into map.
+     */
     private void putAllHome(){
          for (Device d : this.devices) {
             putHomeIcon(d);
         }
     }
     
+    /** 
+     * Clean up map.
+     */
     private void removeAllHome(){
         for (Device d : this.devices) {
-            removeHomeIcon(d);
+            removeIcon(d);
         }
     }
     
-    public void setMapZoom(MapZoom mapZoom,List<Device> devices) {
+    /**
+     * Set zooming mode
+     *      
+     * @param mapZoom
+     * @param devices
+     * @param keepRatio 
+     */
+    public void setMapZoom(MapZoom mapZoom,List<Device> devices, boolean keepRatio) {
+       /* TODO: implement keepRatio, currently assumed false*/
         removeAllHome();
         this.devices = devices;
         this.mapZoom = mapZoom;
@@ -133,30 +158,31 @@ public class MapView extends Control {
          putAllHome(); 
     }
     
+    /**
+     * getZoom mode
+     * @return 
+     */
     public MapZoom getMapZoom() {
         return mapZoom;
     }
-
-//    public List<Device> getDevices() {
-//        return devices;
-//    }
-//
-//    public void setDevices(List<Device> devices) {
-//        this.devices = devices;
-//    }
     
-    
+    /**
+     * put device on map
+     * @param d 
+     */
     private void putHomeIcon(Device d) {
         Home.setXRatio(xRatio);
         Home.setyRatio(yRatio);
         final Home b = new Home(d,false);
         pane.getChildren().add(b);
     }
-    private void removeHomeIcon(Device d){
+    
+    /** 
+     * remove home/icon from map
+     * @param d 
+     */
+    private void removeIcon(Device d){
         final Home b = new Home(d,false);
         pane.getChildren().remove(b);
     }
-    
-    
-    
 }

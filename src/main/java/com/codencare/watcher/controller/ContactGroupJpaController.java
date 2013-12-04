@@ -1,7 +1,6 @@
 /*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+ * Copyright belong to www.codencare.com and its client.
+ * for more information contact imanlhakim@gmail.com
  */
 package com.codencare.watcher.controller;
 
@@ -21,8 +20,8 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 
 /**
- *
- * @author abah
+ * TODO: documentation same as AlarmLog Controller
+ * @author ImanLHakim@gmail.com
  */
 public class ContactGroupJpaController implements Serializable {
 

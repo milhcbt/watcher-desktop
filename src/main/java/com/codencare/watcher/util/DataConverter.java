@@ -1,13 +1,14 @@
 /*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+ * Copyright belong to www.codencare.com and its client.
+ * for more information contact imanlhakim@gmail.com
  */
 package com.codencare.watcher.util;
 
+import java.security.InvalidParameterException;
+
 /**
- *
- * @author abah
+ * Data Conversion class
+ * @author Iman L Hakim <imanlhakim at gmail.com>
  */
 public class DataConverter {
     /**
@@ -16,6 +17,9 @@ public class DataConverter {
      * @return 
      */
      public static long bytesToLong(byte[] raw){
+       if(raw.length != 4){
+           throw new InvalidParameterException("raw must be 4 byte length");
+       }
        return
       ((raw [0] & 0xFFl) << (3*8)) + 
       ((raw [1] & 0xFFl) << (2*8)) +

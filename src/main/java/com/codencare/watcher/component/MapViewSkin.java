@@ -1,15 +1,14 @@
 /*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+ * Copyright belong to www.codencare.com and its client.
+ * for more information contact imanlhakim@gmail.com
  */
 package com.codencare.watcher.component;
 
 import javafx.scene.control.SkinBase;
 
 /**
- *
- * @author abah
+ * Skin class for MapView Component
+ * @author ImanLHakim@gmail.com
  */
 public class MapViewSkin extends SkinBase{
     public MapViewSkin(MapView c){

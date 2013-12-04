@@ -1,13 +1,13 @@
 /*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+ * Copyright belong to www.codencare.com and its client.
+ * for more information contact imanlhakim@gmail.com
  */
 package com.codencare.watcher.component;
 
 /**
- *
- * @author abah
+ * Valid values for zoom mode
+ * TODO: support with and without aspect ratio
+ * @author ImanLHakim@gmail.com
  */
 public enum MapZoom {
     FitAll,Original,FitWidth,FitHeight

@@ -1,7 +1,6 @@
 /*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+ * Copyright belong to www.codencare.com and its client.
+ * for more information contact imanlhakim@gmail.com
  */
 package com.codencare.watcher.controller;
 
@@ -20,20 +19,32 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 
 /**
- *
- * @author abah
+ * Controller for AlarmLog Entity
+ * @author ImanLHakim@gmail.com
  */
 public class AlarmLogJpaController implements Serializable {
 
+    /**
+     * A Constructor
+     * @param emf 
+     */
     public AlarmLogJpaController(EntityManagerFactory emf) {
         this.emf = emf;
     }
     private EntityManagerFactory emf = null;
 
+    /**
+     * Get Entity Manager
+     * @return 
+     */
     public EntityManager getEntityManager() {
         return emf.createEntityManager();
     }
 
+    /** 
+     * Create new AlarmLog Entity
+     * @param alarmLog new AlarmLog
+     */
     public void create(AlarmLog alarmLog) {
         EntityManager em = null;
         try {
@@ -57,15 +68,15 @@ public class AlarmLogJpaController implements Serializable {
             em.persist(alarmLog);
             if (type != null) {
                 type.getAlarmLogCollection().add(alarmLog);
-                type = em.merge(type);
+                type = em.merge(type);//FIXME
             }
             if (device != null) {
                 device.getAlarmLogCollection().add(alarmLog);
-                device = em.merge(device);
+                device = em.merge(device);//FIXME
             }
             if (user != null) {
                 user.getAlarmLogCollection().add(alarmLog);
-                user = em.merge(user);
+                user = em.merge(user);//FIXME
             }
             em.getTransaction().commit();
         } finally {
@@ -75,6 +86,12 @@ public class AlarmLogJpaController implements Serializable {
         }
     }
 
+    /**
+     * Edit or update AlarmLog
+     * @param alarmLog
+     * @throws NonexistentEntityException
+     * @throws Exception 
+     */
     public void edit(AlarmLog alarmLog) throws NonexistentEntityException, Exception {
         EntityManager em = null;
         try {
@@ -141,6 +158,11 @@ public class AlarmLogJpaController implements Serializable {
         }
     }
 
+    /**
+     * Destroy or delete AlarmLog.
+     * @param id
+     * @throws NonexistentEntityException 
+     */
     public void destroy(Integer id) throws NonexistentEntityException {
         EntityManager em = null;
         try {
@@ -177,14 +199,31 @@ public class AlarmLogJpaController implements Serializable {
         }
     }
 
+    /**
+     * Get a list of all AlarmLogs.
+     * @return AlarmLogs list
+     */
     public List<AlarmLog> findAlarmLogEntities() {
         return findAlarmLogEntities(true, -1, -1);
     }
 
+    /**
+     * Get a list of all AlarmLogs.
+     * @param maxResults
+     * @param firstResult
+     * @return AlarmLogs list.
+     */
     public List<AlarmLog> findAlarmLogEntities(int maxResults, int firstResult) {
         return findAlarmLogEntities(false, maxResults, firstResult);
     }
 
+    /**
+     * Get a list of all AlarmLogs.
+     * @param all
+     * @param maxResults
+     * @param firstResult
+     * @return 
+     */
     private List<AlarmLog> findAlarmLogEntities(boolean all, int maxResults, int firstResult) {
         EntityManager em = getEntityManager();
         try {
@@ -201,6 +240,11 @@ public class AlarmLogJpaController implements Serializable {
         }
     }
 
+    /**
+     * Get an AlarmLog Entity.
+     * @param id
+     * @return 
+     */
     public AlarmLog findAlarmLog(Integer id) {
         EntityManager em = getEntityManager();
         try {
@@ -210,6 +254,10 @@ public class AlarmLogJpaController implements Serializable {
         }
     }
 
+    /**
+     * Get number of AlarmLogs in database.
+     * @return 
+     */
     public int getAlarmLogCount() {
         EntityManager em = getEntityManager();
         try {
@@ -222,5 +270,4 @@ public class AlarmLogJpaController implements Serializable {
             em.close();
         }
     }
-    
 }
