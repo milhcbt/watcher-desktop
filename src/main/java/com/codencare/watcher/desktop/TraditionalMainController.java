@@ -12,7 +12,6 @@ import com.codencare.watcher.entity.Device;
 import java.io.IOException;
 import java.net.URL;
 import java.util.List;
-import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -43,6 +42,7 @@ public class TraditionalMainController {
 
     private Point2D loc;
     private List<Device> alarmedDevices;
+    private List<Device> allDevices;
 
     private MapView mapView;
 
@@ -97,7 +97,7 @@ public class TraditionalMainController {
 
         // Initialize your logic here: all @FXML variables will have been injected
         updateDevice();
-        mapView = new MapView(alarmedDevices);
+        mapView = new MapView(allDevices);
         mapView.setId("mapView");
         mainPane.setContent(mapView);
     }
@@ -194,6 +194,7 @@ public class TraditionalMainController {
     }
 
     void updateDevice() {   
-        alarmedDevices = (new DeviceJpaController(emf)).findAlarmedDevice();
+//        alarmedDevices = (new DeviceJpaController(emf)).findAlarmedDevice();//FIXME: CLEAN UP
+        allDevices = (new DeviceJpaController(emf)).findDeviceEntities();
     }    
 }

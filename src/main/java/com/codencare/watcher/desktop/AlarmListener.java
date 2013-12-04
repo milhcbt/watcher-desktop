@@ -45,7 +45,7 @@ public class AlarmListener extends Task<Void> {
     private static final EntityManagerFactory emf = Persistence.createEntityManagerFactory("watcherDB");
     static final Media media = new Media(MEDIA_URL.toString());
     static final MediaPlayer mediaPlayer = new MediaPlayer(media);
-    static final Stack<AlertDialog> alerts = new Stack<>() ;
+    static final Stack<AlertDialog> alerts = new Stack<>();
     /**
      * Context of camel engine.
      */
@@ -140,7 +140,7 @@ public class AlarmListener extends Task<Void> {
                                     }
                                 }
                             })
-                            /*TODO:turn sound if needed*/
+                            /*turn sound if needed*/
                             .process(new Processor() {
 
                                 @Override
@@ -150,14 +150,14 @@ public class AlarmListener extends Task<Void> {
                                         @Override
                                         public void run() {
                                             mediaPlayer.setCycleCount(MediaPlayer.INDEFINITE);
-//                                          mediaPlayer.setAutoPlay(true);
+//                                          mediaPlayer.setAutoPlay(true);//FIXME: delete if not needed
                                             mediaPlayer.play();
                                         }
                                     });
                                 }
 
                             })
-                            /*TODO:show dialog box with address if needed*/
+                            /*show dialog box with address if needed*/
                             .process(new Processor() {
                                 @Override
                                 public void process(final Exchange exchng) throws Exception {
@@ -168,17 +168,19 @@ public class AlarmListener extends Task<Void> {
                                             Object body = exchng.getIn().getBody();
                                             if (body instanceof Device) {
                                                 AlertDialog alert = new AlertDialog(target,
-                                                        "alarm at "+ ((Device)body).getAddress(),
+                                                        "alarm at " + ((Device) body).getAddress(),
                                                         AlertDialog.ICON_INFO,
                                                         new EventHandler() {
                                                             @Override
                                                             public void handle(Event event) {
                                                                 alerts.pop();
                                                                 ((Stage) ((Button) event.getSource()).getScene().getWindow()).close();
-                                                                if (alerts.size()==0) mediaPlayer.stop();
+                                                                if (alerts.size() == 0) {
+                                                                    mediaPlayer.stop();
+                                                                }
                                                             }
                                                         }
-                                                ); 
+                                                );
                                                 alerts.push(alert);
                                                 alert.showAndWait();
                                             }
