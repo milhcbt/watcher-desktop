@@ -11,14 +11,19 @@ import com.codencare.watcher.controller.DeviceJpaController;
 import com.codencare.watcher.controller.exceptions.IllegalOrphanException;
 import com.codencare.watcher.controller.exceptions.NonexistentEntityException;
 import static com.codencare.watcher.desktop.TraditionalMainController.MEDIA_URL;
+import com.codencare.watcher.dialog.AlertDialog;
 import com.codencare.watcher.entity.Device;
 import com.codencare.watcher.util.DataConverter;
-import java.net.UnknownHostException;
 import java.util.Date;
+import java.util.Stack;
 import javafx.application.Platform;
 import javafx.concurrent.Task;
+import javafx.event.Event;
+import javafx.event.EventHandler;
+import javafx.scene.control.Button;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
+import javafx.stage.Stage;
 import javafx.stage.Window;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
@@ -28,9 +33,6 @@ import org.apache.camel.Processor;
 import org.apache.camel.builder.RouteBuilder;
 import org.apache.camel.impl.DefaultCamelContext;
 import org.apache.log4j.Logger;
-import org.controlsfx.control.action.Action;
-import org.controlsfx.dialog.Dialog;
-import org.controlsfx.dialog.Dialogs;
 
 /**
  * Camel-netty listener, listen to socket message from devices
@@ -38,9 +40,12 @@ import org.controlsfx.dialog.Dialogs;
  * @author Iman L Hakim <imanlhakim at gmail.com>
  */
 public class AlarmListener extends Task<Void> {
-    
+
     private static final Logger LOGGER = Logger.getLogger(MainFXMLController.class.getName());
     private static final EntityManagerFactory emf = Persistence.createEntityManagerFactory("watcherDB");
+    static final Media media = new Media(MEDIA_URL.toString());
+    static final MediaPlayer mediaPlayer = new MediaPlayer(media);
+    static final Stack<AlertDialog> alerts = new Stack<>() ;
     /**
      * Context of camel engine.
      */
@@ -86,7 +91,7 @@ public class AlarmListener extends Task<Void> {
                             + "&delimiter=NULL")
                             /*parse message base on device */
                             .process(new Processor() {
-                                
+
                                 @Override
                                 public void process(Exchange exchng) throws Exception {
                                     final String body = exchng.getIn().getBody(String.class);
@@ -100,12 +105,12 @@ public class AlarmListener extends Task<Void> {
                                     LOGGER.debug(body);
                                     exchng.getIn().setBody(msg, IMessage.class);
                                 }
-                                
+
                             })
                             /*save message to database 
                              and complete it with meta-data from database*/
                             .process(new Processor() {
-                                
+
                                 @Override
                                 public void process(Exchange exchange)
                                 throws Exception {
@@ -123,7 +128,9 @@ public class AlarmListener extends Task<Void> {
                                         fillDevice(d, msg);
                                         try {
                                             dc.edit(d);
-                                        } catch (IllegalOrphanException | NonexistentEntityException ex) {
+                                            exchange.getIn().setBody(d, Device.class);
+                                        } catch (IllegalOrphanException |
+                                        NonexistentEntityException ex) {
                                             LOGGER.error(ex.toString());
                                         }
                                     } else {
@@ -132,43 +139,55 @@ public class AlarmListener extends Task<Void> {
                                                         getAddress()));
                                     }
                                 }
-                                
                             })
                             /*TODO:turn sound if needed*/
+                            .process(new Processor() {
+
+                                @Override
+                                public void process(Exchange exchange) throws Exception {
+                                    Platform.runLater(new Runnable() {
+
+                                        @Override
+                                        public void run() {
+                                            mediaPlayer.setCycleCount(MediaPlayer.INDEFINITE);
+//                                          mediaPlayer.setAutoPlay(true);
+                                            mediaPlayer.play();
+                                        }
+                                    });
+                                }
+
+                            })
                             /*TODO:show dialog box with address if needed*/
-                            /*TODO:sent SMS notification if needed*/
                             .process(new Processor() {
                                 @Override
                                 public void process(final Exchange exchng) throws Exception {
                                     Platform.runLater(new Runnable() {
-                                        
+
                                         @Override
                                         public void run() {
-                                            try {
-                                                IMessage msg = exchng.getIn().getBody(IMessage.class);
-                                                Media media = new Media(MEDIA_URL.toString());
-                                                MediaPlayer mediaPlayer = new MediaPlayer(media);
-                                                mediaPlayer.setAutoPlay(true);
-                                                Action response = Dialogs.create()
-                                                .title("alarm")
-                                                .owner(target)
-                                                .message(msg.getLocalAddress().toString())
-                                                //.lightweight()
-                                                .showWarning();
-                                                
-                                                if (response == Dialog.Actions.OK) {
-                                                    //TODO: ... submit user input
-                                                } else {
-                                                    //TODO: ... user cancelled, reset form to default
-                                                }
-                                            } catch (UnknownHostException ex) {
-                                                LOGGER.error(ex);
+                                            Object body = exchng.getIn().getBody();
+                                            if (body instanceof Device) {
+                                                AlertDialog alert = new AlertDialog(target,
+                                                        "alarm at "+ ((Device)body).getAddress(),
+                                                        AlertDialog.ICON_INFO,
+                                                        new EventHandler() {
+                                                            @Override
+                                                            public void handle(Event event) {
+                                                                alerts.pop();
+                                                                ((Stage) ((Button) event.getSource()).getScene().getWindow()).close();
+                                                                if (alerts.size()==0) mediaPlayer.stop();
+                                                            }
+                                                        }
+                                                ); 
+                                                alerts.push(alert);
+                                                alert.showAndWait();
                                             }
                                         }
                                     });
                                 }
-                                
+
                             })
+                            /*TODO:sent SMS notification if needed, use Camel or not?*/
                             /*save to log*/
                             .to("log:com.codencare.watcher");
                 }
@@ -190,7 +209,7 @@ public class AlarmListener extends Task<Void> {
     public void stopContext() throws Exception {
         context.stop();
     }
-    
+
     public static void fillDevice(Device d, IMessage msg) {
         d.setAnalog1(msg.getAnalog1());
         d.setAnalog2(msg.getAnalog2());
