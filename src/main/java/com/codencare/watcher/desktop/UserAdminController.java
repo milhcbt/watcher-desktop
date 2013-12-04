@@ -1,3 +1,7 @@
+/*
+ * Copyright belong to www.codencare.com and its client.
+ * for more information contact imanlhakim@gmail.com
+ */
 package com.codencare.watcher.desktop;
 
 import com.codencare.watcher.controller.UserJpaController;
@@ -28,6 +32,11 @@ import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 import org.apache.log4j.Logger;
 
+/**
+ * This is a controller class to manage User Administration.
+ * @see   void onAdminUser(ActionEvent event) in TraditionalMainController.java
+ * @author Iman L Hakim <imanlhakim at gmail.com>
+ */
 public class UserAdminController {
 
     private static final Logger LOGGER = Logger.getLogger(MainFXMLController.class.getName());

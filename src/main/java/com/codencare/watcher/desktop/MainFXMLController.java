@@ -1,3 +1,7 @@
+/*
+ * Copyright belong to www.codencare.com and its client.
+ * for more information contact imanlhakim@gmail.com
+ */
 package com.codencare.watcher.desktop;
 
 import com.codencare.watcher.component.MapView;
@@ -59,6 +63,12 @@ import org.controlsfx.control.action.Action;
 import org.controlsfx.dialog.Dialog;
 import org.controlsfx.dialog.Dialogs;
 
+/**
+ * Main Controller with modern UI, 
+ * TODO: currently not in use.
+ * @see TraditionalMainController.java
+ * @author Iman L Hakim <imanlhakim at gmail.com>
+ */
 public class MainFXMLController implements Initializable {
 
     private static final Logger LOGGER = Logger.getLogger(MainFXMLController.class.getName());

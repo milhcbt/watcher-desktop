@@ -1,7 +1,6 @@
 /*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+ * Copyright belong to www.codencare.com and its client.
+ * for more information contact imanlhakim@gmail.com
  */
 package com.codencare.watcher.dialog;
 
@@ -20,8 +19,9 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 
 /**
- *
- * @author abah
+ * TODO: not used clean up or move login logic from main class here.
+ * Login Dialog:
+ * @author Iman L Hakim <imanlhakim at gmail.com>
  */
 public class LoginDialog extends Stage {
 

@@ -1,7 +1,6 @@
 /*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+ * Copyright belong to www.codencare.com and its client.
+ * for more information contact imanlhakim@gmail.com
  */
 package com.codencare.watcher.desktop;
 
@@ -10,9 +9,9 @@ import java.util.ResourceBundle;
 import javafx.fxml.Initializable;
 
 /**
- * FXML Controller class
- *
- * @author abah
+ * Login controller, currently not in use
+ * @todo remove or move logic from MainApp here.
+ * @author Iman L Hakim <imanlhakim at gmail.com>
  */
 public class LoginController implements Initializable {
 

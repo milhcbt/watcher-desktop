@@ -1,10 +1,9 @@
+/*
+ * Copyright belong to www.codencare.com and its client.
+ * for more information contact imanlhakim@gmail.com
+ */
 package com.codencare.watcher.desktop;
 
-/**
- * Sample Skeleton for "AlarmConfiguration.fxml" Controller Class You can copy
- * and paste this code into your favorite IDE
- *
- */
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -20,6 +19,10 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextArea;
 import org.apache.log4j.Logger;
 
+/**
+ * Controller for Alarm Configuration
+ * @author Iman L Hakim <imanlhakim at gmail.com>
+ */
 public class AlarmAdminController {
 
     private static final Logger LOGGER = Logger.getLogger(MainFXMLController.class.getName());
@@ -124,7 +127,7 @@ public class AlarmAdminController {
             LOGGER.debug("saving alarm confinguration");
             try (OutputStream os = new FileOutputStream("./watcher.properties")) {
                 MainApp.defaultProps.store(os, (new Date()).toString());
-                MainApp.loadConfig();
+                MainApp.loadConfig();//reload configuration
             } catch (FileNotFoundException ex) {
                 LOGGER.error(ex);
             } catch (IOException ex) {
@@ -159,17 +162,37 @@ public class AlarmAdminController {
 
         // Initialize your logic here: all @FXML variables will have been injected
         
-        loadConf();
+        loadConf();//syncronize UI with properties file
     }
 
+    /**
+     * validate phone number
+     * valid number must have contry code, starts with "+"
+     * @param phone
+     * @return 
+     */
     private boolean validatePhone(String phone) {
-        return phone.matches("\\+62[0-9]{6,15}");
+        return phone.matches("\\+[0-9]{6,15}");
     }
 
+    /**
+     * Make sure a phone number has country code.
+     * some modem only send text to number with country code.
+     * assume all number without country code is Indonesia number (+62)
+     * @param phone phone number without country code.
+     * @return phone number with country code.
+     */
     private String normalizePhone(String phone) {
         return phone.replaceFirst("^0", "+62");
     }
 
+    /**
+     * Convert phone list in "any white space" separated value
+     * usually from Text-box or TextArea 
+     * into Array of Strings of phone numbers
+     * @param allPhone phone number from TextAre
+     * @return Array of phone number
+     */
     private String[] phoneList(String allPhone) {
         String[] phoneList = allPhone.split("[\\s]");
         for (int i = 0; i < phoneList.length; i++) {
@@ -179,19 +202,32 @@ public class AlarmAdminController {
         return phoneList;
     }
 
+    /**
+     * Convert List of phone number into Come separated value.
+     * @param phoneList list of phone numbers in String
+     * @return phone number list in CSV format.
+     */
     private String listToCSV(String[] phoneList) {
         StringBuilder sb = new StringBuilder();
         for (String s : phoneList) {
             sb.append(s);
             sb.append(',');
         }
-        sb.delete(sb.lastIndexOf(","), sb.lastIndexOf(""));
+        sb.delete(sb.lastIndexOf(","), sb.lastIndexOf(""));//remove last come
         return sb.toString();
     }
+    /**
+     * convert come separated value into string with "new line" separated value.
+     * @param csv string with coma separated value.
+     * @return string with "new line" separated value.
+     */
     private String csvToList(String csv){
         return csv.replace(",", "\n");
     }
 
+    /**
+     * sync UI with properties file
+     */
     private void loadConf() {      
         digit1Owner.setSelected(Boolean.parseBoolean(MainApp.defaultProps.getProperty("digit1-owner")));
         digit1Popup.setSelected(Boolean.parseBoolean(MainApp.defaultProps.getProperty("digit1-popup")));

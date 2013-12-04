@@ -1,7 +1,6 @@
 /*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+ * Copyright belong to www.codencare.com and its client.
+ * for more information contact imanlhakim@gmail.com
  */
 package com.codencare.watcher.dialog;
 
@@ -12,7 +11,6 @@ import com.codencare.watcher.entity.Device;
 import com.codencare.watcher.util.ComboPair;
 import com.codencare.watcher.util.DataConverter;
 import com.mytdev.javafx.scene.control.AutoCompleteTextField;
-import java.math.BigInteger;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.List;
@@ -37,8 +35,8 @@ import javax.persistence.Persistence;
 import org.apache.log4j.Logger;
 
 /**
- *
- * @author abah
+ * TODO: integrate to Map and implement function to add new devices.
+ * @author Iman L Hakim <imanlhakim at gmail.com>
  */
 public class NewNodeDialog extends Stage {
 

@@ -1,7 +1,6 @@
 /*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+ * Copyright belong to www.codencare.com and its client.
+ * for more information contact imanlhakim@gmail.com
  */
 package com.codencare.watcher.desktop;
 
@@ -28,23 +27,35 @@ import org.controlsfx.dialog.Dialog;
 import org.controlsfx.dialog.Dialogs;
 
 /**
- *
- * @author Iman L Hakim
+ * Camel-netty listener, listen to socket message from devices
+ * @author Iman L Hakim <imanlhakim at gmail.com>
  */
 public class AlarmListener extends Task<Void> {
 
     private static final Logger LOGGER = Logger.getLogger(MainFXMLController.class.getName());
     private static final EntityManagerFactory emf = Persistence.createEntityManagerFactory("watcherDB");
+    /**
+     * Context of camel engine.
+     */
     private static CamelContext context;
+    /**
+     * owner for warning dialog of alarm.
+     * where warning should be shown.
+     */
     private static Window target;
     
+    /**
+     * Contructor
+     * @param target owner for warning dialog of alarm.where 
+     * warning should be shown.
+     */
     public AlarmListener(Window target){
         AlarmListener.target = target;
     }
 
     /**
      * Receiving alarm/message from device
-     * @return 
+     * @return nothing Void just a stamp.
      */
     @Override
     protected Void call() {
@@ -83,11 +94,11 @@ public class AlarmListener extends Task<Void> {
                                 }
 
                             })
-                            /*save message to database*/
-                            /* and complete it with meta-data from database*/
-                            /*turn sound if needed*/
-                            /*show dialog box with address if needed*/
-                            /*sent SMS notification if needed*/
+                            /*TODO:save message to database 
+                            and complete it with meta-data from database*/
+                            /*TODO:turn sound if needed*/
+                            /*TODO:show dialog box with address if needed*/
+                            /*TODO:sent SMS notification if needed*/
                             .process(new Processor() {
                                 @Override
                                 public void process(final Exchange exchng) throws Exception {
@@ -108,9 +119,9 @@ public class AlarmListener extends Task<Void> {
                                                 .showWarning();
 
                                                 if (response == Dialog.Actions.OK) {
-                                                    // ... submit user input
+                                                    //TODO: ... submit user input
                                                 } else {
-                                                    // ... user cancelled, reset form to default
+                                                    //TODO: ... user cancelled, reset form to default
                                                 }
                                             } catch (UnknownHostException ex) {
                                                 LOGGER.error(ex);
@@ -132,7 +143,10 @@ public class AlarmListener extends Task<Void> {
         //}
         return null;
     }
-    
+    /**
+     * Stop camel engine
+     * @throws Exception 
+     */
     public void stopContext() throws Exception{
         context.stop();
     }

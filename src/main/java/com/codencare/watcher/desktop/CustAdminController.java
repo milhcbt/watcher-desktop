@@ -1,3 +1,7 @@
+/*
+ * Copyright belong to www.codencare.com and its client.
+ * for more information contact imanlhakim@gmail.com
+ */
 package com.codencare.watcher.desktop;
 
 import com.codencare.watcher.controller.CityJpaController;
@@ -31,8 +35,8 @@ import javax.persistence.Persistence;
 import org.apache.log4j.Logger;
 
 /**
- *
- * @author abah
+ * Customer Administration controller
+ * @author Iman L Hakim <imanlhakim at gmail.com>
  */
 public class CustAdminController {
 
@@ -151,7 +155,9 @@ public class CustAdminController {
         }
     }
 
-    // Handler for Button[fx:id="saveCust"] onAction
+    /** 
+     * Handler for Button[fx:id="saveCust"] onAction
+     */
     @FXML
     void saveCust(ActionEvent event) {
         try {
@@ -205,7 +211,9 @@ public class CustAdminController {
 
         // Initialize your logic here: all @FXML variables will have been injected
         final AutoCompleteTextField<ComboPair<Long, String>> nameBox = new AutoCompleteTextField();
+        //update customer data first for auto-complete.
         updateCustomer();
+        //namebox is auto-complete
         nameBox.setItems(custList);
         nameBox.getPopup().addEventHandler(WindowEvent.WINDOW_HIDING,
                 new EventHandler<WindowEvent>() {
@@ -225,8 +233,11 @@ public class CustAdminController {
         });
 
         customerTable.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<Customer>() {
-            // this method will be called whenever user selected row
-
+            
+            
+            /**
+             * this method will be called whenever user selected row
+             */
             @Override
             public void changed(ObservableValue<? extends Customer> ov, Customer oldValue, Customer newValue) {
 
@@ -256,7 +267,10 @@ public class CustAdminController {
             }
         });
     }
-
+    
+    /**
+     * When customer is updated
+     */
     private void updateCustomer() {
 
         List<Customer> cl = CUST_JPA_CONT.findCustomerEntities();
@@ -266,7 +280,13 @@ public class CustAdminController {
         }
     }
 
+    /**
+     * validate customer input.
+     * @param cust
+     * @return false if one or more input invalid, true all input valid
+     */
     private boolean validateCust(Customer cust) {
+        /*TODO: implement friendly message for invalid input*/
         if (!cust.getAddress().matches("[\\w\\s]{2,40}")) {
             LOGGER.debug("Address invalid");
             return false;
@@ -290,6 +310,10 @@ public class CustAdminController {
         return true;
     }
 
+    /**
+     * disable customer input.
+     * @param disable true for disabled, false for enabled.
+     */
     private void disableCustInput(boolean disable) {
         addCustAddress.setDisable(disable);
         addCustArea.setDisable(disable);
@@ -302,7 +326,11 @@ public class CustAdminController {
         saveCust.setDisable(disable);
         deleteCust.setDisable(disable);
     }
-
+    
+    /**
+     * When city updated, update area choices and zip code choices.
+     * @param cityName 
+     */
     private void cityUpdated(String cityName) {
         List<City> selectedCity = CITY_JPA_CONT.findByDesc(cityName);
         List<ComboPair<Integer, String>> areaChoices;
@@ -329,6 +357,9 @@ public class CustAdminController {
         }
     }
 
+    /**
+     * clear customer input
+     */
     private void clearCustInput() {
         CityJpaController cityCont = new CityJpaController(EM_FACTORY);
         addCustAddress.setText("");

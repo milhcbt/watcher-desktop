@@ -1,16 +1,18 @@
+/*
+ * Copyright belong to www.codencare.com and its client.
+ * for more information contact imanlhakim@gmail.com
+ */ 
 package com.codencare.watcher.desktop;
 
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
-import java.util.logging.Level;
 import javafx.application.Application;
 import static javafx.application.Application.launch;
 import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
-import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Rectangle2D;
@@ -36,11 +38,17 @@ import org.controlsfx.control.action.AbstractAction;
 import org.controlsfx.control.action.Action;
 import org.controlsfx.dialog.Dialog;
 
+/**
+ * Main App, Application start here.
+ * @author Iman L Hakim <imanlhakim at gmail.com>
+ */
+
 public class MainApp extends Application {
 
     private static final Logger LOGGER = Logger.getLogger(MainApp.class.getName());
     public static final Properties defaultProps = new Properties();
     private static AlarmListener task;
+    private static boolean logged = false;//TODO: let user try 3 times
 
     private static final double W_GAP = 10;
     private static final double H_GAP = 20;
@@ -54,10 +62,18 @@ public class MainApp extends Application {
             ButtonBar.setType(this, ButtonType.OK_DONE);
         }
 
-        // This method is called when the login button is clicked...
+        /**
+         * Login logic
+         * @param ae 
+         */
+        @Override
         public void execute(ActionEvent ae) {
             Dialog dlg = (Dialog) ae.getSource();
-            // real login code here
+            /* TODO:This method is called when the login button is clicked..., 
+               implement login logic here,
+            don't forget use Hashing MD5 or sha1 */
+            logged = true;//FIXME: remove after real login logic implemented
+            LOGGER.debug("login :"+ ae.toString());
             dlg.hide();
         }
     };
@@ -92,6 +108,7 @@ public class MainApp extends Application {
     public void start(Stage stage) throws Exception {
 
         showLoginDialog();
+        if(logged == false) return;//login invalid just exit application
         Rectangle2D primScreenBounds = Screen.getPrimary().getVisualBounds();
         Region contentRootRegion = FXMLLoader.load(getClass().getResource("/fxml/TraditionalMain.fxml"));
 
@@ -145,7 +162,9 @@ public class MainApp extends Application {
                 txUserName.getText().trim().isEmpty() || txPassword.getText().trim().isEmpty());
     }
 
-    // Imagine that this method is called somewhere in your codebase
+    /**
+     * Show login dialog
+     */
     private void showLoginDialog() {
         Dialog dlg = new Dialog(null, "Login Dialog");
 
@@ -163,6 +182,7 @@ public class MainApp extends Application {
         content.setHgap(10);
         content.setVgap(10);
 
+        //TODO: load label text from properties
         content.add(new Label("User name"), 0, 0);
         content.add(txUserName, 1, 0);
         GridPane.setHgrow(txUserName, Priority.ALWAYS);
@@ -182,6 +202,7 @@ public class MainApp extends Application {
         // request focus on the username field by default (so the user can
         // type immediately without having to click first)
         Platform.runLater(new Runnable() {
+            @Override
             public void run() {
                 txUserName.requestFocus();
             }
@@ -190,6 +211,10 @@ public class MainApp extends Application {
         dlg.show();
     }
 
+    /**
+     * Start Camel Server
+     * @param target window that become owner of warning dialog.
+     */
     private void startServer(Window target) {
         task = new AlarmListener(target);
         Thread t = new Thread(task);
@@ -197,6 +222,9 @@ public class MainApp extends Application {
         t.start();
     }
 
+    /**
+     * Stop camel server
+     */
     public static void stopServer(){
         try {
             task.stopContext();
