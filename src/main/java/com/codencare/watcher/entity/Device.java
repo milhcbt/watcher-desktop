@@ -36,7 +36,7 @@ import javax.xml.bind.annotation.XmlTransient;
     @NamedQuery(name = "Device.findByLocX", query = "SELECT d FROM Device d WHERE d.locX = :locX"),
     @NamedQuery(name = "Device.findByLocY", query = "SELECT d FROM Device d WHERE d.locY = :locY"),
     @NamedQuery(name = "Device.findByLastTime", query = "SELECT d FROM Device d WHERE d.lastTime = :lastTime"),
-    @NamedQuery(name = "Device.findByResolve", query = "SELECT d FROM Device d WHERE d.resolve = :resolve"),
+    @NamedQuery(name = "Device.findByMode", query = "SELECT d FROM Device d WHERE d.mode = :mode"),
     @NamedQuery(name = "Device.findByDigit1", query = "SELECT d FROM Device d WHERE d.digit1 = :digit1"),
     @NamedQuery(name = "Device.findByDigit2", query = "SELECT d FROM Device d WHERE d.digit2 = :digit2"),
     @NamedQuery(name = "Device.findByDigit3", query = "SELECT d FROM Device d WHERE d.digit3 = :digit3"),
@@ -48,9 +48,13 @@ import javax.xml.bind.annotation.XmlTransient;
     @NamedQuery(name = "Device.findByAddress", query = "SELECT d FROM Device d WHERE d.address = :address")})
 public class Device implements Serializable {
     private static final long serialVersionUID = 1L;
-    public static final byte RESOLVE_RESOLVED = 1;
-    public static final byte RESOLVE_NORMAL = 1;
-    public static final byte RESOLVE_UNRESOLVED= -1;
+//    public static final byte MODE_RESOLVED = 1;
+//    public static final byte MODE_NORMAL = 1;
+//    public static final byte MODE_UNRESOLVED= -1;
+    public static final short MODE_ACTIVE_ON_AC=0;
+    public static final short MODE_ALARMED=1;
+    public static final short MODE_ACTIVE_ON_BATTERY=2;
+    public static final short MODE_INACTIVE=3;
     public static final byte DIGIT_HIGH = 1;
     public static final byte DIGIT_ONKNOW = 0;
     public static final byte DIGIT_LOW = -1;
@@ -70,8 +74,8 @@ public class Device implements Serializable {
     @Temporal(TemporalType.TIMESTAMP)
     private Date lastTime;
     @Basic(optional = false)
-    @Column(name = "resolve")
-    private short resolve;
+    @Column(name = "mode")
+    private short mode;
     @Basic(optional = false)
     @Column(name = "digit1")
     private short digit1;
@@ -117,12 +121,12 @@ public class Device implements Serializable {
         this.id = id;
     }
 
-    public Device(Long id, int locX, int locY, Date lastTime, short resolve, short digit1, short digit2, short digit3, short digit4, short analog1, short analog2, short analog3, short analog4, String address) {
+    public Device(Long id, int locX, int locY, Date lastTime, short mode, short digit1, short digit2, short digit3, short digit4, short analog1, short analog2, short analog3, short analog4, String address) {
         this.id = id;
         this.locX = locX;
         this.locY = locY;
         this.lastTime = lastTime;
-        this.resolve = resolve;
+        this.mode = mode;
         this.digit1 = digit1;
         this.digit2 = digit2;
         this.digit3 = digit3;
@@ -166,12 +170,12 @@ public class Device implements Serializable {
         this.lastTime = lastTime;
     }
 
-    public short getResolve() {
-        return resolve;
+    public short getMode() {
+        return mode;
     }
 
-    public void setResolve(short resolve) {
-        this.resolve = resolve;
+    public void setMode(short mode) {
+        this.mode = mode;
     }
 
     public short getDigit1() {
@@ -302,7 +306,14 @@ public class Device implements Serializable {
 
     @Override
     public String toString() {
-        return "com.codencare.watcher.entity.Device[ id=" + id + " ]";
-    }
-    
+        return "Device{" + "id=" + id + ", locX=" + locX + ", locY=" 
+                + locY + ", lastTime=" + lastTime + ", mode=" + mode 
+                + ", digit1=" + digit1 + ", digit2=" + digit2 + ", digit3=" 
+                + digit3 + ", digit4=" + digit4 + ", analog1=" + analog1 
+                + ", analog2=" + analog2 + ", analog3=" + analog3 
+                + ", analog4=" + analog4 + ", address=" + address 
+                + ", messageCollection=" + messageCollection 
+                + ", alarmLogCollection=" + alarmLogCollection 
+                + ", customer=" + customer + ", city=" + city + '}';
+    }    
 }

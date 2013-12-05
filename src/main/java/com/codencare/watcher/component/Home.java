@@ -5,7 +5,6 @@
 package com.codencare.watcher.component;
 
 import com.codencare.watcher.desktop.MainApp;
-import com.codencare.watcher.desktop.MainFXMLController;
 import com.codencare.watcher.entity.Device;
 import java.util.Objects;
 import javafx.event.EventHandler;
@@ -31,13 +30,22 @@ public class Home extends Button{
      */
     private static final int MARGIN = Integer.parseInt(MainApp.defaultProps.getProperty("margin"));
     /**
-     * Image link when home alarm active
+     * Image link when home ac
      */
-    private static final Image HOME_IMG_ACTIVE = new Image(MapView.class.getResourceAsStream(MainApp.defaultProps.getProperty("home-image-active")));
+    private static final Image HOME_IMG_ACTIVE_ON_AC = new Image(MapView.class.getResourceAsStream(MainApp.defaultProps.getProperty("home-image-ac")));
     /**
-     * Image link when home alarm inactive
+     * Image link when home inactive
      */
     private static final Image HOME_IMG_INACTIVE = new Image(MapView.class.getResourceAsStream(MainApp.defaultProps.getProperty("home-image-inactive")));
+    /**
+     * Image link when home on battery
+     */
+    private static final Image HOME_IMG_ACTIVE_ON_BATT = new Image(MapView.class.getResourceAsStream(MainApp.defaultProps.getProperty("home-image-battery")));
+    /**
+     * Image link when home alarmed
+     */
+    private static final Image HOME_IMG_ALARMED = new Image(MapView.class.getResourceAsStream(MainApp.defaultProps.getProperty("home-image-alarmed")));
+    
     /**
      * width of home icon
      */
@@ -54,67 +62,6 @@ public class Home extends Button{
      * vertical ration for zooming
      */
     private static double yRatio = 1;
-    /** 
-     * image place-holder
-     */
-    private ImageView HOME_VIEW = new ImageView(HOME_IMG_INACTIVE);
-    
-    /**
-     * is alarm active or not, these states will show different image.
-     */
-    private boolean active;
-    /**
-     * Create home alarm icon
-     * 
-     * TODO: Create more functionality to this icon, including 
-     * <li> context menu
-     * for alarm and device administration.</li>
-     * <li>context menu for alarm details</li>
-     * <li>context menu for alarm/message respond</li>
-     * @param d
-     * @param active 
-     */
-    public Home(final Device d, boolean active){
-        this.active = active;
-        if(this.active){
-            HOME_VIEW = new ImageView(HOME_IMG_ACTIVE);
-        }else{
-            HOME_VIEW = new ImageView(HOME_IMG_INACTIVE);
-        }
-        HOME_VIEW.setFitWidth(HOME_WIDTH*xRatio);
-        HOME_VIEW.setFitHeight(HOME_HEIGHT*yRatio);
-        double locX = ((d.getLocX()-MARGIN)*xRatio) - (HOME_WIDTH/2);
-        double locY = ((d.getLocY()-MARGIN)*yRatio)-(HOME_HEIGHT/2);
-        locX = locX < MARGIN? MARGIN:locX;
-        locY = locY < MARGIN? MARGIN:locY;
-        this.relocate(locX,locY );
-        this.setId(String.valueOf(d.getId()));
-        this.setBackground((Background.EMPTY));
-//        this.getStyleClass().add("closebutton");
-//        this.setMouseTransparent(true);
-        this.setGraphic(HOME_VIEW);
-        this.setTooltip(new Tooltip("id:"+d.getId()+", x:"+locX+",y:"+locY));
-        this.setContentDisplay(ContentDisplay.GRAPHIC_ONLY);
-        this.setOnMouseClicked(new EventHandler<MouseEvent>(){
-                public void handle(MouseEvent event){
-                    Action response = Dialogs.create()
-                                    .title("alarm")
-                                    .owner(getScene().getWindow())
-                                    .message(d.toString())
-                                    .showWarning();
-
-//                            TODO: what should system do after click ?
-                            if (response == Dialog.Actions.OK) {
-                                //TODO: ... submit user input
-                               MapView mapView = (MapView) getScene().lookup("#mapView");
-                               mapView.removeDevice(d);
-                               MainFXMLController.removeAlarm(d);
-                            } else {
-                                //TODO: ... user cancelled, reset form to default
-                            }
-                }
-         });
-    } 
 
     /**
      * Set horizontal ration for icon
@@ -146,6 +93,76 @@ public class Home extends Button{
      */
     public static void setyRatio(double yRatio) {
         Home.yRatio = yRatio;
+    }
+    /** 
+     * image place-holder
+     */
+    private ImageView HOME_VIEW = new ImageView(HOME_IMG_INACTIVE);
+    
+    private Device d;
+    /**
+     * Create home alarm icon
+     * 
+     * TODO: Create more functionality to this icon, including 
+     * <li> context menu
+     * for alarm and device administration.</li>
+     * <li>context menu for alarm details</li>
+     * <li>context menu for alarm/message respond</li>
+     * @param device device
+     */
+    public Home(final Device device){
+        this.d = device;
+        setMode(this.d.getMode());
+        double locX = ((this.d.getLocX()-MARGIN)*xRatio) - (HOME_WIDTH/2);
+        double locY = ((this.d.getLocY()-MARGIN)*yRatio)-(HOME_HEIGHT/2);
+        locX = locX < MARGIN? MARGIN:locX;
+        locY = locY < MARGIN? MARGIN:locY;
+        this.relocate(locX,locY );
+        this.setId(String.valueOf(d.getId()));
+        this.setBackground(Background.EMPTY);
+        this.setTooltip(new Tooltip("id:"+d.getId()+", x:"+locX+",y:"+locY));
+        this.setContentDisplay(ContentDisplay.GRAPHIC_ONLY);
+        this.setOnMouseClicked(new EventHandler<MouseEvent>(){
+                public void handle(MouseEvent event){
+                    Action response = Dialogs.create()
+                                    .title("alarm")
+                                    .owner(getScene().getWindow())
+                                    .message(d.toString())
+                                    .showWarning();
+
+//                            TODO: what should system do after click ?
+                            if (response == Dialog.Actions.OK) {
+                                //TODO: ... submit user input
+//                               MapView mapView = (MapView) getScene().lookup("#mapView");
+//                               mapView.removeDevice(d);
+//                               MainFXMLController.removeAlarm(d); 
+                                 
+                               
+                            } else {
+                                //TODO: ... user cancelled, reset form to default
+                            }
+                }
+         });
+    } 
+
+    public void setMode(DeviceMode mode) {
+        setMode(mode.getValue());
+    }
+
+    private void setMode(short m) {
+        d.setMode(m); 
+        if(d.getMode() == Device.MODE_ACTIVE_ON_AC){
+            HOME_VIEW = new ImageView(HOME_IMG_ACTIVE_ON_AC);
+        } else if (d.getMode() == Device.MODE_ACTIVE_ON_BATTERY){
+            HOME_VIEW = new ImageView(HOME_IMG_ACTIVE_ON_BATT);
+        } else if (d.getMode()== Device.MODE_ALARMED){
+            HOME_VIEW = new ImageView(HOME_IMG_ALARMED);
+        }else {
+            HOME_VIEW = new ImageView(HOME_IMG_INACTIVE);
+        }
+        HOME_VIEW.setFitWidth(HOME_WIDTH*xRatio);
+        HOME_VIEW.setFitHeight(HOME_HEIGHT*yRatio);
+        this.setGraphic(HOME_VIEW);
     }
 
     @Override

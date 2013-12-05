@@ -4,29 +4,27 @@
  */
 package com.codencare.watcher.controller;
 
-import com.codencare.esb.message.IMessage;
 import com.codencare.watcher.controller.exceptions.IllegalOrphanException;
 import com.codencare.watcher.controller.exceptions.NonexistentEntityException;
 import com.codencare.watcher.controller.exceptions.PreexistingEntityException;
 import com.codencare.watcher.desktop.MainApp;
-import java.io.Serializable;
-import javax.persistence.Query;
-import javax.persistence.EntityNotFoundException;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Root;
-import com.codencare.watcher.entity.Customer;
-import com.codencare.watcher.entity.City;
-import com.codencare.watcher.entity.Message;
-import java.util.ArrayList;
-import java.util.Collection;
 import com.codencare.watcher.entity.AlarmLog;
+import com.codencare.watcher.entity.City;
+import com.codencare.watcher.entity.Customer;
 import com.codencare.watcher.entity.Device;
+import com.codencare.watcher.entity.Message;
+import java.io.Serializable;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.Date;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
+import javax.persistence.EntityNotFoundException;
+import javax.persistence.Query;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Root;
 import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.log4j.Logger;
 
@@ -378,7 +376,7 @@ public class DeviceJpaController implements Serializable {
             Method m = PropertyUtils.getWriteMethod(PropertyUtils.getPropertyDescriptor(d, alarmField));
             em.getTransaction().begin();
             m.invoke(ud, Device.DIGIT_ONKNOW);
-            ud.setResolve(Device.RESOLVE_RESOLVED);
+            ud.setMode(Device.MODE_ACTIVE_ON_AC);
             em.getTransaction().commit();
         } catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException ex) {
             LOGGER.error(ex.toString());

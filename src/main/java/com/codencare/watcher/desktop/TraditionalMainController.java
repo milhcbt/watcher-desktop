@@ -7,11 +7,8 @@ package com.codencare.watcher.desktop;
 
 import com.codencare.watcher.component.MapView;
 import com.codencare.watcher.controller.CustomerJpaController;
-import com.codencare.watcher.controller.DeviceJpaController;
-import com.codencare.watcher.entity.Device;
 import java.io.IOException;
 import java.net.URL;
-import java.util.List;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -41,9 +38,7 @@ public class TraditionalMainController {
     static final URL MEDIA_URL = TraditionalMainController.class.getResource("/styles/mine/audio/alarm.mp3");
 
     private Point2D loc;
-    private List<Device> alarmedDevices;
-    private List<Device> allDevices;
-
+    
     private MapView mapView;
 
     @FXML // fx:id="mainPane"
@@ -96,8 +91,7 @@ public class TraditionalMainController {
         assert statusPane != null : "fx:id=\"statusPane\" was not injected: check your FXML file 'TraditionalMain.fxml'.";
 
         // Initialize your logic here: all @FXML variables will have been injected
-        updateDevice();
-        mapView = new MapView(allDevices);
+        mapView = new MapView();
         mapView.setId("mapView");
         mainPane.setContent(mapView);
     }
@@ -188,13 +182,7 @@ public class TraditionalMainController {
 
     // Handler for MenuItem[fx:id="myAccount"] onAction
     @FXML
-    void onMyAccount(ActionEvent event
-    ) {
+    void onMyAccount(ActionEvent event) {
         // handle the event here
     }
-
-    void updateDevice() {   
-//        alarmedDevices = (new DeviceJpaController(emf)).findAlarmedDevice();//FIXME: CLEAN UP
-        allDevices = (new DeviceJpaController(emf)).findDeviceEntities();
-    }    
 }

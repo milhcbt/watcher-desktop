@@ -137,7 +137,7 @@ public class MainFXMLController implements Initializable {
 
 //      map = new Image(MainFXMLController.class.getResourceAsStream("/styles/img/purimansion-org.jpg"));
         updateDevice();
-        mapView = new MapView(alarmedDevices);
+        mapView = new MapView();
         mapView.setId("mapView");
         mapView.setOnContextMenuRequested(new EventHandler<ContextMenuEvent>() {
             @Override
@@ -161,13 +161,13 @@ public class MainFXMLController implements Initializable {
                 
                 updateDevice();
                 if (newValue.intValue() ==  0) {
-                    mapView.setMapZoom(MapZoom.Original, alarmedDevices,false);
+                    mapView.drawMap(MapZoom.Original,false);
                 } else if (newValue.intValue() == 1) {
-                    mapView.setMapZoom(MapZoom.FitAll, alarmedDevices,false);
+                    mapView.drawMap(MapZoom.FitAll, false);
                 }// else if (newValue == 2) {
-//                    mapView.setMapZoom(MapZoom.FitWidth, alarmedDevices);
+//                    mapView.drawMap(MapZoom.FitWidth, alarmedDevices);
 //                } else if (newValue == 3) {
-//                    mapView.setMapZoom(MapZoom.FitHeight, alarmedDevices);
+//                    mapView.drawMap(MapZoom.FitHeight, alarmedDevices);
 //                }
             }
 
@@ -257,14 +257,14 @@ public class MainFXMLController implements Initializable {
     void zoom(ActionEvent event) {
         updateDevice();
         if (mapView.getMapZoom() == MapZoom.Original) {
-            mapView.setMapZoom(MapZoom.FitAll, alarmedDevices,false);
+            mapView.drawMap(MapZoom.FitAll, false);
         }if (mapView.getMapZoom() == MapZoom.FitHeight) {
-            mapView.setMapZoom(MapZoom.FitHeight, alarmedDevices,false);
+            mapView.drawMap(MapZoom.FitHeight, false);
         }if (mapView.getMapZoom() == MapZoom.FitWidth) {
-            mapView.setMapZoom(MapZoom.FitWidth, alarmedDevices,false);
+            mapView.drawMap(MapZoom.FitWidth, false);
         }
         else {
-            mapView.setMapZoom(MapZoom.Original, alarmedDevices,false);
+            mapView.drawMap(MapZoom.Original, false);
         }
     }
 

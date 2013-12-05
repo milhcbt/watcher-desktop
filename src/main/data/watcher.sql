@@ -3,11 +3,10 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: 127.0.0.1
--- Generation Time: Dec 04, 2013 at 11:45 AM
+-- Generation Time: Dec 05, 2013 at 11:32 PM
 -- Server version: 5.5.27-log
 -- PHP Version: 5.4.7
 
-SET FOREIGN_KEY_CHECKS=0;
 SET SQL_MODE="NO_AUTO_VALUE_ON_ZERO";
 SET time_zone = "+00:00";
 
@@ -20,15 +19,13 @@ SET time_zone = "+00:00";
 --
 -- Database: `watcher`
 --
--- CREATE DATABASE `watcher` DEFAULT CHARACTER SET latin1 COLLATE latin1_swedish_ci;
--- USE `watcher`;
+CREATE DATABASE `watcher` DEFAULT CHARACTER SET latin1 COLLATE latin1_swedish_ci;
+USE `watcher`;
 
 -- --------------------------------------------------------
 
 --
 -- Table structure for table `alarm_log`
---
--- Creation: Dec 03, 2013 at 02:57 AM
 --
 
 DROP TABLE IF EXISTS `alarm_log`;
@@ -45,22 +42,10 @@ CREATE TABLE IF NOT EXISTS `alarm_log` (
   KEY `user` (`user`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
 
---
--- RELATIONS FOR TABLE `alarm_log`:
---   `device`
---       `device` -> `id`
---   `type`
---       `log_type` -> `id`
---   `user`
---       `user` -> `id`
---
-
 -- --------------------------------------------------------
 
 --
 -- Table structure for table `city`
---
--- Creation: Dec 03, 2013 at 02:57 AM
 --
 
 DROP TABLE IF EXISTS `city`;
@@ -76,7 +61,7 @@ CREATE TABLE IF NOT EXISTS `city` (
 -- Dumping data for table `city`
 --
 
-INSERT   INTO `city` (`id`, `description`, `area`, `zip_code`) VALUES
+INSERT INTO `city` (`id`, `description`, `area`, `zip_code`) VALUES
 (0, 'dummy', 'none', '10000'),
 (1, 'Bandung', 'pusat', '40000'),
 (2, 'Bandung', 'dago', '42000'),
@@ -88,8 +73,6 @@ INSERT   INTO `city` (`id`, `description`, `area`, `zip_code`) VALUES
 
 --
 -- Table structure for table `contact`
---
--- Creation: Dec 03, 2013 at 02:57 AM
 --
 
 DROP TABLE IF EXISTS `contact`;
@@ -105,16 +88,10 @@ CREATE TABLE IF NOT EXISTS `contact` (
 ) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=3 ;
 
 --
--- RELATIONS FOR TABLE `contact`:
---   `group`
---       `contact_group` -> `id`
---
-
---
 -- Dumping data for table `contact`
 --
 
-INSERT   INTO `contact` (`name`, `phone`, `email`, `description`, `id`, `group`) VALUES
+INSERT INTO `contact` (`name`, `phone`, `email`, `description`, `id`, `group`) VALUES
 ('bahlul', '4242424', 'bahlul@yahoo.com', 'petugas yang malas', 1, 1),
 ('leha', '646262646', 'leha@leha.com', 'petugas yang suka leha-leha', 2, 2);
 
@@ -122,8 +99,6 @@ INSERT   INTO `contact` (`name`, `phone`, `email`, `description`, `id`, `group`)
 
 --
 -- Table structure for table `contact_group`
---
--- Creation: Dec 03, 2013 at 02:57 AM
 --
 
 DROP TABLE IF EXISTS `contact_group`;
@@ -137,7 +112,7 @@ CREATE TABLE IF NOT EXISTS `contact_group` (
 -- Dumping data for table `contact_group`
 --
 
-INSERT   INTO `contact_group` (`id`, `description`) VALUES
+INSERT INTO `contact_group` (`id`, `description`) VALUES
 (1, 'group1'),
 (2, 'group2');
 
@@ -145,8 +120,6 @@ INSERT   INTO `contact_group` (`id`, `description`) VALUES
 
 --
 -- Table structure for table `customer`
---
--- Creation: Dec 03, 2013 at 02:57 AM
 --
 
 DROP TABLE IF EXISTS `customer`;
@@ -164,16 +137,10 @@ CREATE TABLE IF NOT EXISTS `customer` (
 ) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=46 ;
 
 --
--- RELATIONS FOR TABLE `customer`:
---   `city`
---       `city` -> `id`
---
-
---
 -- Dumping data for table `customer`
 --
 
-INSERT   INTO `customer` (`id`, `name`, `address`, `primary_phone`, `secondary_phone`, `email`, `city`) VALUES
+INSERT INTO `customer` (`id`, `name`, `address`, `primary_phone`, `secondary_phone`, `email`, `city`) VALUES
 (0, 'dummy', 'ooo', 'ooo', 'ooo', 'salami@email.com', 0),
 (2, 'iman', 'bandung', '6262626262', '', 'iman@garuda.com', 0),
 (3, 'badu', 'jakarta', '1939242404040', '', 'badu@email.com', 1),
@@ -204,8 +171,6 @@ INSERT   INTO `customer` (`id`, `name`, `address`, `primary_phone`, `secondary_p
 --
 -- Table structure for table `device`
 --
--- Creation: Dec 03, 2013 at 02:57 AM
---
 
 DROP TABLE IF EXISTS `device`;
 CREATE TABLE IF NOT EXISTS `device` (
@@ -213,7 +178,7 @@ CREATE TABLE IF NOT EXISTS `device` (
   `loc_x` int(5) NOT NULL DEFAULT '0',
   `loc_y` int(5) NOT NULL DEFAULT '0',
   `last_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `resolve` tinyint(2) NOT NULL DEFAULT '0' COMMENT '-1 neet tobe resolved, 0 =normal , 1 =resolved',
+  `mode` tinyint(2) NOT NULL DEFAULT '0' COMMENT '-1 neet tobe resolved, 0 =normal , 1 =resolved',
   `customer` int(11) unsigned NOT NULL DEFAULT '0',
   `digit1` tinyint(2) NOT NULL DEFAULT '-1' COMMENT '-1= UNKNOW, 0 = LOW, 1 = HIGH',
   `digit2` tinyint(2) NOT NULL DEFAULT '-1' COMMENT '-1= UNKNOW, 0 = LOW, 1 = HIGH',
@@ -232,26 +197,16 @@ CREATE TABLE IF NOT EXISTS `device` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
--- RELATIONS FOR TABLE `device`:
---   `city`
---       `city` -> `id`
---   `customer`
---       `customer` -> `id`
---
-
---
 -- Dumping data for table `device`
 --
 
-INSERT   INTO `device` (`id`, `loc_x`, `loc_y`, `last_time`, `resolve`, `customer`, `digit1`, `digit2`, `digit3`, `digit4`, `analog1`, `analog2`, `analog3`, `analog4`, `address`, `city`) VALUES
-(2130706433, 0, 0, '2013-12-04 10:41:18', 0, 0, -1, -1, 1, -1, -1, -1, -1, -1, 'NA', 0);
+INSERT INTO `device` (`id`, `loc_x`, `loc_y`, `last_time`, `mode`, `customer`, `digit1`, `digit2`, `digit3`, `digit4`, `analog1`, `analog2`, `analog3`, `analog4`, `address`, `city`) VALUES
+(2130706433, 0, 0, '2013-12-05 12:50:32', 1, 0, 1, 1, 1, 1, 0, -1, -1, -1, 'NA', 0);
 
 -- --------------------------------------------------------
 
 --
 -- Table structure for table `log_type`
---
--- Creation: Dec 03, 2013 at 02:57 AM
 --
 
 DROP TABLE IF EXISTS `log_type`;
@@ -266,8 +221,6 @@ CREATE TABLE IF NOT EXISTS `log_type` (
 --
 -- Table structure for table `message`
 --
--- Creation: Dec 03, 2013 at 02:57 AM
---
 
 DROP TABLE IF EXISTS `message`;
 CREATE TABLE IF NOT EXISTS `message` (
@@ -279,20 +232,12 @@ CREATE TABLE IF NOT EXISTS `message` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `id` (`id`),
   KEY `fk_message_device1_idx` (`device`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=29242 ;
-
---
--- RELATIONS FOR TABLE `message`:
---   `device`
---       `device` -> `id`
---
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
 --
 -- Table structure for table `property`
---
--- Creation: Dec 03, 2013 at 02:57 AM
 --
 
 DROP TABLE IF EXISTS `property`;
@@ -309,7 +254,7 @@ CREATE TABLE IF NOT EXISTS `property` (
 -- Dumping data for table `property`
 --
 
-INSERT   INTO `property` (`key`, `type`, `value`, `role`, `doc`) VALUES
+INSERT INTO `property` (`key`, `type`, `value`, `role`, `doc`) VALUES
 ('digit1_alarm', 1, '0', '[0-9]', '0 = all off, 1 = high on low off, 2 = low on high off, 3 = high on low on'),
 ('digit1_group1', 1, '0', '[0-1]', '0 = off, don''t contact group one, 1 = on, contact group one'),
 ('digit1_group2', 1, '0', '[0-1]', '0 = off, don''t contact group two, 1 = on, contact group two'),
@@ -332,8 +277,6 @@ INSERT   INTO `property` (`key`, `type`, `value`, `role`, `doc`) VALUES
 --
 -- Table structure for table `user`
 --
--- Creation: Dec 03, 2013 at 02:57 AM
---
 
 DROP TABLE IF EXISTS `user`;
 CREATE TABLE IF NOT EXISTS `user` (
@@ -350,7 +293,7 @@ CREATE TABLE IF NOT EXISTS `user` (
 -- Dumping data for table `user`
 --
 
-INSERT   INTO `user` (`id`, `name`, `email`, `password`, `type`) VALUES
+INSERT INTO `user` (`id`, `name`, `email`, `password`, `type`) VALUES
 (0, 'system', '', '', 0),
 (11, 'saya', 'saya@yahoo.com', 'pass', 1),
 (12, 'kamu', 'kamu@yahoo.com', 'pass', 2),
@@ -399,15 +342,14 @@ ALTER TABLE `customer`
 -- Constraints for table `device`
 --
 ALTER TABLE `device`
-  ADD CONSTRAINT `device_ibfk_8` FOREIGN KEY (`city`) REFERENCES `city` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,
-  ADD CONSTRAINT `device_ibfk_7` FOREIGN KEY (`customer`) REFERENCES `customer` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION;
+  ADD CONSTRAINT `device_ibfk_7` FOREIGN KEY (`customer`) REFERENCES `customer` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,
+  ADD CONSTRAINT `device_ibfk_8` FOREIGN KEY (`city`) REFERENCES `city` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION;
 
 --
 -- Constraints for table `message`
 --
 ALTER TABLE `message`
   ADD CONSTRAINT `message_ibfk_1` FOREIGN KEY (`device`) REFERENCES `device` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
-SET FOREIGN_KEY_CHECKS=1;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;

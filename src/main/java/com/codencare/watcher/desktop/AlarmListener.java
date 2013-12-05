@@ -7,6 +7,8 @@ package com.codencare.watcher.desktop;
 import com.codencare.esb.message.IMessage;
 import com.codencare.esb.message.Metajasa01;
 import com.codencare.esb.message.Prasimax;
+import com.codencare.watcher.component.DeviceMode;
+import com.codencare.watcher.component.MapView;
 import com.codencare.watcher.controller.DeviceJpaController;
 import com.codencare.watcher.controller.exceptions.IllegalOrphanException;
 import com.codencare.watcher.controller.exceptions.NonexistentEntityException;
@@ -127,6 +129,7 @@ public class AlarmListener extends Task<Void> {
                                     if (d != null) {
                                         fillDevice(d, msg);
                                         try {
+                                            d.setMode(Device.MODE_ALARMED);
                                             dc.edit(d);
                                             exchange.getIn().setBody(d, Device.class);
                                         } catch (IllegalOrphanException |
@@ -167,8 +170,9 @@ public class AlarmListener extends Task<Void> {
                                         public void run() {
                                             Object body = exchng.getIn().getBody();
                                             if (body instanceof Device) {
+                                                Device d = (Device)body;
                                                 AlertDialog alert = new AlertDialog(target,
-                                                        "alarm at " + ((Device) body).getAddress(),
+                                                        "alarm at " + d.getAddress(),
                                                         AlertDialog.ICON_INFO,
                                                         new EventHandler() {
                                                             @Override
@@ -181,6 +185,10 @@ public class AlarmListener extends Task<Void> {
                                                             }
                                                         }
                                                 );
+                                                MapView mv = (MapView) target.getScene().lookup("#mapView");
+                                                if(mv !=null){
+                                                    mv.setHomeMode(String.valueOf(d.getId()), DeviceMode.ALARMED);
+                                                }
                                                 alerts.push(alert);
                                                 alert.showAndWait();
                                             }
