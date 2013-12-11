@@ -23,7 +23,7 @@ import javafx.stage.StageStyle;
 import javafx.stage.Window;
 
 /**
- *
+ * nyontek sebagian dari blogmeister 
  * @author Iman L Hakim <imanlhakim at gmail.com>
  */
 public class AlertDialog extends Stage {
@@ -38,8 +38,9 @@ public class AlertDialog extends Stage {
     public static final int ICON_ERROR = 1;
     
     public AlertDialog(Window owner, String msg, int type,EventHandler eventHandler) {
+        initOwner(owner);
         setResizable(false);
-        initModality(Modality.APPLICATION_MODAL);
+        initModality(Modality.WINDOW_MODAL);
         initStyle(StageStyle.TRANSPARENT);
 
         Label label = new Label(msg);

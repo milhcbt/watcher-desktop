@@ -19,6 +19,7 @@ SET time_zone = "+00:00";
 --
 -- Database: `watcher`
 --
+drop database watcher;
 CREATE DATABASE `watcher` DEFAULT CHARACTER SET latin1 COLLATE latin1_swedish_ci;
 USE `watcher`;
 

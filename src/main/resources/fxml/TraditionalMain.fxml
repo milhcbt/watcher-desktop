@@ -31,6 +31,7 @@
                 <MenuItem mnemonicParsing="false" onAction="#onAdminUser" text="User" fx:id="adminUser" />
                 <MenuItem mnemonicParsing="false" onAction="#onAdminAlarm" text="Alarm" fx:id="alarm" />
                 <MenuItem mnemonicParsing="false" onAction="#onAdminComm" text="Communication" fx:id="adminComm" />
+                <CheckMenuItem mnemonicParsing="false" onAction="#onViewStat" text="View  Devices Statistics" fx:id="deviceStat" />
               </items>
             </Menu>
             <Menu mnemonicParsing="false" text="Help">
