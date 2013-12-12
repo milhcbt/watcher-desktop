@@ -21,6 +21,7 @@ import javafx.scene.control.MenuItem;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.FlowPane;
+import javafx.scene.paint.Color;
 import javafx.stage.Modality;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
@@ -187,7 +188,7 @@ public class TraditionalMainController {
             statView.initOwner(mainPane.getScene().getWindow());
             statView.setResizable(false);
             statView.initModality(Modality.NONE);
-            statView.initStyle(StageStyle.UNDECORATED);
+            statView.initStyle(StageStyle.TRANSPARENT);
             final AnchorPane root = new AnchorPane();
 
             FXMLLoader fxmlLoader = new FXMLLoader(
@@ -195,7 +196,7 @@ public class TraditionalMainController {
 
             root.setStyle("-fx-background-color: rgba(0, 100, 100, 0.5); -fx-background-radius: 10;");
             fxmlLoader.setRoot(root);
-            fxmlLoader.setController(new UserAdminController());
+            fxmlLoader.setController(new DevicesStatController());
             try {
                 fxmlLoader.load();
             } catch (IOException ex) {
@@ -203,6 +204,7 @@ public class TraditionalMainController {
             }
 
             Scene scn = new Scene(root);
+            scn.setFill(Color.TRANSPARENT);
 
             statView.setScene(scn);
         }
