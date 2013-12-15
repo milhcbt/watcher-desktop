@@ -23,7 +23,7 @@
 .home{
     /*-fx-background-color:rgba(0,255,0,0.3);*/
     -fx-background-radius: 30;
-    -fx-background-size: 30, 30;
+/*    -fx-background-size: 30, 30;
     -fx-border-radius:30;
     -fx-graphic-text-gap:0;	
     -fx-padding:0;
@@ -31,7 +31,7 @@
     -fx-border-insets:0;
     -fx-border-radius:0;
     -fx-font-size: 30px;
-    -fx-text-fill: black;
+    -fx-text-fill: black;*/
 }
 /*.home-battery{
     -fx-background-color:rgba(0,0,255,0.3);

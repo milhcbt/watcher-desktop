@@ -285,22 +285,22 @@ public class Home extends Button {
 //            getStyleClass().clear();
 //            getStyleClass().add("home-ac");
             setStyle("-fx-background-color:rgba(0,255,0,0.3);");
-            setText("  "+String.valueOf(((char) SMILE))+"  ");
+//            setText("  "+String.valueOf(((char) SMILE))+"  ");
         } else if (d.getMode() == Device.MODE_ACTIVE_ON_BATTERY) {
 //            getStyleClass().clear();
 //            getStyleClass().add("home-battery");
             setStyle("-fx-background-color:rgba(0,0,255,0.3);");
-            setText(""+String.valueOf(((char) SNOW))+"");
+//            setText(""+String.valueOf(((char) SNOW))+"");
         } else if (d.getMode() == Device.MODE_ALARMED) {
 //            getStyleClass().clear();
 //            getStyleClass().add("home-alarmed");
             setStyle("-fx-background-color:rgba(255,0,0,0.3);");
-            setText(""+String.valueOf(((char) SKULL))+"");
+//            setText(""+String.valueOf(((char) SKULL))+"");
         } else {
 //            getStyleClass().clear();
 //            getStyleClass().add("home-disconnected");
             setStyle("-fx-background-color:rgba(100,100,100,0.3);");
-            setText("  "+String.valueOf(((char) SAD))+"  ");
+//            setText("  "+String.valueOf(((char) SAD))+"  ");
         }
     }
 }
