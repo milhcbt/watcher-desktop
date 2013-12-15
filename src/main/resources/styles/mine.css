@@ -2,13 +2,13 @@
 /*    -fx-background-color: #c0c0c0;
     -fx-background-radius: 5;
     -fx-padding: 10;*/
-  -fx-border-insets: 23;
+  -fx-border-insets: 2;
 
-  -fx-background-insets: 23;
+  -fx-background-insets: 2;
 
-  -fx-background-radius: 6;
+  -fx-background-radius: 1;
 
-  -fx-border-radius: 6;
+  -fx-border-radius: 1;
 
   -fx-border-color: gray;
 
@@ -16,8 +16,49 @@
 
   -fx-border-width: 1;
 
-  -fx-effect: dropshadow(three-pass-box, rgba(100, 100, 100, 1), 24, 0.5, 0, 0);
+  /*-fx-effect: dropshadow(three-pass-box, rgba(100, 100, 100, 1), 24, 0.5, 0, 0);*/
 
+}
+
+.home{
+    /*-fx-background-color:rgba(0,255,0,0.3);*/
+    -fx-background-radius: 30;
+    -fx-background-size: 30, 30;
+    -fx-border-radius:30;
+    -fx-graphic-text-gap:0;	
+    -fx-padding:0;
+    -fx-spacing: 0;
+    -fx-border-insets:0;
+    -fx-border-radius:0;
+    -fx-font-size: 30px;
+    -fx-text-fill: black;
+}
+/*.home-battery{
+    -fx-background-color:rgba(0,0,255,0.3);
+    -fx-background-radius: 30;
+    -fx-padding: 7 30 7 30;
+    -fx-text-fill: #242d35;
+    -fx-font-family: "Helvetica";
+    -fx-font-size: 12px;
+    -fx-text-fill: white;
+}
+.home-alarmed{
+    -fx-background-color:rgba(255,0,0,0.3);
+    -fx-background-radius: 30;
+    -fx-padding: 7 30 7 30;
+    -fx-text-fill: #242d35;
+    -fx-font-family: "Helvetica";
+    -fx-font-size: 12px;
+    -fx-text-fill: white;
+}
+.home-disconnected{
+    -fx-background-color: rgba(100,100,100,0.3);
+    -fx-background-radius: 30;
+    -fx-padding: 7 30 7 30;
+    -fx-text-fill: #242d35;
+    -fx-font-family: "Helvetica";
+    -fx-font-size: 12px;
+    -fx-text-fill: white;
 }
 .rootPane
 {
@@ -45,9 +86,10 @@
     -fx-text-fill: #242d35;
     -fx-font-family: "Helvetica";
     -fx-font-size: 12px;
-    -fx-text-fill: white;*/
+    -fx-text-fill: white;
 
-}
+}*/
+
 #zoom, #exit, #scrollPane, #zoomChoices, #details, #splitPane, #detailTabs {
     
 /*     -fx-background-color: #a6b5c9,

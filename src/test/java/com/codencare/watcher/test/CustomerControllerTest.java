@@ -20,7 +20,7 @@ import org.junit.Test;
 public class CustomerControllerTest {
      private static final EntityManagerFactory emf = Persistence.createEntityManagerFactory("watcherDB");
 
-    @Test
+//    @Test
     public void createCustomer() throws Exception {
         CustomerJpaController cjc = new CustomerJpaController(emf);
         CityJpaController cityCont = new CityJpaController(emf);

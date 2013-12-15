@@ -26,7 +26,7 @@ public class DeviceControllerTest {
 
     private static final EntityManagerFactory emf = Persistence.createEntityManagerFactory("watcherDB");
 
-    @Test
+//    @Test
     public void findAlarmedDevice() {
 
         DeviceJpaController djc = new DeviceJpaController(emf);
@@ -36,7 +36,7 @@ public class DeviceControllerTest {
         }
     }
 
-    @Test
+//    @Test
     public void insertNewDevice() {
         CustomerJpaController cjc = new CustomerJpaController(emf);
         Customer currentCustomer = cjc.findCustomer(cjc.maxId()); 
