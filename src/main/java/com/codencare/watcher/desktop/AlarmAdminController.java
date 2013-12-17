@@ -4,6 +4,7 @@
  */
 package com.codencare.watcher.desktop;
 
+import com.codencare.watcher.util.DataConverter;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -26,6 +27,27 @@ import org.apache.log4j.Logger;
 public class AlarmAdminController {
 
     private static final Logger LOGGER = Logger.getLogger(MainFXMLController.class.getName());
+    public static final String TEAM_B = "teamB";
+    public static final String TEAM_A = "teamA";
+    public static final String TEAM_A_LABEL ="Tim A";
+    public static final String TEAM_B_LABEL ="Tim B";
+    public static final String DIGIT4_TEAM = "digit4-team";
+    public static final String DIGIT4_SOUND = "digit4-sound";
+    public static final String DIGIT4_POPUP = "digit4-popup";
+    public static final String DIGIT4_OWNER = "digit4-owner";
+    public static final String DIGIT3_TEAM = "digit3-team";
+    public static final String DIGIT3_SOUND = "digit3-sound";
+    public static final String DIGIT3_POPUP = "digit3-popup";
+    public static final String DIGIT3_OWNER = "digit3-owner";
+    public static final String DIGIT2_TEAM = "digit2-team";
+    public static final String DIGIT2_SOUND = "digit2-sound";
+    public static final String DIGIT2_POPUP = "digit2-popup";
+    public static final String DIGIT2_OWNER = "digit2-owner";
+    public static final String DIGIT1_TEAM = "digit1-team";
+    public static final String DIGIT1_SOUND = "digit1-sound";
+    public static final String DIGIT1_POPUP = "digit1-popup";
+    public static final String DIGIT1_OWNER = "digit1-owner";
+ 
 
     @FXML // ResourceBundle that was given to the FXMLLoader
     private ResourceBundle resources;
@@ -93,36 +115,38 @@ public class AlarmAdminController {
     // Handler for Button[fx:id="saveAlarmConf"] onAction
     @FXML
     void onSaveAlarmConf(ActionEvent event) {
-        String[] listTeamA = phoneList(teamA.getText());
-        String[] listTeamB = phoneList(teamB.getText());
+        String[] listTeamA = DataConverter.wssvToArray(teamA.getText());
+        String[] listTeamB = DataConverter.wssvToArray(teamB.getText());
         boolean valid = false;
         for (String s : listTeamA) {
-            valid = validatePhone(s);
+            DataConverter.normalizePhone(s);
+            valid = DataConverter.validatePhone(s);
         }
         for (String s : listTeamB) {
-            valid = validatePhone(s);
+            DataConverter.normalizePhone(s);
+            valid = DataConverter.validatePhone(s);
         }
 
         if (valid) {
 
-            MainApp.defaultProps.setProperty("digit1-owner", String.valueOf(digit1Owner.isSelected()));
-            MainApp.defaultProps.setProperty("digit1-popup", String.valueOf(digit1Popup.isSelected()));
-            MainApp.defaultProps.setProperty("digit1-sound", String.valueOf(digit1Sound.isSelected()));
-            MainApp.defaultProps.setProperty("digit1-team", String.valueOf(digit1Team.getValue()));
-            MainApp.defaultProps.setProperty("digit2-owner", String.valueOf(digit2Owner.isSelected()));
-            MainApp.defaultProps.setProperty("digit2-popup", String.valueOf(digit2Popup.isSelected()));
-            MainApp.defaultProps.setProperty("digit2-sound", String.valueOf(digit2Sound.isSelected()));
-            MainApp.defaultProps.setProperty("digit2-team", String.valueOf(digit2Team.getValue()));
-            MainApp.defaultProps.setProperty("digit3-owner", String.valueOf(digit3Owner.isSelected()));
-            MainApp.defaultProps.setProperty("digit3-popup", String.valueOf(digit3Popup.isSelected()));
-            MainApp.defaultProps.setProperty("digit3-sound", String.valueOf(digit3Sound.isSelected()));
-            MainApp.defaultProps.setProperty("digit3-team", String.valueOf(digit3Team.getValue()));
-            MainApp.defaultProps.setProperty("digit4-owner", String.valueOf(digit4Owner.isSelected()));
-            MainApp.defaultProps.setProperty("digit4-popup", String.valueOf(digit4Popup.isSelected()));
-            MainApp.defaultProps.setProperty("digit4-sound", String.valueOf(digit4Sound.isSelected()));
-            MainApp.defaultProps.setProperty("digit4-team", String.valueOf(digit4Team.getValue()));
-            MainApp.defaultProps.setProperty("teamA", listToCSV(listTeamA));
-            MainApp.defaultProps.setProperty("teamB", listToCSV(listTeamB));
+            MainApp.defaultProps.setProperty(DIGIT1_OWNER, String.valueOf(digit1Owner.isSelected()));
+            MainApp.defaultProps.setProperty(DIGIT1_POPUP, String.valueOf(digit1Popup.isSelected()));
+            MainApp.defaultProps.setProperty(DIGIT1_SOUND, String.valueOf(digit1Sound.isSelected()));
+            MainApp.defaultProps.setProperty(DIGIT1_TEAM, String.valueOf(digit1Team.getValue()));
+            MainApp.defaultProps.setProperty(DIGIT2_OWNER, String.valueOf(digit2Owner.isSelected()));
+            MainApp.defaultProps.setProperty(DIGIT2_POPUP, String.valueOf(digit2Popup.isSelected()));
+            MainApp.defaultProps.setProperty(DIGIT2_SOUND, String.valueOf(digit2Sound.isSelected()));
+            MainApp.defaultProps.setProperty(DIGIT2_TEAM, String.valueOf(digit2Team.getValue()));
+            MainApp.defaultProps.setProperty(DIGIT3_OWNER, String.valueOf(digit3Owner.isSelected()));
+            MainApp.defaultProps.setProperty(DIGIT3_POPUP, String.valueOf(digit3Popup.isSelected()));
+            MainApp.defaultProps.setProperty(DIGIT3_SOUND, String.valueOf(digit3Sound.isSelected()));
+            MainApp.defaultProps.setProperty(DIGIT3_TEAM, String.valueOf(digit3Team.getValue()));
+            MainApp.defaultProps.setProperty(DIGIT4_OWNER, String.valueOf(digit4Owner.isSelected()));
+            MainApp.defaultProps.setProperty(DIGIT4_POPUP, String.valueOf(digit4Popup.isSelected()));
+            MainApp.defaultProps.setProperty(DIGIT4_SOUND, String.valueOf(digit4Sound.isSelected()));
+            MainApp.defaultProps.setProperty(DIGIT4_TEAM, String.valueOf(digit4Team.getValue()));
+            MainApp.defaultProps.setProperty(TEAM_A, DataConverter.listToCSV(listTeamA));
+            MainApp.defaultProps.setProperty(TEAM_B, DataConverter.listToCSV(listTeamB));
 
             LOGGER.debug("saving alarm confinguration");
             try (OutputStream os = new FileOutputStream("./watcher.properties")) {
@@ -166,86 +190,26 @@ public class AlarmAdminController {
     }
 
     /**
-     * validate phone number
-     * valid number must have contry code, starts with "+"
-     * @param phone
-     * @return 
-     */
-    private boolean validatePhone(String phone) {
-        return phone.matches("\\+[0-9]{6,15}");
-    }
-
-    /**
-     * Make sure a phone number has country code.
-     * some modem only send text to number with country code.
-     * assume all number without country code is Indonesia number (+62)
-     * @param phone phone number without country code.
-     * @return phone number with country code.
-     */
-    private String normalizePhone(String phone) {
-        return phone.replaceFirst("^0", "+62");
-    }
-
-    /**
-     * Convert phone list in "any white space" separated value
-     * usually from Text-box or TextArea 
-     * into Array of Strings of phone numbers
-     * @param allPhone phone number from TextAre
-     * @return Array of phone number
-     */
-    private String[] phoneList(String allPhone) {
-        String[] phoneList = allPhone.split("[\\s]");
-        for (int i = 0; i < phoneList.length; i++) {
-            phoneList[i] = normalizePhone(phoneList[i]);
-        }
-
-        return phoneList;
-    }
-
-    /**
-     * Convert List of phone number into Come separated value.
-     * @param phoneList list of phone numbers in String
-     * @return phone number list in CSV format.
-     */
-    private String listToCSV(String[] phoneList) {
-        StringBuilder sb = new StringBuilder();
-        for (String s : phoneList) {
-            sb.append(s);
-            sb.append(',');
-        }
-        sb.delete(sb.lastIndexOf(","), sb.lastIndexOf(""));//remove last come
-        return sb.toString();
-    }
-    /**
-     * convert come separated value into string with "new line" separated value.
-     * @param csv string with coma separated value.
-     * @return string with "new line" separated value.
-     */
-    private String csvToList(String csv){
-        return csv.replace(",", "\n");
-    }
-
-    /**
      * sync UI with properties file
      */
     private void loadConf() {      
-        digit1Owner.setSelected(Boolean.parseBoolean(MainApp.defaultProps.getProperty("digit1-owner")));
-        digit1Popup.setSelected(Boolean.parseBoolean(MainApp.defaultProps.getProperty("digit1-popup")));
-        digit1Sound.setSelected(Boolean.parseBoolean(MainApp.defaultProps.getProperty("digit1-sound")));
-        digit1Team.setValue(MainApp.defaultProps.getProperty("digit1-team"));
-        digit2Owner.setSelected(Boolean.parseBoolean(MainApp.defaultProps.getProperty("digit2-owner")));
-        digit2Popup.setSelected(Boolean.parseBoolean(MainApp.defaultProps.getProperty("digit2-popup")));
-        digit2Sound.setSelected(Boolean.parseBoolean(MainApp.defaultProps.getProperty("digit2-sound")));
-        digit2Team.setValue(MainApp.defaultProps.getProperty("digit2-team"));
-        digit3Owner.setSelected(Boolean.parseBoolean(MainApp.defaultProps.getProperty("digit3-owner")));
-        digit3Popup.setSelected(Boolean.parseBoolean(MainApp.defaultProps.getProperty("digit3-popup")));
-        digit3Sound.setSelected(Boolean.parseBoolean(MainApp.defaultProps.getProperty("digit3-sound")));
-        digit3Team.setValue(MainApp.defaultProps.getProperty("digit3-team"));
-        digit4Owner.setSelected(Boolean.parseBoolean(MainApp.defaultProps.getProperty("digit4-owner")));
-        digit4Popup.setSelected(Boolean.parseBoolean(MainApp.defaultProps.getProperty("digit4-popup")));
-        digit4Sound.setSelected(Boolean.parseBoolean(MainApp.defaultProps.getProperty("digit4-sound")));
-        digit4Team.setValue(MainApp.defaultProps.getProperty("digit4-team"));
-        teamA.setText(csvToList(MainApp.defaultProps.getProperty("teamA")));
-        teamB.setText(csvToList(MainApp.defaultProps.getProperty("teamB")));
+        digit1Owner.setSelected(Boolean.parseBoolean(MainApp.defaultProps.getProperty(DIGIT1_OWNER)));
+        digit1Popup.setSelected(Boolean.parseBoolean(MainApp.defaultProps.getProperty(DIGIT1_POPUP)));
+        digit1Sound.setSelected(Boolean.parseBoolean(MainApp.defaultProps.getProperty(DIGIT1_SOUND)));
+        digit1Team.setValue(MainApp.defaultProps.getProperty(DIGIT1_TEAM));
+        digit2Owner.setSelected(Boolean.parseBoolean(MainApp.defaultProps.getProperty(DIGIT2_OWNER)));
+        digit2Popup.setSelected(Boolean.parseBoolean(MainApp.defaultProps.getProperty(DIGIT2_POPUP)));
+        digit2Sound.setSelected(Boolean.parseBoolean(MainApp.defaultProps.getProperty(DIGIT2_SOUND)));
+        digit2Team.setValue(MainApp.defaultProps.getProperty(DIGIT2_TEAM));
+        digit3Owner.setSelected(Boolean.parseBoolean(MainApp.defaultProps.getProperty(DIGIT3_OWNER)));
+        digit3Popup.setSelected(Boolean.parseBoolean(MainApp.defaultProps.getProperty(DIGIT3_POPUP)));
+        digit3Sound.setSelected(Boolean.parseBoolean(MainApp.defaultProps.getProperty(DIGIT3_SOUND)));
+        digit3Team.setValue(MainApp.defaultProps.getProperty(DIGIT3_TEAM));
+        digit4Owner.setSelected(Boolean.parseBoolean(MainApp.defaultProps.getProperty(DIGIT4_OWNER)));
+        digit4Popup.setSelected(Boolean.parseBoolean(MainApp.defaultProps.getProperty(DIGIT4_POPUP)));
+        digit4Sound.setSelected(Boolean.parseBoolean(MainApp.defaultProps.getProperty(DIGIT4_SOUND)));
+        digit4Team.setValue(MainApp.defaultProps.getProperty(DIGIT4_TEAM));
+        teamA.setText(DataConverter.csvToNlvs(MainApp.defaultProps.getProperty(TEAM_A)));
+        teamB.setText(DataConverter.csvToNlvs(MainApp.defaultProps.getProperty(TEAM_B)));
     }
 }

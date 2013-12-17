@@ -13,6 +13,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <mainClass>com.codencare.watcher.desktop.MainApp</mainClass>
         <camel-version>2.12.0</camel-version>
+        <sonar.language>java</sonar.language>
     </properties>
 
     <organization>
@@ -22,7 +23,7 @@
 
     <build>
         <plugins>
-            <plugin>
+<!--            <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-dependency-plugin</artifactId>
                 <version>2.6</version>
@@ -54,7 +55,7 @@
                         </goals>
                         <configuration>
                             <executable>${java.home}/../bin/javafxpackager</executable>
-                            <!--<executable>Y:/progs/Java/32bit/jdk1.7.0_25/bin/javafxpackager</executable>-->
+                            <executable>Y:/progs/Java/32bit/jdk1.7.0_25/bin/javafxpackager</executable>
                             <arguments>
                                 <argument>-createjar</argument>
                                 <argument>-nocss2bin</argument>
@@ -70,7 +71,7 @@
                         </configuration>
                     </execution>
                 </executions>  
-            </plugin>
+            </plugin>-->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
@@ -83,6 +84,11 @@
                     </compilerArguments>-->
                     <showDeprecation>true</showDeprecation>
                 </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>sonar-maven-plugin</artifactId>
+                <version>2.1</version>
             </plugin>
         </plugins>
     </build>

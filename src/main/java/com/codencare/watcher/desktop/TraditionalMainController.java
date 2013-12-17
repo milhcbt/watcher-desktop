@@ -7,8 +7,10 @@ package com.codencare.watcher.desktop;
 
 import com.codencare.watcher.component.MapView;
 import com.codencare.watcher.controller.CustomerJpaController;
+import com.codencare.watcher.dialog.AlertDialog;
 import java.io.IOException;
 import java.net.URL;
+import java.util.Stack;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -21,6 +23,8 @@ import javafx.scene.control.MenuItem;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.FlowPane;
+import javafx.scene.media.Media;
+import javafx.scene.media.MediaPlayer;
 import javafx.scene.paint.Color;
 import javafx.stage.Modality;
 import javafx.stage.Screen;
@@ -40,8 +44,7 @@ public class TraditionalMainController {
 //    static ServerSocket server;
 //    static final int port = 7000;
     static final Rectangle2D primScreenBounds = Screen.getPrimary().getVisualBounds();
-    static final URL MEDIA_URL = TraditionalMainController.class.getResource("/styles/mine/audio/alarm.mp3");
-
+  
     private Point2D loc;
 
     private static MapView mapView;

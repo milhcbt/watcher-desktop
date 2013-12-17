@@ -13,6 +13,8 @@ import javafx.event.EventHandler;
 import javafx.scene.control.Button;
 import javafx.scene.control.ContentDisplay;
 import javafx.scene.control.Tooltip;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Background;
 import javax.persistence.EntityManagerFactory;
@@ -52,7 +54,7 @@ public class Home extends Button {
 //    /**
 //     * Image link when home alarmed
 //     */
-//    private static final Image HOME_IMG_ALARMED = new Image(MapView.class.getResourceAsStream(MainApp.defaultProps.getProperty("home-image-alarmed")));
+    private static final Image HOME_IMG_ALARMED = new Image(MapView.class.getResourceAsStream(MainApp.defaultProps.getProperty("home-image-alarmed")));
 
     /**
      * width of home icon
@@ -130,7 +132,7 @@ public class Home extends Button {
 
         this.relocate(x, y);
         this.setId(String.valueOf(this.device.getId()));
-//        this.setBackground(Background.EMPTY);
+        this.setBackground(Background.EMPTY);
         this.setTooltip(new Tooltip("id:" + this.device.getId() + ", x:" + x + ",y:" + y));
         this.setContentDisplay(ContentDisplay.TEXT_ONLY);
         this.setOnMouseClicked(new EventHandler<MouseEvent>() {
@@ -286,21 +288,25 @@ public class Home extends Button {
 //            getStyleClass().add("home-ac");
             setStyle("-fx-background-color:rgba(0,255,0,0.3);");
 //            setText("  "+String.valueOf(((char) SMILE))+"  ");
+//            setGraphic(null);
         } else if (d.getMode() == Device.MODE_ACTIVE_ON_BATTERY) {
 //            getStyleClass().clear();
 //            getStyleClass().add("home-battery");
             setStyle("-fx-background-color:rgba(0,0,255,0.3);");
 //            setText(""+String.valueOf(((char) SNOW))+"");
+//            setGraphic(null);
         } else if (d.getMode() == Device.MODE_ALARMED) {
 //            getStyleClass().clear();
 //            getStyleClass().add("home-alarmed");
-            setStyle("-fx-background-color:rgba(255,0,0,0.3);");
+            setStyle("-fx-background-color:rgba(255,0,0,0.7);");
 //            setText(""+String.valueOf(((char) SKULL))+"");
+//            setGraphic(new ImageView(HOME_IMG_ALARMED));
         } else {
 //            getStyleClass().clear();
 //            getStyleClass().add("home-disconnected");
             setStyle("-fx-background-color:rgba(100,100,100,0.3);");
 //            setText("  "+String.valueOf(((char) SAD))+"  ");
+//            setGraphic(null);
         }
     }
 }

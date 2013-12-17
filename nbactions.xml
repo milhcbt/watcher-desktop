@@ -34,4 +34,14 @@
                 <exec.executable>${profiler.java}</exec.executable>
             </properties>
         </action>
+        <action>
+            <actionName>CUSTOM-sonar</actionName>
+            <displayName>sonar</displayName>
+            <goals>
+                <goal>clean</goal>
+                <goal>install</goal>
+                <goal>sonar:sonar</goal>
+                <goal>-Dmaven.test.failure.ignore=true</goal>
+            </goals>
+        </action>
     </actions>
