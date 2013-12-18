@@ -8,13 +8,19 @@ import com.codencare.watcher.controller.DeviceJpaController;
 import com.codencare.watcher.desktop.MainApp;
 import com.codencare.watcher.entity.Device;
 import java.util.Objects;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
+import javafx.event.EventType;
 import javafx.scene.control.Button;
+import javafx.scene.control.CheckMenuItem;
 import javafx.scene.control.ContentDisplay;
+import javafx.scene.control.ContextMenu;
+import javafx.scene.control.MenuItem;
 import javafx.scene.control.Tooltip;
 import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Background;
 import javax.persistence.EntityManagerFactory;
@@ -59,17 +65,17 @@ public class Home extends Button {
     /**
      * width of home icon
      */
-    private static final double HOME_WIDTH = Double.parseDouble(MainApp.defaultProps.getProperty("home-width","30"));
+    private static final double HOME_WIDTH = Double.parseDouble(MainApp.defaultProps.getProperty("home-width", "30"));
     /**
      * height of home icon
      */
-    private static final double HOME_HEIGHT = Double.parseDouble(MainApp.defaultProps.getProperty("home-height","30"));
-    
+    private static final double HOME_HEIGHT = Double.parseDouble(MainApp.defaultProps.getProperty("home-height", "30"));
+
     private static final int SMILE = 9786;
     private static final int SAD = 9785;
     private static final int SKULL = 9760;
     private static final int SNOW = 10052;
-    
+
     /**
      * horizontal ratio for zooming
      */
@@ -122,7 +128,7 @@ public class Home extends Button {
         this.device = device;
         getStyleClass().add("home");
         setHomeStyle(device);
-        
+
         x = ((this.device.getLocX()) * xRatio);
         y = ((this.device.getLocY()) * yRatio);
         x = x < 0 ? 0 : x;
@@ -135,23 +141,44 @@ public class Home extends Button {
         this.setBackground(Background.EMPTY);
         this.setTooltip(new Tooltip("id:" + this.device.getId() + ", x:" + x + ",y:" + y));
         this.setContentDisplay(ContentDisplay.TEXT_ONLY);
-        this.setOnMouseClicked(new EventHandler<MouseEvent>() {
-            public void handle(MouseEvent event) {
-                Action response = Dialogs.create()
-                        .title("alarm")
-                        .owner(getScene().getWindow())
-                        .message(device.toString())
-                        .showWarning();
 
-//                            TODO: what should system do after click ?
-                if (response == Dialog.Actions.OK) {
-                    //TODO: ... submit user input
-                    setMode(DeviceMode.ACTIVE_ON_AC);
-                } else {
-                    //TODO: ... user cancelled, reset form to default
-                }
+        final ContextMenu ctxMenu = new ContextMenu();
+        MenuItem showDetail = new MenuItem("show detail");//TODO:USE PROPERTIES
+        showDetail.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent e) {
+                LOGGER.debug("show detail menu clicked");
+                //TODO: IMPLEMENT DEVICE DETAIL HERE
             }
         });
+        CheckMenuItem movable = new CheckMenuItem("Movable");///TODO:USE TEXT FROM PROPERTIES
+        movable.selectedProperty().addListener(new ChangeListener<Boolean>() {
+            @Override
+            public void changed(ObservableValue<? extends Boolean> ov, Boolean t, Boolean t1) {
+                LOGGER.debug("ov="+ov+",t="+t+",t1="+t1 );
+                //TODO: IMPLEMENT moveable HERE
+            }
+        });
+        ctxMenu.getItems().add(showDetail);
+        ctxMenu.getItems().add(movable);
+        this.setContextMenu(ctxMenu);
+//        this.setOnMouseClicked(new EventHandler<MouseEvent>() {
+//            public void handle(MouseEvent event) {
+//                Action response = Dialogs.create()
+//                        .title("alarm")
+//                        .owner(getScene().getWindow())
+//                        .message(device.toString())
+//                        .showWarning();
+//
+////                            TODO: what should system do after click ?
+//                if (response == Dialog.Actions.OK) {
+//                    //TODO: ... submit user input
+//                    setMode(DeviceMode.ACTIVE_ON_AC);
+//                } else {
+//                    //TODO: ... user cancelled, reset form to default
+//                }
+//            }
+//        });
     }
 
     /**
@@ -280,6 +307,10 @@ public class Home extends Button {
                 }
             }
         });
+    }
+    
+    private void removeDragable(){
+        //TODO: REMOVE DRAG EVENT
     }
 
     private void setHomeStyle(Device d) {
